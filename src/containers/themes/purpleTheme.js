@@ -7,11 +7,13 @@ export default {
             light: deepPurple[300],
             main: deepPurple[500],
             dark: deepPurple[700],
+            contrastText: '#fff'
         },
         secondary: {
             light: amber[300],
             main: amber['A700'],
             dark: amber[700],
+            contrastText: '#fff'
         }
     },
     status: {

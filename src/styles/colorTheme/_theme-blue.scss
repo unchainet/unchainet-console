@@ -386,3 +386,22 @@ $sidebar-text-blue: #868e96 !default;
 .blue .border-primary {
   border-color: $app-primary-blue !important;
 }
+
+// login page content
+
+.blue .app-logo-content {
+  background-color: $app-primary-blue;
+}
+
+.blue .app-social-block {
+  & .social-link button {
+    border: solid 1px $app-primary-blue;
+    color: $app-primary-blue;
+
+    &:hover,
+    &:focus {
+      color: $white;
+      background-color: $app-primary-blue;
+    }
+  }
+}

@@ -20,24 +20,27 @@ const SignUP1 = () => {
                 <div className="login-form">
                     <form method="post" action="/">
                         <div className="form-group">
-                            <input type="text" placeholder={<IntlMessages id="appModule.name"/>}
+                            <input type="text" placeholder="Name"
                                    className="form-control form-control-lg"/>
                         </div>
                         <div className="form-group">
-                            <input type="text" placeholder={<IntlMessages id="appModule.email"/>}
+                            <input type="text" placeholder="Email"
                                    className="form-control form-control-lg"/>
                         </div>
                         <div className="form-group">
-                            <input type="password" placeholder={<IntlMessages id="appModule.password"/>}
+                            <input type="password" placeholder="Password"
                                    className="form-control form-control-lg"/>
                         </div>
                         <div className="mt-4 mb-2">
-                            <Link to="/" className="btn btn-primary jr-btn-rounded"><IntlMessages
-                                id="appModule.regsiter"/></Link>
+                            <Link to="/" className="btn btn-primary jr-btn-rounded">
+                                <IntlMessages id="appModule.regsiter"/>
+                            </Link>
                         </div>
-                        <p><IntlMessages id="appModule.hvAccount"/> <Link className="text-primary"
-                                                                          to="/app/app-module/login-1"><IntlMessages
-                            id="appModule.signIn"/></Link>
+                        <p>
+                            <IntlMessages id="appModule.hvAccount"/>
+                            <Link to="/app/app-module/login-1" className="ml-1">
+                                <IntlMessages id="appModule.signIn"/>
+                            </Link>
                         </p>
                     </form>
                 </div>

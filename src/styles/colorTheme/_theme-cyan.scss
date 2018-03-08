@@ -390,3 +390,22 @@ $link-hover-color: $app-primary;
 .cyan .border-primary {
   border-color: $app-primary-cyan !important;
 }
+
+// login page content
+
+.cyan .app-logo-content {
+  background-color: $app-primary-cyan;
+}
+
+.cyan .app-social-block {
+  & .social-link button {
+    border: solid 1px $app-primary-cyan;
+    color: $app-primary-cyan;
+
+    &:hover,
+    &:focus {
+      color: $white;
+      background-color: $app-primary-cyan;
+    }
+  }
+}

@@ -33,11 +33,12 @@ const ForgotPassword2 = () => {
 
                         <p className="mb-3">
                             <IntlMessages id="appModule.dntRememberEmail"/> &nbsp;
-                            <a className="small text-primary" href="javascript:void(0)"><IntlMessages
-                                id="appModule.contactSupport"/></a>.
+                            <a className="small" href="javascript:void(0)">
+                                <IntlMessages id="appModule.contactSupport"/>
+                            </a>
                         </p>
 
-                        <Button href="javascript:void(0)" variant="raised" className="jr-btn text-white btn-primary">
+                        <Button variant="raised" color="primary" className="text-white">
                             <IntlMessages id="appModule.resetPassword"/>
                         </Button>
                     </form>

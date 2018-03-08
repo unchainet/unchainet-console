@@ -386,3 +386,22 @@ $sidebar-text-pink: #868e96 !default;
 .pink .border-primary {
   border-color: $app-primary-pink !important;
 }
+
+// login page content
+
+.pink .app-logo-content {
+  background-color: $app-primary-pink;
+}
+
+.pink .app-social-block {
+  & .social-link button {
+    border: solid 1px $app-primary-pink;
+    color: $app-primary-pink;
+
+    &:hover,
+    &:focus {
+      color: $white;
+      background-color: $app-primary-pink;
+    }
+  }
+}

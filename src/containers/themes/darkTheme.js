@@ -19,11 +19,13 @@ export default {
             light: grey[100],
             main: grey[300],
             dark: grey[500],
+            contrastText: '#fff'
         },
         secondary: {
             light: grey[200],
             main: grey[500],
             dark: grey[700],
+            contrastText: '#fff'
         },
         background: {
             paper: '#2d353c',

@@ -395,6 +395,24 @@ $sidebar-text-color-amber: #868e96 !default;
   border-color: $app-primary-amber !important;
 }
 
+// login page content
+
+.amber .app-logo-content {
+  background-color: $app-primary-amber;
+}
+
+.amber .app-social-block {
+  & .social-link button {
+    border: solid 1px $app-primary-amber;
+    color: $app-primary-amber;
+
+    &:hover,
+    &:focus {
+      color: $white;
+      background-color: $app-primary-amber;
+    }
+  }
+}
 
 
 

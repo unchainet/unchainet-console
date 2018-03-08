@@ -26,8 +26,9 @@ const ForgotPassword1 = () => {
 
                         <p>
                             <IntlMessages id="appModule.dntRememberEmail"/> &nbsp;
-                            <a className="small text-primary" href="javascript:void(0)"><IntlMessages
-                                id="appModule.contactSupport"/></a>.
+                            <a className="small" href="javascript:void(0)">
+                                <IntlMessages id="appModule.contactSupport"/>
+                            </a>
                         </p>
 
                         <div className="">

@@ -7,11 +7,13 @@ export default {
             light: indigo[300],
             main: indigo[500],
             dark: indigo[700],
+            contrastText: '#fff'
         },
         secondary: {
             light: pink[300],
             main: pink['A200'],
             dark: pink[700],
+            contrastText: '#fff'
         }
     },
     status: {

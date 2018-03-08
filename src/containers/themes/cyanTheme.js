@@ -7,11 +7,13 @@ export default {
             light: cyan[300],
             main: cyan[500],
             dark: cyan[700],
+            contrastText: '#fff'
         },
         secondary: {
             light: green[300],
             main: green['A200'],
             dark: green[700],
+            contrastText: '#fff'
         }
     },
     status: {

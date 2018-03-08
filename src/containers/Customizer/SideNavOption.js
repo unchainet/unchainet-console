@@ -24,15 +24,15 @@ class Customizer extends React.Component {
 
         return (
             <ButtonGroup>
-                <Button
-                    className={`jr-btn ${drawerType === FIXED_DRAWER ? "bg-primary text-white" : "text-muted bg-grey lighten-2"} `}
-                    onClick={this.setFixedDrawer.bind(this)}>Fixed</Button>
-                <Button
-                    className={`jr-btn ${drawerType === COLLAPSED_DRAWER ? "bg-primary text-white" : "text-muted bg-grey lighten-2"} `}
-                    onClick={this.setCollapsedDrawer.bind(this)}>Collapsed</Button>
-                <Button
-                    className={`jr-btn ${drawerType === MINI_DRAWER ? "bg-primary text-white" : "text-muted bg-grey lighten-2"} `}
-                    onClick={this.setMiniDrawer.bind(this)}>Mini</Button></ButtonGroup>        );
+                <Button color="primary" variant="raised"
+                        className={`jr-btn no-shadow ${drawerType !== FIXED_DRAWER && 'text-muted bg-grey lighten-2'} `}
+                        onClick={this.setFixedDrawer.bind(this)}>Fixed</Button>
+                <Button color="primary" variant="raised"
+                        className={`jr-btn no-shadow ${drawerType !== COLLAPSED_DRAWER && 'text-muted bg-grey lighten-2'} `}
+                        onClick={this.setCollapsedDrawer.bind(this)}>Collapsed</Button>
+                <Button color="primary" variant="raised"
+                        className={`jr-btn no-shadow ${drawerType !== MINI_DRAWER && 'text-muted bg-grey lighten-2'} `}
+                        onClick={this.setMiniDrawer.bind(this)}>Mini</Button></ButtonGroup>        );
     }
 }
 

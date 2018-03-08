@@ -386,3 +386,22 @@ $sidebar-text-deep-purple: #868e96 !default;
 .deep-purple .border-primary {
   border-color: $app-primary-deep-purple !important;
 }
+
+// login page content
+
+.deep-purple .app-logo-content {
+  background-color: $app-primary-deep-purple;
+}
+
+.deep-purple .app-social-block {
+  & .social-link button {
+    border: solid 1px $app-primary-deep-purple;
+    color: $app-primary-deep-purple;
+
+    &:hover,
+    &:focus {
+      color: $white;
+      background-color: $app-primary-deep-purple;
+    }
+  }
+}

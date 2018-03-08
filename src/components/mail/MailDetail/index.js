@@ -3,7 +3,7 @@ import IconButton from 'material-ui/IconButton';
 import Menu, {MenuItem} from 'material-ui/Menu';
 import MoreVertIcon from 'material-ui-icons/MoreVert';
 
-import labels from "app/routes/mail/data/labels";
+import labels from 'app/routes/mail/data/labels';
 
 class MailDetail extends React.Component {
 
@@ -56,8 +56,8 @@ class MailDetail extends React.Component {
                                 onStartSelect(mail);
                             }}>
                                 {mail.starred ?
-                                    <i className="zmdi zmdi-star"/> :
-                                    <i className="zmdi zmdi-star-outline"/>
+                                    <IconButton> <i className="zmdi zmdi-star"/> </IconButton> :
+                                    <IconButton><i className="zmdi zmdi-star-outline"/></IconButton>
                                 }
 
                             </IconButton>
@@ -66,8 +66,8 @@ class MailDetail extends React.Component {
                             }}>
 
                                 {mail.important ?
-                                    <i className="zmdi zmdi-label-alt"/>
-                                    : <i className="zmdi zmdi-label-alt-outline"/>
+                                    <IconButton><i className="zmdi zmdi-label-alt"/></IconButton>
+                                    : <IconButton> <i className="zmdi zmdi-label-alt-outline"/></IconButton>
                                 }
                             </IconButton>
                         </div>
@@ -120,7 +120,7 @@ class MailDetail extends React.Component {
 
                     <div className="show-detail" onClick={() => {
                         this.setState({showDetail: !this.state.showDetail});
-                    }}>{this.state.showDetail ? "Hide Detail" : "Show Detail"}</div>
+                    }}>{this.state.showDetail ? 'Hide Detail' : 'Show Detail'}</div>
                     {this.state.showDetail && (<div>
                         <div>
                             <strong>From: </strong>{mail.from.email}

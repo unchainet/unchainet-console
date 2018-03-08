@@ -68,5 +68,10 @@ class UserInfo extends React.Component {
     }
 }
 
-export default connect(undefined, {userSignOut})(UserInfo);
+
+const mapStateToProps = ({settings}) => {
+    const {locale} = settings;
+    return {locale}
+};
+export default connect(mapStateToProps, {userSignOut})(UserInfo);
 

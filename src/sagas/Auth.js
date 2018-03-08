@@ -124,7 +124,11 @@ function* signInUserWithTwitter() {
     try {
         const signUpUser = yield call(signInUserWithTwitterRequest);
         if (signUpUser.message) {
-            yield put(showAuthMessage(signUpUser.message));
+            if (signUpUser.message.length > 100) {
+                yield put(showAuthMessage('Your request has been canceled.'));
+            } else {
+                yield put(showAuthMessage(signUpUser.message));
+            }
         } else {
             localStorage.setItem('user_id', signUpUser.uid);
             yield put(userTwitterSignInSuccess(signUpUser));

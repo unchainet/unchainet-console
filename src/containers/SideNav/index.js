@@ -21,7 +21,7 @@ class SideNav extends React.PureComponent {
     }
 
     render() {
-        const {navCollapsed, drawerType, width} = this.props;
+        const {navCollapsed, drawerType, width, locale} = this.props;
         const drawerStyle = drawerType.includes(FIXED_DRAWER) ? 'd-xl-flex' : drawerType.includes(COLLAPSED_DRAWER) ? '' : 'd-flex';
         let type = 'permanent';
         if (drawerType.includes(COLLAPSED_DRAWER) || (drawerType.includes(FIXED_DRAWER) && width < 1200)) {
@@ -47,8 +47,8 @@ class SideNav extends React.PureComponent {
 }
 
 const mapStateToProps = ({settings}) => {
-    const {navCollapsed, drawerType, width} = settings;
-    return {navCollapsed, drawerType, width}
+    const {navCollapsed, drawerType, width, locale} = settings;
+    return {navCollapsed, drawerType, width, locale}
 };
 
 export default withRouter(connect(mapStateToProps, {updateWindowWidth})(SideNav));

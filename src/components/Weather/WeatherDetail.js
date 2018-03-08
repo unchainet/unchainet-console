@@ -44,7 +44,7 @@ class WeatherDetail extends Component {
                             </div>
 
                             <IconButton className="size-30">
-                                <i className="zmdi zmdi-chevron-down zmdi-hc-fw" />
+                                <i className="zmdi zmdi-chevron-down zmdi-hc-fw"/>
                             </IconButton>
                         </div>
                         <div className="temp-section py-sm-5 d-flex justify-content-between align-items-center">
@@ -52,14 +52,16 @@ class WeatherDetail extends Component {
                                 <small><sup>°C</sup></small>
                             </h2>
                             <div className="px-md-4">
-                                <i className={"detail-icon text-blue-grey wi wi-owm-" + list[0].weather[0].id} />
+                                <i className={'detail-icon text-blue-grey wi wi-owm-' + list[0].weather[0].id}/>
                             </div>
                         </div>
                     </div>
                 </div>
-                <hr />
-                <WeatherList weather={list} />
-                <Button variant="raised" className="jr-btn bg-primary text-uppercase text-white">full report</Button>
+                <hr/>
+                <WeatherList weather={list}/>
+                <Button variant="raised" color="primary" className="jr-btn text-uppercase text-white">
+                    full report
+                </Button>
             </div>
         )
     }

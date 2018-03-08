@@ -390,3 +390,22 @@ $link-hover-dark-blue: $white;
 .dark-blue .border-primary {
   border-color: $app-primary-dark-blue !important;
 }
+
+// login page content
+
+.dark-blue .app-logo-content {
+  background-color: $app-primary-dark-blue;
+}
+
+.dark-blue .app-social-block {
+  & .social-link button {
+    border: solid 1px $app-primary-dark-blue;
+    color: $app-primary-dark-blue;
+
+    &:hover,
+    &:focus {
+      color: $white;
+      background-color: $app-primary-dark-blue;
+    }
+  }
+}

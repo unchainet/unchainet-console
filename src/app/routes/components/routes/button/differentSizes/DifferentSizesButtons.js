@@ -5,16 +5,16 @@ function DifferentSizesButtons() {
     return (
         <div>
             <div className="jr-btn-group">
-                <Button variant="raised" className="jr-btn bg-primary text-white jr-btn-lg">
+                <Button variant="raised" color="primary" className="jr-btn jr-btn-lg">
                     primary
                 </Button>
-                <Button variant="raised" className="jr-btn bg-primary text-white">
+                <Button variant="raised" color="primary" className="jr-btn">
                     primary
                 </Button>
-                <Button variant="raised" className="jr-btn bg-primary jr-btn-sm text-white">
+                <Button variant="raised" color="primary" className="jr-btn jr-btn-sm">
                     primary
                 </Button>
-                <Button variant="raised" className="jr-btn bg-primary jr-btn-xs text-white">
+                <Button variant="raised" color="primary" className="jr-btn jr-btn-xs">
                     primary
                 </Button>
             </div>

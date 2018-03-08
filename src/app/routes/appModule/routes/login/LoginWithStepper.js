@@ -109,9 +109,9 @@ class LoginWithStepper extends React.Component {
                                         />
 
                                         <div>
-                                            <Link className="text-primary" to="/app/app-module/forgot-password-2"
-                                                  title="Reset Password"><IntlMessages
-                                                id="appModule.forgotPassword"/></Link>
+                                            <Link to="/app/app-module/forgot-password-2" title="Reset Password">
+                                                <IntlMessages id="appModule.forgotPassword"/>
+                                            </Link>
                                         </div>
                                     </div>
 

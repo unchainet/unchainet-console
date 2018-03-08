@@ -18,22 +18,21 @@ const Login1 = () => {
                         <fieldset>
                             <div className="form-group">
                                 <input name="email" id="email" className="form-control form-control-lg"
-                                       placeholder={<IntlMessages id="appModule.email"/>} type="email"/>
+                                       placeholder="Email" type="email"/>
                             </div>
                             <div className="form-group">
                                 <input name="password" id="password" className="form-control form-control-lg"
-                                       placeholder={<IntlMessages id="appModule.password"/>} type="password"/>
+                                       placeholder="Password" type="password"/>
                             </div>
                             <div className="form-group d-flex justify-content-between align-items-center">
                                 <label className="custom-control custom-checkbox float-left">
                                     <input type="checkbox" className="custom-control-input"/>
                                     <span className="custom-control-indicator"/>
-                                    <span className="custom-control-description"><IntlMessages
-                                        id="appModule.rememberMe"/></span>
+                                    <span className="custom-control-description">Remember me</span>
                                 </label>
 
                                 <div>
-                                    <Link className="text-primary" to="/app/app-module/forgot-password-1"
+                                    <Link to="/app/app-module/forgot-password-1"
                                           title="Reset Password"><IntlMessages id="appModule.forgotPassword"/></Link>
                                 </div>
                             </div>

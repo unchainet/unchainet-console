@@ -265,7 +265,7 @@ class Default extends React.Component {
                                         <h3 className="card-heading"><IntlMessages id="dashboard.googleInsight"/></h3>
                                         <p className="sub-heading"><IntlMessages id="dashboard.lastCalculated"/></p>
                                     </div>
-                                    <Button variant="raised" className="jr-btn text-uppercase jr-btn-sm"
+                                    <Button variant="raised" className="text-uppercase jr-btn-sm"
                                             color="primary">
                                         <i className="zmdi zmdi-refresh-sync zmdi-hc-fw "/>
                                         <span><IntlMessages id="dashboard.refresh"/></span>
@@ -380,7 +380,7 @@ class Default extends React.Component {
                             </ul>
 
                             <div className="py-3">
-                                <a href="javascript:void(0)" className="card-link text-uppercase text-primary">
+                                <a href="javascript:void(0)" className="card-link text-uppercase">
                                     <IntlMessages id="dashboard.viewAllPosts"/> </a>
                             </div>
                         </div>
@@ -439,7 +439,7 @@ class Default extends React.Component {
                             <div className="row">
                                 {products.map((product, index) => <PopularProduct key={index} product={product}/>)}
                             </div>
-                            <a href="javascript:void(0)" className="card-link text-uppercase text-primary">
+                            <a href="javascript:void(0)" className="card-link text-uppercase">
                                 <IntlMessages id="dashboard.allProducts"/> </a>
                         </div>
                     </div>

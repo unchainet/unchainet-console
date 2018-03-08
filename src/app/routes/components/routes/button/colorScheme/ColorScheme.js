@@ -6,7 +6,7 @@ const ColorScheme = () => {
         <div>
             <div className="jr-btn-group mb-3 mb-md-5">
                 <Button variant="raised" className="jr-btn bg-white text-black">Default</Button>
-                <Button variant="raised" className="jr-btn bg-primary text-white">Primary</Button>
+                <Button variant="raised" color="primary" className="jr-btn text-white">Primary</Button>
                 <Button variant="raised" color="secondary" className="jr-btn text-white">Secondary</Button>
                 <Button variant="raised" className="jr-btn bg-warning text-white">Warning</Button>
                 <Button variant="raised" className="jr-btn bg-info text-white">Info</Button>

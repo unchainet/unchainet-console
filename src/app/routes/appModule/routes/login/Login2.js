@@ -64,15 +64,15 @@ class Login2 extends React.Component {
                                     />
 
                                     <div>
-                                        <Link className="text-primary" to="/app/app-module/forgot-password-2"
+                                        <Link to="/app/app-module/forgot-password-2"
                                               title="Reset Password"><IntlMessages
                                             id="appModule.forgotPassword"/></Link>
                                     </div>
                                 </div>
 
-                                <Button href="javascript:void(0)" variant="raised"
-                                        className="jr-btn text-white btn-primary"><IntlMessages
-                                    id="appModule.signIn"/></Button>
+                                <Button color="primary" variant="raised">
+                                    <IntlMessages id="appModule.signIn"/>
+                                </Button>
 
                             </fieldset>
                         </form>

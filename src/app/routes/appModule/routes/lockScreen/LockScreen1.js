@@ -23,16 +23,20 @@ const LockScreen1 = () => {
                 </div>
                 <form method="get" action="/app/app-module/login-1">
                     <div className="form-group mb-4">
-                        <input type="password" placeholder={<IntlMessages id="appModule.password"/>}
+                        <input type="password" placeholder="Password"
                                className="form-control form-control-lg"/>
                     </div>
                     <div className="form-group">
-                        <Link to="/app/app-module/login-1" className="btn btn-primary jr-btn-rounded"><IntlMessages
-                            id="appModule.unlock"/></Link>
+                        <Link to="/app/app-module/login-1" className="btn btn-primary jr-btn-rounded">
+                            <IntlMessages id="appModule.unlock"/>
+                        </Link>
                     </div>
                 </form>
-                <div><Link className="text-primary right-arrow" to="/app/app-module/login-1"><IntlMessages
-                    id="appModule.signInDiffAccount"/></Link></div>
+                <div>
+                    <Link className="right-arrow" to="/app/app-module/login-1">
+                        <IntlMessages id="appModule.signInDiffAccount"/>
+                    </Link>
+                </div>
             </div>
         </div>
     );

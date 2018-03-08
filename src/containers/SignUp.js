@@ -47,24 +47,24 @@ class SignUp extends React.Component {
         const {showMessage, loader, alertMessage} = this.props;
         return (
             <div
-                className="login-container d-flex justify-content-center align-items-center animated slideInUpTiny animation-duration-3">
-                <div className="login-main-content">
-                    <div className="logo-content d-flex align-items-center justify-content-center">
+                className="app-login-container d-flex justify-content-center align-items-center animated slideInUpTiny animation-duration-3">
+                <div className="app-login-main-content">
+                    <div className="app-logo-content d-flex align-items-center justify-content-center">
                         <Link className="logo-lg" to="/" title="Jambo">
                             <img src="http://via.placeholder.com/177x65" alt="jambo" title="jambo"/>
                         </Link>
                     </div>
 
-                    <div className="login-content">
-                        <div className="login-header">
-                            <h1><IntlMessages id="appModule.signup"/></h1>
+                    <div className="app-login-content">
+                        <div className="app-login-header">
+                            <h1>Sign Up</h1>
                         </div>
 
                         <div className="mb-4">
                             <h2><IntlMessages id="appModule.createAccount"/></h2>
                         </div>
 
-                        <div className="login-form">
+                        <div className="app-login-form">
                             <form method="post" action="/">
                                 <TextField
                                     type="text"
@@ -107,11 +107,11 @@ class SignUp extends React.Component {
                                         <IntlMessages
                                             id="appModule.regsiter"/>
                                     </Button>
-                                    <Link className="text-primary" to="/signin">
+                                    <Link to="/signin">
                                         <IntlMessages id="signUp.alreadyMember"/>
                                     </Link>
                                 </div>
-                                <div className="social-block my-1 my-sm-3">
+                                <div className="app-social-block my-1 my-sm-3">
                                     <IntlMessages
                                         id="signIn.connectWith"/>
                                     <ul className="social-link">

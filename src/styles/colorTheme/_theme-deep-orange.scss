@@ -386,3 +386,22 @@ $sidebar-text-deep-orange: #868e96 !default;
 .deep-orange .border-primary {
   border-color: $app-primary-deep-orange !important;
 }
+
+// login page content
+
+.deep-orange .app-logo-content {
+  background-color: $app-primary-deep-orange;
+}
+
+.deep-orange .app-social-block {
+  & .social-link button {
+    border: solid 1px $app-primary-deep-orange;
+    color: $app-primary-deep-orange;
+
+    &:hover,
+    &:focus {
+      color: $white;
+      background-color: $app-primary-deep-orange;
+    }
+  }
+}

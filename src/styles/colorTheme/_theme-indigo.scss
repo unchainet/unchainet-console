@@ -387,3 +387,22 @@ $sidebar-text-indigo: #868e96 !default;
 .indigo .border-primary {
   border-color: $app-primary-indigo !important;
 }
+
+// login page content
+
+.indigo .app-logo-content {
+  background-color: $app-primary-indigo;
+}
+
+.indigo .app-social-block {
+  & .social-link button {
+    border: solid 1px $app-primary-indigo;
+    color: $app-primary-indigo;
+
+    &:hover,
+    &:focus {
+      color: $white;
+      background-color: $app-primary-indigo;
+    }
+  }
+}

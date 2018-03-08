@@ -40,7 +40,7 @@ const ProductGridItem = ({product}) => {
                         <p>{description}</p>
                     </div>
                     <div>
-                        <Button className="jr-btn bg-primary jr-btn-sm text-white">
+                        <Button color="primary" variant="raised" className="jr-btn jr-btn-sm ">
                             <i className="zmdi zmdi-shopping-cart"/>
                             <span><IntlMessages id="eCommerce.buyNow"/></span>
                         </Button>

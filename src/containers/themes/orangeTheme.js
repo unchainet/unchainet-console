@@ -7,11 +7,13 @@ export default {
             light: deepOrange[300],
             main: deepOrange[500],
             dark: deepOrange[700],
+            contrastText: '#fff'
         },
         secondary: {
             light: lightBlue[300],
             main: lightBlue['A200'],
             dark: lightBlue[700],
+            contrastText: '#fff'
         }
     },
     status: {

@@ -391,3 +391,22 @@ $link-hover-dark-indigo: $white;
 .dark-indigo .border-primary {
   border-color: $app-primary-dark-indigo !important;
 }
+
+// login page content
+
+.dark-indigo .app-logo-content {
+  background-color: $app-primary-dark-indigo;
+}
+
+.dark-indigo .app-social-block {
+  & .social-link button {
+    border: solid 1px $app-primary-dark-indigo;
+    color: $app-primary-dark-indigo;
+
+    &:hover,
+    &:focus {
+      color: $white;
+      background-color: $app-primary-dark-indigo;
+    }
+  }
+}

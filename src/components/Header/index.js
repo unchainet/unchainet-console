@@ -72,7 +72,7 @@ class Header extends React.Component {
                     </IconButton>
 
                     <Link className="app-logo" to="/">
-                        <img src="http://via.placeholder.com/175x65" alt="Jambo" title="Jambo"/>
+                        <img src="assets/images/logo.png" alt="Jambo" title="Jambo"/>
                     </Link>
 
 
@@ -108,7 +108,7 @@ class Header extends React.Component {
                                  onClick={this.onLangSwitcherSelect}>
                                 <div className="d-flex align-items-center pointer">
                                     <i className={`flag flag-32 flag-${locale.icon}`}/>
-                                    <h4 className="mb-0 ml-1 d-none d-md-block">{locale.name}</h4>
+                                    <h4 className="mb-0 ml-1">{locale.name}</h4>
                                 </div>
                             </div>
                         </li>
@@ -223,7 +223,7 @@ const languages = [
     {
         languageId: 'saudi-arabia',
         locale: 'ar',
-        name: 'Saudi Arabia',
+        name: 'Arabic',
         icon: 'sa',
     },
 

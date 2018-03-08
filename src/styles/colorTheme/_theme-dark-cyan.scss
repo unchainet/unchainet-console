@@ -391,3 +391,22 @@ $link-hover-dark-cyan: $white;
 .dark-cyan .border-primary {
   border-color: $app-primary-dark-cyan !important;
 }
+
+// login page content
+
+.dark-cyan .app-logo-content {
+  background-color: $app-primary-dark-cyan;
+}
+
+.dark-cyan .app-social-block {
+  & .social-link button {
+    border: solid 1px $app-primary-dark-cyan;
+    color: $app-primary-dark-cyan;
+
+    &:hover,
+    &:focus {
+      color: $white;
+      background-color: $app-primary-dark-cyan;
+    }
+  }
+}

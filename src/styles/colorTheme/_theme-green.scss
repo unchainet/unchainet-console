@@ -386,3 +386,22 @@ $sidebar-text-green: #868e96 !default;
 .green .border-primary {
   border-color: $app-primary-green !important;
 }
+
+// login page content
+
+.green .app-logo-content {
+  background-color: $app-primary-green;
+}
+
+.green .app-social-block {
+  & .social-link button {
+    border: solid 1px $app-primary-green;
+    color: $app-primary-green;
+
+    &:hover,
+    &:focus {
+      color: $white;
+      background-color: $app-primary-green;
+    }
+  }
+}

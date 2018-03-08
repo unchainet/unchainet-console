@@ -118,7 +118,7 @@ class HorizontalLinearStepper extends React.Component {
                                 </Button>
                                 {this.isStepOptional(activeStep) && (
                                     <Button
-                                        raised
+                                        variant="raised"
                                         color="primary"
                                         onClick={this.handleSkip}
                                         className="jr-btn"

@@ -33,12 +33,12 @@ const LockScreen2 = () => {
                     />
 
                     <div className="mb-2">
-                        <Link className="btn btn-primary" to="/app/app-module/login-2"><IntlMessages
+                        <Link to="/app/app-module/login-2" className="btn btn-primary"><IntlMessages
                             id="appModule.unlock"/></Link>
                     </div>
                 </form>
                 <div>
-                    <Link className="text-primary right-arrow" to="/app/app-module/login-2"><IntlMessages
+                    <Link className="right-arrow" to="/app/app-module/login-2"><IntlMessages
                         id="appModule.signInDiffAccount"/></Link>
                 </div>
             </div>

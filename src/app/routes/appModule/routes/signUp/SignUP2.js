@@ -73,7 +73,7 @@ class SignUP2 extends React.Component {
                             />
 
                             <div className="mb-3">
-                                <Button variant="raised" href="javascript:void(0)" onClick={() => {
+                                <Button variant="raised" onClick={() => {
                                     auth.createUserWithEmailAndPassword(email, password)
                                         .then(authUser => {
                                             NotificationManager.success(<IntlMessages
@@ -91,14 +91,13 @@ class SignUP2 extends React.Component {
 
 
                                 }}
-                                        className="jr-btn text-white btn-primary"><IntlMessages
+                                        color="primary"><IntlMessages
                                     id="appModule.regsiter"/></Button>
                             </div>
                             <p>
                                 <IntlMessages id="appModule.hvAccount"/>
-                                <Link className="text-primary"
-                                      to="/app/app-module/login-2"><IntlMessages
-                                    id="appModule.signIn"/>
+                                <Link to="/app/app-module/login-2" className="ml-1">
+                                    <IntlMessages id="appModule.signIn"/>
                                 </Link>
                             </p>
                         </form>

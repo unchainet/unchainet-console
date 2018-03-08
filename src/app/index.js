@@ -52,7 +52,7 @@ class App extends React.Component {
             <div className={`app-container ${drawerStyle}`}>
                 <Tour/>
 
-                <Sidebar onToggleCollapsedNav={this.onToggleCollapsedNav.bind(this)}/>
+                <Sidebar onToggleCollapsedNav={this.onToggleCollapsedNav}/>
                 <div className="app-main-container">
                     <div className="app-header">
                         <Header drawerType={drawerType} onToggleCollapsedNav={this.onToggleCollapsedNav}/>

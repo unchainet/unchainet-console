@@ -229,7 +229,7 @@ class Widget extends React.Component {
                                 <div className="row">
                                     {products.map((product, index) => <PopularProduct key={index} product={product}/>)}
                                 </div>
-                                <a href="javascript:void(0)" className="card-link text-uppercase text-primary">all
+                                <a href="javascript:void(0)" className="card-link text-uppercase">all
                                     products</a>
                             </div>
                         </div>
@@ -278,7 +278,7 @@ class Widget extends React.Component {
                                 </ul>
 
                                 <div className="py-3">
-                                    <a href="javascript:void(0)" className="card-link text-primary">VIEW ALL POST</a>
+                                    <a href="javascript:void(0)" className="card-link">VIEW ALL POST</a>
                                 </div>
                             </div>
                         </div>
