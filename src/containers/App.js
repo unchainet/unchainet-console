@@ -139,7 +139,7 @@ class App extends Component {
             if (authUser === null) {
                 return ( <Redirect to={'/signin'}/> );
             } else {
-                return ( <Redirect to={'/app/dashboard/default'}/> );
+                return ( <Redirect to={'/app/dashboard'}/> );
             }
         }
 

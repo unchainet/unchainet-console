@@ -1,17 +1,34 @@
 import React from 'react';
 import {Redirect, Route, Switch} from 'react-router-dom';
-import asyncComponent from '../../../util/AsyncFunc';
 
-const Dashboard = ({match}) => (
-    <div className="app-wrapper">
-        <Switch>
-            <Redirect exact from={`${match.url}/`} to={`${match.url}/default`}/>
-            <Route path={`${match.url}/default`} component={asyncComponent(() => import('./routes/Default'))}/>
-            <Route path={`${match.url}/eCommerce`} component={asyncComponent(() => import('./routes/ECommerce'))}/>
-            <Route path={`${match.url}/news`} component={asyncComponent(() => import('./routes/News'))}/>
-            <Route path={`${match.url}/intranet`} component={asyncComponent(() => import('./routes/Intranet'))}/>
-        </Switch>
-    </div>
-);
+class Dashboard extends React.Component {
+  onOptionMenuSelect = event => {
+    this.setState({menuState: true, anchorEl: event.currentTarget});
+  };
+  handleRequestClose = () => {
+    this.setState({menuState: false});
+  };
+
+  constructor() {
+    super();
+    this.state = {
+      anchorEl: undefined,
+      menuState: false,
+    }
+  }
+
+  render() {
+    const {anchorEl, menuState} = this.state;
+    return (
+      <div className="app-wrapper">
+        <div className="animated slideInUpTiny animation-duration-3">
+          dashboard
+
+        </div>
+      </div>
+
+    );
+  }
+}
 
 export default Dashboard;

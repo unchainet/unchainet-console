@@ -72,7 +72,7 @@ class Header extends React.Component {
                     </IconButton>
 
                     <Link className="app-logo" to="/">
-                        <img src="assets/images/logo.png" alt="Jambo" title="Jambo"/>
+                        <img src="assets/images/logo-dark.png" alt="Unchainet" title="Unchainet"/>
                     </Link>
 
 
