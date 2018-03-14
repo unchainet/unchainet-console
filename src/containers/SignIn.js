@@ -50,7 +50,7 @@ class SignIn extends React.Component {
 
                     <div className="app-logo-content d-flex align-items-center justify-content-center">
                         <Link className="logo-lg" to="/" title="Jambo">
-                            <img src="http://via.placeholder.com/177x65" alt="jambo" title="jambo"/>
+                            <img src="assets/images/logo.png" alt="jambo" title="jambo" width="200"/>
                         </Link>
                     </div>
 
@@ -95,7 +95,7 @@ class SignIn extends React.Component {
                                         </Link>
                                     </div>
 
-                                    <div className="app-social-block my-1 my-sm-3">
+                                    {/*<div className="app-social-block my-1 my-sm-3">
                                         <IntlMessages
                                             id="signIn.connectWith"/>
                                         <ul className="social-link">
@@ -140,7 +140,7 @@ class SignIn extends React.Component {
                                                 </IconButton>
                                             </li>
                                         </ul>
-                                    </div>
+                                    </div>*/}
 
                                 </fieldset>
                             </form>
