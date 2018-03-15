@@ -54,7 +54,6 @@ class App extends React.Component {
                         <Footer/>
                     </main>
                 </div>
-                <ColorOption/>
             </div>
         );
     }
