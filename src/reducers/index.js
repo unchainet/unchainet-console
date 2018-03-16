@@ -6,6 +6,7 @@ import Contact from './Contact';
 import Mail from './Mail';
 import ToDo from './ToDo';
 import Auth from './Auth';
+import Billing from './Billing';
 import Workloads from './Workloads';
 
 
@@ -17,6 +18,7 @@ const reducers = combineReducers({
     mail: Mail,
     toDo: ToDo,
     auth: Auth,
+    billing: Billing,
     workloads: Workloads
 });
 

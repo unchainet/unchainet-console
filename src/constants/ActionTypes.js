@@ -124,6 +124,11 @@ export const SET_CURRENT_TODO_NULL = 'set_current_todo_null';
 export const REMOVE_LABEL = 'remove_label';
 export const UPDATE_SEARCH = 'update_search';
 
+//// Billing Module const
+
+export const FETCH_ALL_BILLING = 'fetch_all_billing';
+export const FETCH_ALL_BILLING_SUCCESS = 'fetch_all_billing_success';
+
 //workloads
 export const ADD_WORKLOAD = 'add_workload';
 export const EDIT_WORKLOAD = 'edit_workload';

@@ -4,3 +4,4 @@ export * from './Contact';
 export * from './Mail';
 export * from './ToDo';
 export * from './Auth';
+export * from './Billing';
