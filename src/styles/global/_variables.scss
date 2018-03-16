@@ -50,8 +50,7 @@ $app-primary: #3f51b5 !default;
 $primary: $app-primary;
 $secondary: #E91E63;
 
-//$sidebar-bg: #252525 !default;
-$sidebar-bg: #3f51b5 !default;
+$sidebar-bg: #252525 !default;
 $sidebar-text-color: #a1a1a1 !default;
 $sidebar-bg-darken: darken($sidebar-bg, 3%);
 $sidebar-hover-color: $white;

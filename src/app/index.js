@@ -12,7 +12,6 @@ import Billing from './routes/billing';
 import Tour from '../components/Tour/index';
 
 import {COLLAPSED_DRAWER, FIXED_DRAWER} from 'constants/ActionTypes';
-import ColorOption from 'containers/Customizer/ColorOption';
 import {isIOS, isMobile} from 'react-device-detect';
 
 
