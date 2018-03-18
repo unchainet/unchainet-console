@@ -16,7 +16,7 @@ const INIT_STATE = {
     loader: false,
     alertMessage: '',
     showMessage: false,
-    authUser: localStorage.getItem('user_id'),
+    authUser: localStorage.getItem('token'),
 };
 
 
