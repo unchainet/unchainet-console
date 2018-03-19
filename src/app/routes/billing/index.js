@@ -2,7 +2,9 @@ import React from 'react';
 import {connect} from 'react-redux'
 import {compose} from 'redux'
 import TextField from 'material-ui/TextField';
+import './billing.scss';
 import CardLayout from '../../../components/CardLayout/index';
+import CardBox from '../../../components/CardBox/index';
 import {IconButton} from 'material-ui';
 import Table, {TableBody, TableCell, TableHead, TableRow} from 'material-ui/Table';
 import {Bar, BarChart, CartesianGrid, Legend, ResponsiveContainer, Tooltip, XAxis, YAxis} from 'recharts';
@@ -17,12 +19,14 @@ const styles = theme => ({
     width: '100%',
   },
   heading: {
-    fontSize: theme.typography.pxToRem(15),
-    flexBasis: '10%',
+    fontSize: theme.typography.pxToRem(13),
+    flexBasis: '15%',
     flexShrink: 0,
   },
   secondaryHeading: {
-    fontSize: theme.typography.pxToRem(15),
+    fontSize: theme.typography.pxToRem(13),
+    flexBasis: '15%',
+    flexShrink: 0,
     color: theme.palette.text.secondary,
   },
 });
@@ -50,6 +54,10 @@ class Billing extends React.Component {
     });
   };
 
+  clickSummary = event => {
+    event.stopPropagation();
+  };
+
   constructor() {
     super();
     this.state = {
@@ -63,7 +71,7 @@ class Billing extends React.Component {
 
   render() {
     const {classes, billingList} = this.props;
-    const {currency} = this.state;
+    const {currency, expanded} = this.state;
     return (
       <div className="app-wrapper">
         <div className="animated slideInUpTiny animation-duration-3">
@@ -118,57 +126,117 @@ class Billing extends React.Component {
               </BarChart>
             </ResponsiveContainer>
 
-
             <div className={classes.root}>
-              {billingList.map((n, i) => {
-                const data = n.data;
-                return (
+              <div className="billing-tbl">
 
-                  <ExpansionPanel key={i.toString()}>
-                    <ExpansionPanelSummary expandIcon={<ExpandMoreIcon/>}>
-                      <Typography className={classes.heading}>{n.lbl}</Typography>
-                      <Typography className={classes.secondaryHeading}>{n[this.state.currency]} {this.state.currency}</Typography>
-                    </ExpansionPanelSummary>
-                    <ExpansionPanelDetails>
-                      <div className="table-responsive-material">
-                        <Table>
-                          <TableHead>
-                            <TableRow>
-                              <TableCell>Name</TableCell>
-                              <TableCell>Provider</TableCell>
-                              <TableCell>Region</TableCell>
-                              <TableCell numeric>CPU cores</TableCell>
-                              <TableCell numeric>Storage (Gb)</TableCell>
-                              <TableCell numeric>GPU cores</TableCell>
-                              <TableCell numeric>Price ({this.state.currency})</TableCell>
-                            </TableRow>
-                          </TableHead>
-                          <TableBody>
-                            {data.map((n, i) => {
-                              return (
-                                <TableRow key={n.id}>
-                                  <TableCell>{n.name}</TableCell>
-                                  <TableCell>{n.provider}</TableCell>
-                                  <TableCell>{n.region}</TableCell>
-                                  <TableCell numeric>{n.cpuCores}</TableCell>
-                                  <TableCell numeric>{n.storage}</TableCell>
-                                  <TableCell numeric>{n.gpuCores}</TableCell>
-                                  <TableCell numeric>{n.price[this.state.currency]}</TableCell>
-                                </TableRow>
-                              );
-                            })}
-                          </TableBody>
-                        </Table>
-                      </div>
-                    </ExpansionPanelDetails>
-                  </ExpansionPanel>
+                <ExpansionPanel key={'head'}
+                                className="billing-panel panel-header"
+                                onClick={this.clickSummary}
+                                expanded={false}
+                >
+                  <ExpansionPanelSummary
+                                         classes={{
+                                           expandIcon: 'expandIcon-left',
+                                           expandIconExpanded:'expandIcon-expanded',
+                                           root: 'summary-root',
+                                           content: 'header-summary-tbl',
+                                           expanded: 'summary-expanded',
+                                           contentExpanded: 'content-expanded',
+                                         }}
+                  >
+                    <Table>
+                      <TableHead>
+                        <TableRow>
+                          <TableCell className="header-cell" style={{width: '14%'}}>Month</TableCell>
+                          <TableCell className="header-cell" style={{width: '14%'}}>Total({currency})</TableCell>
+                          <TableCell className="header-cell">Number of instances</TableCell>
+                        </TableRow>
+                      </TableHead>
+                      <TableBody>
+                      </TableBody>
+                    </Table>
+                  </ExpansionPanelSummary>
+                </ExpansionPanel>
 
-                );
-              })}
+                {billingList.map((n, i) => {
+                          const data = n.data;
+                          console.log('n.instances', n.instances)
+                          return (
+
+                            <ExpansionPanel key={i.toString()}
+                                            className="billing-panel"
+                                            classes={{
+                                              expanded: 'panel-expanded',
+                                            }}
+                            >
+                              <ExpansionPanelSummary expandIcon={<ExpandMoreIcon/>}
+                                                     classes={{
+                                                       expandIcon: 'expandIcon-left',
+                                                       expandIconExpanded:'expandIcon-expanded',
+                                                       root: 'summary-root',
+                                                       expanded: 'summary-expanded',
+                                                       contentExpanded: 'content-expanded'
+                                                     }}
+                                                     >
+                                <Typography className={classes.heading}>{n.lbl}</Typography>
+                                <Typography className={classes.secondaryHeading}>{n[currency]}</Typography>
+                                <Typography className={classes.secondaryHeading}>{n.instances}</Typography>
+                              </ExpansionPanelSummary>
+                              <ExpansionPanelDetails
+                              classes={{root: 'panel-details'}}>
+
+                                <div className="row">
+                                  <CardBox styleName="col-12" cardStyle="p-0">
+
+                                    <div className="table-responsive-material billing-tbl-month">
+                                      <Table>
+                                        <TableHead>
+                                          <TableRow>
+                                            <TableCell>Name</TableCell>
+                                            <TableCell>Provider</TableCell>
+                                            <TableCell>Region</TableCell>
+                                            <TableCell numeric>CPU cores</TableCell>
+                                            <TableCell numeric>Storage (Gb)</TableCell>
+                                            <TableCell numeric>GPU cores</TableCell>
+                                            <TableCell numeric>Price ({this.state.currency})</TableCell>
+                                          </TableRow>
+                                        </TableHead>
+                                        <TableBody>
+                                          {data.map((n, i) => {
+                                            return (
+                                              <TableRow key={n.id}>
+                                                <TableCell>{n.name}</TableCell>
+                                                <TableCell>{n.provider}</TableCell>
+                                                <TableCell>{n.region}</TableCell>
+                                                <TableCell numeric>{n.cpuCores}</TableCell>
+                                                <TableCell numeric>{n.storage}</TableCell>
+                                                <TableCell numeric>{n.gpuCores}</TableCell>
+                                                <TableCell numeric>{n.price[this.state.currency]}</TableCell>
+                                              </TableRow>
+                                            );
+                                          })}
+                                        </TableBody>
+                                      </Table>
+                                    </div>
+
+                                  </CardBox>
+                                </div>
 
 
+                              </ExpansionPanelDetails>
+                            </ExpansionPanel>
+
+                          );
+                        })}
+
+
+
+
+
+              </div>
             </div>
-            </CardLayout>
+
+          </CardLayout>
 
         </div>
       </div>

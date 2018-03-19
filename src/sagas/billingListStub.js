@@ -1,5 +1,5 @@
 export default [
-  {name: 'Jan', lbl: 'January', UNET: 8100, CRC: 4320, USD: 2700,
+  {name: 'Apr 17', lbl: 'April 2017', instances: 3, UNET: 10200, CRC: 5440, USD: 3400,
     data: [
       {
         id: 1,
@@ -9,40 +9,17 @@ export default [
         cpuCores: 20,
         storage: 120,
         gpuCores: 10,
-        price: { USD: 1100, UNET: 3300, CRC: 1760 },
+        price: { UNET: 3300, CRC: 1760, USD: 1100 },
       },
       {
         id: 2,
         name: 'LA 24',
-        provider: 'Draco X',
-        region: 'Australia',
-        cpuCores: 30,
-        storage: 120,
-        gpuCores: 30,
-        price: { USD: 1600, UNET: 4800, CRC: 2560 },
-      }
-    ]},
-  {name: 'Feb', lbl: 'February', UNET: 6630, CRC: 3536, USD: 2210,
-    data: [
-      {
-        id: 1,
-        name: 'LA 23',
-        provider: 'Draco X',
-        region: 'Australia',
+        provider: 'Yojimbo',
+        region: 'Japan',
         cpuCores: 20,
         storage: 120,
         gpuCores: 10,
-        price: { USD: 1100, UNET: 3300, CRC: 1760 },
-      },
-      {
-        id: 2,
-        name: 'LA 23',
-        provider: 'Draco X',
-        region: 'Australia',
-        cpuCores: 20,
-        storage: 120,
-        gpuCores: 10,
-        price: { USD: 1400, UNET: 4200, CRC: 2240 },
+        price: { UNET: 4200, CRC: 2240, USD: 1400 },
       },
       {
         id: 3,
@@ -52,10 +29,10 @@ export default [
         cpuCores: 10,
         storage: 130,
         gpuCores: 10,
-        price: { USD: 1000, UNET: 3000, CRC: 1600 },
+        price: { UNET: 2700, CRC: 1440, USD: 900 },
       },
     ]},
-  {name: 'Mar', lbl: 'March', UNET: 6870, CRC: 3664, USD: 2290,
+  {name: 'May 17', lbl: 'May 2017', instances: 1, UNET: 6870, CRC: 3664, USD: 2290,
     data: [
       {
         id: 1,
@@ -65,10 +42,10 @@ export default [
         cpuCores: 20,
         storage: 120,
         gpuCores: 10,
-        price: { USD: 1000, UNET: 3000, CRC: 1600 },
+        price: { UNET: 6870, CRC: 3664, USD: 2290 },
       },
     ]},
-  {name: 'Apr', lbl: 'April', UNET: 6000, CRC: 3200, USD: 2000,
+  {name: 'Jun 17', lbl: 'June 2017', instances: 2, UNET: 7500, CRC: 4000, USD: 2500,
     data: [
       {
         id: 1,
@@ -78,30 +55,7 @@ export default [
         cpuCores: 20,
         storage: 120,
         gpuCores: 10,
-        price: { USD: 1000, UNET: 3000, CRC: 1600 },
-      },
-      {
-        id: 2,
-        name: 'LA 23',
-        provider: 'Draco X',
-        region: 'Australia',
-        cpuCores: 20,
-        storage: 120,
-        gpuCores: 10,
-        price: { USD: 1000, UNET: 3000, CRC: 1600 },
-      }
-    ]},
-  {name: 'May', lbl: 'May', UNET: 6543, CRC: 3489.6, USD: 2181,
-    data: [
-      {
-        id: 1,
-        name: 'LA 23',
-        provider: 'Draco X',
-        region: 'Australia',
-        cpuCores: 20,
-        storage: 120,
-        gpuCores: 10,
-        price: { USD: 1000, UNET: 3000, CRC: 1600 },
+        price: { UNET: 3000, CRC: 1600, USD: 1000 },
       },
       {
         id: 2,
@@ -111,10 +65,10 @@ export default [
         cpuCores: 20,
         storage: 120,
         gpuCores: 10,
-        price: { USD: 1000, UNET: 3000, CRC: 1600 },
+        price:{ UNET: 3000, CRC: 1600, USD: 1000 },
       }
     ]},
-  {name: 'Jun', lbl: 'June', UNET: 7500, CRC: 4000, USD: 2500,
+  {name: 'July 17', lbl: 'July 2017', instances: 2, UNET: 6300, CRC: 3360, USD: 2100,
     data: [
       {
         id: 1,
@@ -124,7 +78,7 @@ export default [
         cpuCores: 20,
         storage: 120,
         gpuCores: 10,
-        price: { USD: 1000, UNET: 3000, CRC: 1600 },
+        price:{ UNET: 3000, CRC: 1600, USD: 1000 },
       },
       {
         id: 2,
@@ -134,10 +88,10 @@ export default [
         cpuCores: 20,
         storage: 120,
         gpuCores: 10,
-        price:{ USD: 1000, UNET: 3000, CRC: 1600 },
+        price:{ UNET: 3000, CRC: 1600, USD: 1000 },
       }
     ]},
-  {name: 'July', lbl: 'July', UNET: 6300, CRC: 3360, USD: 2100,
+  {name: 'Aug 17', lbl: 'August 2017', instances: 2, UNET: 7200, CRC: 3840, USD: 2400,
     data: [
       {
         id: 1,
@@ -147,7 +101,7 @@ export default [
         cpuCores: 20,
         storage: 120,
         gpuCores: 10,
-        price:{ USD: 1000, UNET: 3000, CRC: 1600 },
+        price:{ UNET: 3000, CRC: 1600, USD: 1000 },
       },
       {
         id: 2,
@@ -157,10 +111,10 @@ export default [
         cpuCores: 20,
         storage: 120,
         gpuCores: 10,
-        price:{ USD: 1000, UNET: 3000, CRC: 1600 },
+        price:{ UNET: 3000, CRC: 1600, USD: 1000 },
       }
     ]},
-  {name: 'Aug', lbl: 'August', UNET: 7200, CRC: 3840, USD: 2400,
+  {name: 'Sept 17', lbl: 'September 2017', instances: 2, UNET: 6630, CRC: 3536, USD: 2210,
     data: [
       {
         id: 1,
@@ -170,7 +124,7 @@ export default [
         cpuCores: 20,
         storage: 120,
         gpuCores: 10,
-        price:{ USD: 1000, UNET: 3000, CRC: 1600 },
+        price:{ UNET: 3000, CRC: 1600, USD: 1000 },
       },
       {
         id: 2,
@@ -183,7 +137,7 @@ export default [
         price:{ USD: 1000, UNET: 3000, CRC: 1600 },
       }
     ]},
-  {name: 'Sept', lbl: 'September', UNET: 6630, CRC: 3536, USD: 2210,
+  {name: 'Oct 17', lbl: 'October 2017', instances: 2, UNET: 6870, CRC: 3664, USD: 2290,
     data: [
       {
         id: 1,
@@ -206,7 +160,7 @@ export default [
         price:{ USD: 1000, UNET: 3000, CRC: 1600 },
       }
     ]},
-  {name: 'Oct', lbl: 'October', UNET: 6870, CRC: 3664, USD: 2290,
+  {name: 'Nov 17', lbl: 'November 2017', instances: 2, UNET: 6000, CRC: 3200, USD: 2000,
     data: [
       {
         id: 1,
@@ -229,7 +183,7 @@ export default [
         price:{ USD: 1000, UNET: 3000, CRC: 1600 },
       }
     ]},
-  {name: 'Nov', lbl: 'November', UNET: 6000, CRC: 3200, USD: 2000,
+  {name: 'Dec 17', lbl: 'December 2017', instances: 2, UNET: 6543, CRC: 3489.6, USD: 2181,
     data: [
       {
         id: 1,
@@ -252,7 +206,7 @@ export default [
         price:{ USD: 1000, UNET: 3000, CRC: 1600 },
       }
     ]},
-  {name: 'Dec', lbl: 'December', UNET: 6543, CRC: 3489.6, USD: 2181,
+  {name: 'Jan 18', lbl: 'January 2018', instances: 2, UNET: 8100, CRC: 4320, USD: 2700,
     data: [
       {
         id: 1,
@@ -262,17 +216,63 @@ export default [
         cpuCores: 20,
         storage: 120,
         gpuCores: 10,
-        price:{ USD: 1000, UNET: 3000, CRC: 1600 },
+        price: { UNET: 3300, CRC: 1760, USD: 1100 },
       },
       {
         id: 2,
+        name: 'LA 24',
+        provider: 'Yojimbo',
+        region: 'Japan',
+        cpuCores: 30,
+        storage: 120,
+        gpuCores: 30,
+        price: {  UNET: 4800, CRC: 2560, USD: 1600 },
+      }
+    ]},
+  {name: 'Feb 18', lbl: 'February 2018', instances: 3, UNET: 10200, CRC: 5440, USD: 3400,
+    data: [
+      {
+        id: 1,
         name: 'LA 23',
         provider: 'Draco X',
         region: 'Australia',
         cpuCores: 20,
         storage: 120,
         gpuCores: 10,
-        price:{ USD: 1000, UNET: 3000, CRC: 1600 },
-      }
+        price: { UNET: 3300, CRC: 1760, USD: 1100 },
+      },
+      {
+        id: 2,
+        name: 'LA 24',
+        provider: 'Yojimbo',
+        region: 'Japan',
+        cpuCores: 20,
+        storage: 120,
+        gpuCores: 10,
+        price: { UNET: 4200, CRC: 2240, USD: 1400 },
+      },
+      {
+        id: 3,
+        name: 'MA 19',
+        provider: 'Roadster X',
+        region: 'US West',
+        cpuCores: 10,
+        storage: 130,
+        gpuCores: 10,
+        price: { UNET: 2700, CRC: 1440, USD: 900 },
+      },
+    ]},
+  {name: 'Mar 18', lbl: 'March 2018', instances: 1, UNET: 6870, CRC: 3664, USD: 2290,
+    data: [
+      {
+        id: 1,
+        name: 'LA 23',
+        provider: 'Draco X',
+        region: 'Australia',
+        cpuCores: 20,
+        storage: 120,
+        gpuCores: 10,
+        price: { UNET: 6870, CRC: 3664, USD: 2290 },
+      },
     ]},
 ]
