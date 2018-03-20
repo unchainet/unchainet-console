@@ -1,5 +1,4 @@
 import React from 'react';
-import {Redirect, Route, Switch} from 'react-router-dom';
 import update from 'immutability-helper';
 import {
   FormControl, FormControlLabel, FormLabel, IconButton, InputLabel, MenuItem, Paper, RadioGroup, Select, Step,
@@ -9,26 +8,26 @@ import {
   Typography,
   Grid, Button, Radio
 } from 'material-ui';
-import queryString from 'query-string';
-import { connect } from 'react-redux';
+import {connect} from 'react-redux';
 import {
   ADD_WORKLOAD,
   EDIT_WORKLOAD,
-  REMOVE_WORKLOAD
+  REMOVE_WORKLOAD,
 } from '../../../../../constants/ActionTypes';
+import {withStyles} from 'material-ui/styles/index';
+import {compose} from 'redux';
 
+
+const styles = theme => ({
+  root: {
+    width: '100%',
+  },
+});
 
 class ConfigWizard extends React.Component {
 
   componentDidMount() {
-    let params = queryString.parse(this.props.location.search);
-    if (params.id) {
-      let item = this.props.workloads.list.filter(row => row.id == params.id)[0];
-      if (item) {
-        this.setState(update(this.state, {data: {$set: item}}));
-      }
-    }
-    this.setState({isNew: !params.id});
+
   }
 
   state = {
@@ -117,66 +116,66 @@ class ConfigWizard extends React.Component {
   };
 
   render() {
+    const {classes} = this.props;
     const {activeStep, data} = this.state;
     const {providers, regions} = this.props.workloads;
-    let classes = {};
 
     return (
-      <div className="app-wrapper workloads">
+      <div className={classes.root}>
         <div className="animated slideInUpTiny animation-duration-3">
-        <Grid container>
-          <Grid item xs={12} md={8}>
-            <Paper elevation={4} className={classes.paper}>
-              <Typography type="headline">Configuration</Typography>
-              <Stepper activeStep={activeStep} orientation="vertical" className={classes.stepper}>
-                <Step>
-                  <StepLabel>Name</StepLabel>
-                  <StepContent>
-                    <div className={classes.contentWrapper}>
-                      <TextField label='Configuration Name' fullWidth required value={data.name}
-                                 onChange={this.handleChange('name')}/>
-                      <Actions classes={classes} onPrevious={this.onPrevious} onNext={this.onNext}
-                               onCancel={this.onCancel}
-                               currentStep={activeStep}
-                      />
-                    </div>
-                  </StepContent>
-                </Step>
-                <Step>
-                  <StepLabel>Provider</StepLabel>
-                  <StepContent>
-                    <div className={classes.contentWrapper}>
-                      <FormControl fullWidth className={classes.formControl}>
-                        <InputLabel htmlFor="location">Region</InputLabel>
-                        <Select
-                          value={data.region}
-                          onChange={(e) => {
-                            this.handleChange('region')(e);
-                            this.changeMapRegion(e.target.value);
-                          }}
-                          required
-                        >
-                          {regions.map(i => (
-                            <MenuItem key={i.id} value={i.id}>{i.name}</MenuItem>
-                          ))}
-                        </Select>
-                      </FormControl>
+          <Grid container>
+            <Grid item xs={12} md={8}>
+              <Paper elevation={4} className={classes.paper}>
+                <Typography type="headline">Configuration</Typography>
+                <Stepper activeStep={activeStep} orientation="vertical" className={classes.stepper}>
+                  <Step>
+                    <StepLabel>Name</StepLabel>
+                    <StepContent>
+                      <div className={classes.contentWrapper}>
+                        <TextField label='Configuration Name' fullWidth required value={data.name}
+                                   onChange={this.handleChange('name')}/>
+                        <Actions classes={classes} onPrevious={this.onPrevious} onNext={this.onNext}
+                                 onCancel={this.onCancel}
+                                 currentStep={activeStep}
+                        />
+                      </div>
+                    </StepContent>
+                  </Step>
+                  <Step>
+                    <StepLabel>Provider</StepLabel>
+                    <StepContent>
+                      <div className={classes.contentWrapper}>
+                        <FormControl fullWidth className={classes.formControl}>
+                          <InputLabel htmlFor="location">Region</InputLabel>
+                          <Select
+                            value={data.region}
+                            onChange={(e) => {
+                              this.handleChange('region')(e);
+                              this.changeMapRegion(e.target.value);
+                            }}
+                            required
+                          >
+                            {regions.map(i => (
+                              <MenuItem key={i.id} value={i.id}>{i.name}</MenuItem>
+                            ))}
+                          </Select>
+                        </FormControl>
 
-                      <FormControl fullWidth className={classes.formControl}>
-                        <InputLabel htmlFor="location">Provider</InputLabel>
-                        <Select
-                          value={data.provider}
-                          onChange={this.handleChange('provider')}
-                          required
-                          fullWidth
-                        >
-                          {providers.map(i => (
-                            <MenuItem key={i.id} value={i.id}>{i.name}</MenuItem>
-                          ))}
-                        </Select>
-                      </FormControl>
+                        <FormControl fullWidth className={classes.formControl}>
+                          <InputLabel htmlFor="location">Provider</InputLabel>
+                          <Select
+                            value={data.provider}
+                            onChange={this.handleChange('provider')}
+                            required
+                            fullWidth
+                          >
+                            {providers.map(i => (
+                              <MenuItem key={i.id} value={i.id}>{i.name}</MenuItem>
+                            ))}
+                          </Select>
+                        </FormControl>
 
-                      {/*<Map
+                        {/*<Map
                         googleMapURL="https://maps.googleapis.com/maps/api/js?key=AIzaSyA0wwNWl1SoRNcHLmE94ST06IOSAn4WLho&v=3.exp&libraries=geometry,drawing,places"
                         loadingElement={<div/>}
                         containerElement={<div style={{height: `400px`}}/>}
@@ -204,182 +203,189 @@ class ConfigWizard extends React.Component {
                           </Marker>
                         ))}
                       </Map>*/}
-                      <Actions classes={classes} onPrevious={this.onPrevious} onNext={this.onNext}
-                               onCancel={this.onCancel}/>
-                    </div>
-                  </StepContent>
-                </Step>
-                <Step>
-                  <StepLabel>Hardware Configuration</StepLabel>
-                  <StepContent>
-                    <div className={classes.contentWrapper}>
-                      <FormControl className={classes.formControlBlock}>
-                        <TextField
-                          label="CPU Cores"
-                          value={data.cpuCores}
-                          onChange={this.handleChange('cpuCores', true, 'int')}
-                          type="number"
-                        />
-                      </FormControl>
-                      <FormControl className={classes.formControlBlock}>
-                        <TextField
-                          label="RAM (GB)"
-                          value={data.ram}
-                          onChange={this.handleChange('ram', true, 'int')}
-                          type="number"
-                        />
-                      </FormControl>
-                      <FormControl className={classes.formControlBlock}>
-                        <TextField
-                          label="Storage (GB)"
-                          value={data.storage}
-                          onChange={this.handleChange('storage', true, 'int')}
-                          type="number"
-                        />
-                      </FormControl>
-                      <FormControl className={classes.formControlBlock}>
-                        <TextField
-                          label="GPU Cores"
-                          value={data.gpuCores}
-                          onChange={this.handleChange('gpuCores', true, 'int')}
-                          type="number"
-                        />
-                      </FormControl>
-                      <Actions classes={classes} onPrevious={this.onPrevious} onNext={this.onNext}
-                               onCancel={this.onCancel}/>
-                    </div>
-                  </StepContent>
-                </Step>
-                <Step>
-                  <StepLabel>Price</StepLabel>
-                  <StepContent>
-                    <div className={classes.contentWrapper}>
-                      <FormControl>
-                        <FormLabel style={{marginBottom: '20px'}}>Pricing</FormLabel>
-                        <RadioGroup
-                          value={data.priceType}
-                          onChange={this.handleChange('priceType')}
-                        >
-                          <FormControlLabel value="eventualAvailability" control={<Radio/>}
-                                            classes={{root: classes.radioWithDesc}}
-                                            label={<RadioLabel classes={classes} label="Eventual availability"
-                                                               description={<div>
-                                                                 Set the maximum price you are willing to pay for your
-                                                                 instance, then pay the price of second
-                                                                 highest bidder - great for workloads where occasional
-                                                                 dropouts are not important like research,
-                                                                 AI
-                                                                 training etc.
-                                                               </div>}/>}/>
-                          <FormControlLabel value="guaranteedAvailability" control={<Radio/>}
-                                            classes={{root: classes.radioWithDesc}}
-                                            label={<RadioLabel classes={classes} label="Guaranteed Availability"
-                                                               description={<div>
-                                                                 Pay fixed price per minute, your instance is
-                                                                 available
-                                                                 until you stop it.
-                                                               </div>}/>}/>
-                          <FormControlLabel value="longTermBooking" control={<Radio/>}
-                                            classes={{root: classes.radioWithDesc}}
-                                            label={<RadioLabel classes={classes} label="Long-term Booking"
-                                                               description={<div>
-                                                                 Great for hosting websites "and always" on services -
-                                                                 pay smaller price than on Guaranteed
-                                                                 availability
-                                                               </div>}/>}/>
-                        </RadioGroup>
-                      </FormControl>
-                      <FormControl className={classes.formControl} style={{marginTop: '10px'}}>
-                        <TextField
-                          label="Price"
-                          value={data.price}
-                          onChange={this.handleChange('price', true, 'int')}
-                          type="number"
-                        />
-                      </FormControl>
-                      <Actions classes={classes} onPrevious={this.onPrevious} onNext={this.onNext}
-                               onCancel={this.onCancel}/>
-                    </div>
-                  </StepContent>
-                </Step>
-                <Step>
-                  <StepLabel>Installation Script</StepLabel>
-                  <StepContent>
-                    <div className={classes.contentWrapper}>
-                      <FormControl fullWidth className={classes.formControl}>
-                        <RadioGroup
-                          value={data.containerType}
-                          onChange={this.handleChange('containerType')}
-                        >
-                          <FormControlLabel value="Docker" control={<Radio/>} label="Docker"/>
-                          <FormControlLabel value="Kubernetes" control={<Radio/>} label="Kubernetes"/>
-                        </RadioGroup>
-                      </FormControl>
-                      {data.containerType === 'Docker' ?
-                        <div>
-                          <FormControl fullWidth className={classes.formControl}>
-                            <TextField
-                              label="Repository URL"
-                              value={data.dockerConfig.repositoryUrl}
-                              onChange={(e) => this.setState(update(this.state, {data: {dockerConfig: {repositoryUrl: {$set: e.target.value}}}}))}
-                              fullWidth
-                              required
-                            />
-                          </FormControl>
-                          <FormControl fullWidth className={classes.formControl}>
-                            <TextField
-                              label="Image Name"
-                              value={data.dockerConfig.imageName}
-                              onChange={(e) => this.setState(update(this.state, {data: {dockerConfig: {imageName: {$set: e.target.value}}}}))}
-                              fullWidth
-                              required
-                            />
-                          </FormControl>
-                        </div>
-                        :
-                        <FormControl fullWidth className={classes.formControl}>
+                        <Actions classes={classes} onPrevious={this.onPrevious} onNext={this.onNext}
+                                 onCancel={this.onCancel}/>
+                      </div>
+                    </StepContent>
+                  </Step>
+                  <Step>
+                    <StepLabel>Hardware Configuration</StepLabel>
+                    <StepContent>
+                      <div className={classes.contentWrapper}>
+                        <FormControl className={classes.formControlBlock}>
                           <TextField
-                            label="Script"
-                            value={data.kubernetesConfig.script}
-                            onChange={(e) => this.setState(update(this.state, {data: {kubernetesConfig: {script: {$set: e.target.value}}}}))}
-                            fullWidth
-                            required
+                            label="CPU Cores"
+                            value={data.cpuCores}
+                            onChange={this.handleChange('cpuCores', true, 'int')}
+                            type="number"
                           />
-                        </FormControl>}
-                      <Actions classes={classes} onPrevious={this.onPrevious} onNext={this.onNext}
-                               onCancel={this.onCancel}/>
-                    </div>
-                  </StepContent>
-                </Step>
-                <Step>
-                  <StepLabel>All set! Let's launch.</StepLabel>
-                  <StepContent>
-                    <div className={classes.contentWrapper}>
-                      <Actions classes={classes} onPrevious={this.onPrevious} onNext={this.onNext}
-                               onCancel={this.onCancel} isLast={true}/>
-                    </div>
-                  </StepContent>
-                </Step>
-              </Stepper>
-            </Paper>
+                        </FormControl>
+                        <FormControl className={classes.formControlBlock}>
+                          <TextField
+                            label="RAM (GB)"
+                            value={data.ram}
+                            onChange={this.handleChange('ram', true, 'int')}
+                            type="number"
+                          />
+                        </FormControl>
+                        <FormControl className={classes.formControlBlock}>
+                          <TextField
+                            label="Storage (GB)"
+                            value={data.storage}
+                            onChange={this.handleChange('storage', true, 'int')}
+                            type="number"
+                          />
+                        </FormControl>
+                        <FormControl className={classes.formControlBlock}>
+                          <TextField
+                            label="GPU Cores"
+                            value={data.gpuCores}
+                            onChange={this.handleChange('gpuCores', true, 'int')}
+                            type="number"
+                          />
+                        </FormControl>
+                        <Actions classes={classes} onPrevious={this.onPrevious} onNext={this.onNext}
+                                 onCancel={this.onCancel}/>
+                      </div>
+                    </StepContent>
+                  </Step>
+                  <Step>
+                    <StepLabel>Price</StepLabel>
+                    <StepContent>
+                      <div className={classes.contentWrapper}>
+                        <FormControl>
+                          <FormLabel style={{marginBottom: '20px'}}>Pricing</FormLabel>
+                          <RadioGroup
+                            value={data.priceType}
+                            onChange={this.handleChange('priceType')}
+                          >
+                            <FormControlLabel value="eventualAvailability" control={<Radio/>}
+                                              classes={{root: classes.radioWithDesc}}
+                                              label={<RadioLabel classes={classes} label="Eventual availability"
+                                                                 description={<div>
+                                                                   Set the maximum price you are willing to pay for your
+                                                                   instance, then pay the price of second
+                                                                   highest bidder - great for workloads where occasional
+                                                                   dropouts are not important like research,
+                                                                   AI
+                                                                   training etc.
+                                                                 </div>}/>}/>
+                            <FormControlLabel value="guaranteedAvailability" control={<Radio/>}
+                                              classes={{root: classes.radioWithDesc}}
+                                              label={<RadioLabel classes={classes} label="Guaranteed Availability"
+                                                                 description={<div>
+                                                                   Pay fixed price per minute, your instance is
+                                                                   available
+                                                                   until you stop it.
+                                                                 </div>}/>}/>
+                            <FormControlLabel value="longTermBooking" control={<Radio/>}
+                                              classes={{root: classes.radioWithDesc}}
+                                              label={<RadioLabel classes={classes} label="Long-term Booking"
+                                                                 description={<div>
+                                                                   Great for hosting websites "and always" on services -
+                                                                   pay smaller price than on Guaranteed
+                                                                   availability
+                                                                 </div>}/>}/>
+                          </RadioGroup>
+                        </FormControl>
+                        <FormControl className={classes.formControl} style={{marginTop: '10px'}}>
+                          <TextField
+                            label="Price"
+                            value={data.price}
+                            onChange={this.handleChange('price', true, 'int')}
+                            type="number"
+                          />
+                        </FormControl>
+                        <Actions classes={classes} onPrevious={this.onPrevious} onNext={this.onNext}
+                                 onCancel={this.onCancel}/>
+                      </div>
+                    </StepContent>
+                  </Step>
+                  <Step>
+                    <StepLabel>Installation Script</StepLabel>
+                    <StepContent>
+                      <div className={classes.contentWrapper}>
+                        <FormControl fullWidth className={classes.formControl}>
+                          <RadioGroup
+                            value={data.containerType}
+                            onChange={this.handleChange('containerType')}
+                          >
+                            <FormControlLabel value="Docker" control={<Radio/>} label="Docker"/>
+                            <FormControlLabel value="Kubernetes" control={<Radio/>} label="Kubernetes"/>
+                          </RadioGroup>
+                        </FormControl>
+                        {data.containerType === 'Docker' ?
+                          <div>
+                            <FormControl fullWidth className={classes.formControl}>
+                              <TextField
+                                label="Repository URL"
+                                value={data.dockerConfig.repositoryUrl}
+                                onChange={(e) => this.setState(update(this.state, {data: {dockerConfig: {repositoryUrl: {$set: e.target.value}}}}))}
+                                fullWidth
+                                required
+                              />
+                            </FormControl>
+                            <FormControl fullWidth className={classes.formControl}>
+                              <TextField
+                                label="Image Name"
+                                value={data.dockerConfig.imageName}
+                                onChange={(e) => this.setState(update(this.state, {data: {dockerConfig: {imageName: {$set: e.target.value}}}}))}
+                                fullWidth
+                                required
+                              />
+                            </FormControl>
+                          </div>
+                          :
+                          <FormControl fullWidth className={classes.formControl}>
+                            <TextField
+                              label="Script"
+                              value={data.kubernetesConfig.script}
+                              onChange={(e) => this.setState(update(this.state, {data: {kubernetesConfig: {script: {$set: e.target.value}}}}))}
+                              fullWidth
+                              required
+                            />
+                          </FormControl>}
+                        <Actions classes={classes} onPrevious={this.onPrevious} onNext={this.onNext}
+                                 onCancel={this.onCancel}/>
+                      </div>
+                    </StepContent>
+                  </Step>
+                  <Step>
+                    <StepLabel>All set! Let's launch.</StepLabel>
+                    <StepContent>
+                      <div className={classes.contentWrapper}>
+                        <Actions classes={classes} onPrevious={this.onPrevious} onNext={this.onNext}
+                                 onCancel={this.onCancel} isLast={true}/>
+                      </div>
+                    </StepContent>
+                  </Step>
+                </Stepper>
+              </Paper>
+            </Grid>
           </Grid>
-        </Grid>
         </div>
       </div>
     );
   }
 }
 
-function stateToProps(state) {
-  const {workloads} = state;
-  return {workloads};
-}
 
 const mapDispatchToProps = {
   addItem: (item) => ({type: ADD_WORKLOAD, item: item})
 };
 
-export default connect(stateToProps, mapDispatchToProps)(ConfigWizard);
+const mapStateToProps = (state) => {
+  return {}
+};
+
+
+export default compose(
+  withStyles(styles, {
+    name: 'ConfigWizard',
+  }),
+  connect(mapStateToProps, mapDispatchToProps),
+)(ConfigWizard);
+
 
 const Actions = ({classes, onPrevious, onNext, onCancel, currentStep, isLast}) => {
   return (
@@ -387,9 +393,11 @@ const Actions = ({classes, onPrevious, onNext, onCancel, currentStep, isLast}) =
       <Button raised="true" color='primary' onClick={() => onPrevious()} className={classes.actionBtn}
               disabled={currentStep === 0}>Previous</Button>
       {isLast ?
-        <Button raised="true" color='primary' onClick={() => onNext(isLast)} className={classes.actionBtn}>Finish</Button>
+        <Button raised="true" color='primary' onClick={() => onNext(isLast)}
+                className={classes.actionBtn}>Finish</Button>
         :
-        <Button raised="true" color='primary' onClick={() => onNext(isLast)} className={classes.actionBtn}>Next</Button>}
+        <Button raised="true" color='primary' onClick={() => onNext(isLast)}
+                className={classes.actionBtn}>Next</Button>}
       <Button raised="true" onClick={() => onCancel()} className={classes.actionBtn}>Cancel</Button>
     </div>
   );
