@@ -68,6 +68,7 @@ function* activate({payload}) {
     if (response.status >= 400) {
       yield put(showAuthMessage(errorMessageFormatter(body)));
     } else {
+      localStorage.setItem('token', body.token);
       yield put(userActivateSuccess(body));
     }
   } catch (error) {
