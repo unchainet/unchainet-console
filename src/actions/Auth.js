@@ -8,7 +8,9 @@ import {
     SIGNOUT_USER,
     SIGNOUT_USER_SUCCESS,
     SIGNUP_USER,
-    SIGNUP_USER_SUCCESS
+    SIGNUP_USER_SUCCESS,
+    ACTIVATE_USER,
+    ACTIVATE_USER_SUCCESS,
 } from 'constants/ActionTypes';
 
 export const userSignUp = (user) => {
@@ -16,6 +18,12 @@ export const userSignUp = (user) => {
         type: SIGNUP_USER,
         payload: user
     };
+};
+export const userActivate = (user) => {
+  return {
+    type: ACTIVATE_USER,
+    payload: user
+  };
 };
 export const userSignIn = (user) => {
     return {
@@ -33,6 +41,13 @@ export const userSignUpSuccess = (authUser) => {
         type: SIGNUP_USER_SUCCESS,
         payload: authUser
     };
+};
+
+export const userActivateSuccess = (authUser) => {
+  return {
+    type: ACTIVATE_USER_SUCCESS,
+    payload: authUser
+  };
 };
 
 export const userSignInSuccess = (authUser) => {

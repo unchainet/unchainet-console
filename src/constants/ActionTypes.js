@@ -34,7 +34,9 @@ export const HANDLE_REQUEST_CLOSE = 'handle_request_close';
 
 //Auth const
 export const SIGNUP_USER = 'signup_user';
+export const ACTIVATE_USER = 'activate_user';
 export const SIGNUP_USER_SUCCESS = 'signup_user_success';
+export const ACTIVATE_USER_SUCCESS = 'activate_user_success';
 export const SIGNIN_GOOGLE_USER = 'signin_google_user';
 export const SIGNIN_GOOGLE_USER_SUCCESS = 'signin_google_user_success';
 export const SIGNIN_FACEBOOK_USER = 'signin_facebook_user';

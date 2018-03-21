@@ -38,6 +38,7 @@ import {
 import MainApp from 'app/index';
 import SignIn from './SignIn';
 import SignUp from './SignUp';
+import Activate from './Activate';
 
 const RestrictedRoute = ({component: Component, ...rest, authUser}) =>
     <Route
@@ -155,6 +156,7 @@ class App extends Component {
                                          authUser={authUser} component={MainApp}/>
                         <Route path='/signin' component={SignIn}/>
                         <Route path='/signup' component={SignUp}/>
+                        <Route path='/activate' component={Activate}/>
                     </div>
                 </IntlProvider>
             </MuiThemeProvider>
