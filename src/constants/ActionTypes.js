@@ -34,7 +34,9 @@ export const HANDLE_REQUEST_CLOSE = 'handle_request_close';
 
 //Auth const
 export const SIGNUP_USER = 'signup_user';
+export const ACTIVATE_USER = 'activate_user';
 export const SIGNUP_USER_SUCCESS = 'signup_user_success';
+export const ACTIVATE_USER_SUCCESS = 'activate_user_success';
 export const SIGNIN_GOOGLE_USER = 'signin_google_user';
 export const SIGNIN_GOOGLE_USER_SUCCESS = 'signin_google_user_success';
 export const SIGNIN_FACEBOOK_USER = 'signin_facebook_user';
@@ -128,7 +130,15 @@ export const UPDATE_SEARCH = 'update_search';
 export const FETCH_ALL_BILLING = 'fetch_all_billing';
 export const FETCH_ALL_BILLING_SUCCESS = 'fetch_all_billing_success';
 
-//workloads
+//// Datacenter Module const
+export const FETCH_ALL_DATACENTER = 'fetch_all_datacenter';
+export const FETCH_ALL_DATACENTER_SUCCESS = 'fetch_all_datacenter_success';
+
+//// Region Module const
+export const FETCH_ALL_REGION = 'fetch_all_region';
+export const FETCH_ALL_REGION_SUCCESS = 'fetch_all_region_success';
+
+//// Workloads
 export const ADD_WORKLOAD = 'add_workload';
 export const EDIT_WORKLOAD = 'edit_workload';
 export const REMOVE_WORKLOAD = 'remove_workload';

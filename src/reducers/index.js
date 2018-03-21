@@ -9,6 +9,7 @@ import Auth from './Auth';
 import Billing from './Billing';
 import Workloads from './Workloads';
 import PriceHistory from './PriceHistory';
+import Datacenter from './Datacenter';
 
 
 const reducers = combineReducers({
@@ -22,6 +23,7 @@ const reducers = combineReducers({
     billing: Billing,
     workloads: Workloads,
     priceHistory: PriceHistory,
+    datacenter: Datacenter,
 });
 
 export default reducers;

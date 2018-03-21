@@ -15,6 +15,14 @@ export function doFetch (relativePath, config){
   return fetch(`${host}${relativePath}`, config);
 }
 
+export function errorMessageFormatter (body){
+  if (typeof body === 'string') {
+    return body;
+  }
+  body = body || {};
+  return body.reason || body.message || 'Internal server error';
+}
+
 function getHeaders (method) {
   return {
     method: method,
