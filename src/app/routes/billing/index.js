@@ -13,6 +13,7 @@ import ExpandMoreIcon from 'material-ui-icons/ExpandMore';
 import Typography from 'material-ui/Typography';
 import {withStyles} from 'material-ui/styles';
 import {fetchBilling} from '../../../actions/Billing';
+import PropTypes from 'prop-types';
 
 const styles = theme => ({
   root: {
@@ -65,13 +66,13 @@ class Billing extends React.Component {
     }
   }
 
-  componentWillMount() {
+  componentDidMount() {
     this.props.fetchBilling();
   }
 
   render() {
     const {classes, billingList} = this.props;
-    const {currency, expanded} = this.state;
+    const {currency} = this.state;
     return (
       <div className="app-wrapper">
         <div className="animated slideInUpTiny animation-duration-3">
@@ -81,7 +82,7 @@ class Billing extends React.Component {
             <div className="jr-card-header mb-3 d-flex align-items-center">
                 <div className="mr-auto">
                     <h3 className="card-heading mb-0">
-                        <i className="zmdi zmdi-eye mr-2"/>
+                        <i className="zmdi zmdi-card mr-2"/>
                         Billing
                     </h3>
                 </div>
@@ -160,7 +161,6 @@ class Billing extends React.Component {
 
                 {billingList.map((n, i) => {
                           const data = n.data;
-                          console.log('n.instances', n.instances)
                           return (
 
                             <ExpansionPanel key={i.toString()}
@@ -229,10 +229,6 @@ class Billing extends React.Component {
                           );
                         })}
 
-
-
-
-
               </div>
             </div>
 
@@ -264,6 +260,10 @@ const mapStateToProps = ({billing, settings}) => {
     noContentFoundMessage,
     billingList,
   }
+};
+
+Billing.propTypes = {
+  classes: PropTypes.object.isRequired,
 };
 
 export default compose(

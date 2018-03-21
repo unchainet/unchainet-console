@@ -8,6 +8,7 @@ import ToDo from './ToDo';
 import Auth from './Auth';
 import Billing from './Billing';
 import Workloads from './Workloads';
+import PriceHistory from './PriceHistory';
 
 
 const reducers = combineReducers({
@@ -19,7 +20,8 @@ const reducers = combineReducers({
     toDo: ToDo,
     auth: Auth,
     billing: Billing,
-    workloads: Workloads
+    workloads: Workloads,
+    priceHistory: PriceHistory,
 });
 
 export default reducers;

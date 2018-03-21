@@ -5,6 +5,7 @@ import contactSagas from './Contact';
 import chatSagas from './Chat';
 import authSagas from './Auth';
 import billingSagas from './Billing';
+import priceHistorySagas from './PriceHistory';
 
 export default function* rootSaga(getState) {
     yield all([
@@ -14,5 +15,6 @@ export default function* rootSaga(getState) {
         chatSagas(),
         authSagas(),
         billingSagas(),
+        priceHistorySagas(),
     ]);
 }
