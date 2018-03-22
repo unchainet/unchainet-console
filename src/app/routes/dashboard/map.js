@@ -7,6 +7,16 @@ const MarkerClustererMap = withGoogleMap(props => (
   <GoogleMap
     defaultZoom={2}
     defaultCenter={{lat: -21.0391667, lng: 140.525}}
+    defaultOptions={{
+      fullscreenControl: false,
+      mapTypeControl: false,
+      panControl: false,
+      rotateControl: false,
+      scaleControl: false,
+      signInControl: false,
+      streetViewControl: false,
+      zoomControl: false
+    }}
   >
     <MarkerClusterer
       averageCenter
