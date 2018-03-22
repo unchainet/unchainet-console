@@ -229,10 +229,6 @@ class Billing extends React.Component {
                           );
                         })}
 
-
-
-
-
               </div>
             </div>
 

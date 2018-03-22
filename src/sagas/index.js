@@ -5,14 +5,18 @@ import contactSagas from './Contact';
 import chatSagas from './Chat';
 import authSagas from './Auth';
 import billingSagas from './Billing';
+import regionSagas from './Region';
+import datacenterSagas from './Datacenter';
 
 export default function* rootSaga(getState) {
-    yield all([
-        mailSagas(),
-        toDoSagas(),
-        contactSagas(),
-        chatSagas(),
-        authSagas(),
-        billingSagas(),
-    ]);
+  yield all([
+    mailSagas(),
+    toDoSagas(),
+    contactSagas(),
+    chatSagas(),
+    authSagas(),
+    billingSagas(),
+    regionSagas(),
+    datacenterSagas(),
+  ]);
 }

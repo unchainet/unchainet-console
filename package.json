@@ -30,6 +30,7 @@
     "path": "^0.12.7",
     "prop-types": "^15.6.0",
     "query-string": "^6.0.0",
+    "rc-slider": "^8.6.1",
     "react": "^16.2.0",
     "react-autosuggest": "^9.3.3",
     "react-big-calendar": "^0.17.0",

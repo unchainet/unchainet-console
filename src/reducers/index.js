@@ -9,6 +9,7 @@ import Auth from './Auth';
 import Billing from './Billing';
 import Workloads from './Workloads';
 import Datacenter from './Datacenter';
+import Region from './Region';
 
 
 const reducers = combineReducers({
@@ -22,6 +23,7 @@ const reducers = combineReducers({
     billing: Billing,
     workloads: Workloads,
     datacenter: Datacenter,
+    region: Region,
 });
 
 export default reducers;
