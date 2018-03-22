@@ -4,7 +4,11 @@ import {Button} from 'material-ui';
 import { connect } from 'react-redux';
 import WorkloadsTable from '../workloads/routes/list/table';
 import Map from './map';
-
+import {
+  REMOVE_WORKLOAD
+} from '../../../constants/ActionTypes';
+import {fetchAllRegion} from 'actions/Region';
+import {fetchAllDatacenter} from 'actions/Datacenter';
 
 class Dashboard extends React.Component {
 
@@ -14,8 +18,23 @@ class Dashboard extends React.Component {
     }
   }
 
+  componentDidMount() {
+    if (!this.props.datacenter.allDatacenters.length) {
+      this.props.fetchAllDatacenter();
+    }
+    if (!this.props.region.allRegions.length) {
+      this.props.fetchAllRegion();
+    }
+  }
+
   render() {
-    let {list, providers, regions} = this.props.workloads;
+    let {list} = this.props.workloads;
+    list = list || [];
+    let provObj = {};
+    list.forEach(function (item) {
+      provObj[item.provider] = true;
+    });
+    let markers = this.props.datacenter.allDatacenters.filter(row => provObj[row.id]);
     return (
       <div className="app-wrapper">
         <div className="animated slideInUpTiny animation-duration-3">
@@ -34,7 +53,7 @@ class Dashboard extends React.Component {
                 </div>
               </div>
               <div className="body-unet">
-                <WorkloadsTable items={list} providers={providers} regions={regions}/>
+                <WorkloadsTable items={list} providers={this.props.datacenter.allDatacenters} regions={this.props.region.allRegions}/>
               </div>
             </CardBox>
           </div>
@@ -44,7 +63,7 @@ class Dashboard extends React.Component {
                 <div className="name">map - running instances</div>
               </div>
               <div className="body-unet">
-                <Map />
+                <Map items={markers}/>
               </div>
             </CardBox>
             <CardBox styleName="col-lg-4" cardStyle="jr-card-unet" heading>
@@ -63,13 +82,14 @@ class Dashboard extends React.Component {
   }
 }
 
-function stateToProps(state) {
-  const {workloads} = state;
-  return {workloads};
+function stateToProps({workloads, region, datacenter}) {
+  return {workloads, region, datacenter};
 }
 
 const mapDispatchToProps = {
-  removeItem: (id) => ({type: REMOVE_WORKLOAD, id: id})
+  removeItem: (id) => ({type: REMOVE_WORKLOAD, id: id}),
+  fetchAllRegion,
+  fetchAllDatacenter
 };
 
 export default connect(stateToProps, mapDispatchToProps)(Dashboard);
