@@ -14,6 +14,7 @@ import {
     userGithubSignIn,
     userGoogleSignIn,
     userSignUp,
+    userActivate,
     userTwitterSignIn
 } from 'actions/Auth';
 
@@ -23,7 +24,8 @@ class SignUp extends React.Component {
         this.state = {
             name: '',
             email: '',
-            password: ''
+            password: '',
+            password2: ''
         }
     }
 
@@ -38,20 +40,39 @@ class SignUp extends React.Component {
         }
     }
 
+    signupHandler() {
+      const {
+        email,
+        password,
+        password2
+      } = this.state;
+      if (!password) {
+        NotificationManager.error('Password is required');
+        return false;
+      }
+      if (password !== password2) {
+        NotificationManager.error('Passwords do not match');
+        return false;
+      }
+      this.props.showAuthLoader();
+      this.props.userSignUp({email, password});
+    }
+
     render() {
         const {
-            name,
             email,
-            password
+            password,
+            password2,
+            code
         } = this.state;
-        const {showMessage, loader, alertMessage} = this.props;
+        const {showMessage, loader, alertMessage, signupUser} = this.props;
         return (
             <div
                 className="app-login-container d-flex justify-content-center align-items-center animated slideInUpTiny animation-duration-3">
                 <div className="app-login-main-content">
                     <div className="app-logo-content d-flex align-items-center justify-content-center">
                         <Link className="logo-lg" to="/" title="Jambo">
-                            <img src="http://via.placeholder.com/177x65" alt="jambo" title="jambo"/>
+                            <img src="assets/images/logo.png" alt="jambo" title="jambo" width="200"/>
                         </Link>
                     </div>
 
@@ -65,17 +86,8 @@ class SignUp extends React.Component {
                         </div>
 
                         <div className="app-login-form">
+                            {!signupUser ?
                             <form method="post" action="/">
-                                <TextField
-                                    type="text"
-                                    id="required"
-                                    label="Name"
-                                    onChange={(event) => this.setState({name: event.target.value})}
-                                    fullWidth
-                                    defaultValue={name}
-                                    margin="normal"
-                                    className="mt-0 mb-2"
-                                />
 
                                 <TextField
                                     type="email"
@@ -96,69 +108,59 @@ class SignUp extends React.Component {
                                     fullWidth
                                     defaultValue={password}
                                     margin="normal"
-                                    className="mt-0 mb-4"
+                                    className="mt-0 mb-2"
+                                />
+
+                                <TextField
+                                  type="password"
+                                  onChange={(event) => this.setState({password2: event.target.value})}
+                                  id="required"
+                                  label={<IntlMessages id="appModule.password2"/>}
+                                  fullWidth
+                                  defaultValue={password2}
+                                  margin="normal"
+                                  className="mt-0 mb-4"
                                 />
 
                                 <div className="mb-3 d-flex align-items-center justify-content-between">
-                                    <Button variant="raised" onClick={() => {
-                                        this.props.showAuthLoader();
-                                        this.props.userSignUp({email, password});
-                                    }} color="primary">
+                                    <Button variant="raised" onClick={() => {this.signupHandler()}} color="primary">
                                         <IntlMessages
-                                            id="appModule.regsiter"/>
+                                            id="appModule.register"/>
                                     </Button>
                                     <Link to="/signin">
                                         <IntlMessages id="signUp.alreadyMember"/>
                                     </Link>
                                 </div>
-                                <div className="app-social-block my-1 my-sm-3">
-                                    <IntlMessages
-                                        id="signIn.connectWith"/>
-                                    <ul className="social-link">
-                                        <li>
-                                            <IconButton className="icon"
-                                                        onClick={() => {
-                                                            this.props.showAuthLoader();
-                                                            this.props.userFacebookSignIn();
-                                                        }}>
-                                                <i className="zmdi zmdi-facebook"/>
-                                            </IconButton>
-                                        </li>
 
-                                        <li>
-                                            <IconButton className="icon"
-                                                        onClick={() => {
-                                                            this.props.showAuthLoader();
-                                                            this.props.userTwitterSignIn();
-                                                        }}>
-                                                <i className="zmdi zmdi-twitter"/>
-                                            </IconButton>
-                                        </li>
+                            </form> : null}
+                          {signupUser ?
+                            <form method="post" action="/">
 
-                                        <li>
-                                            <IconButton className="icon"
-                                                        onClick={() => {
-                                                            this.props.showAuthLoader();
-                                                            this.props.userGoogleSignIn();
+                                <TextField
+                                  type="text"
+                                  onChange={(event) => this.setState({code: event.target.value})}
+                                  id="required"
+                                  label={<IntlMessages id="appModule.activationCode"/>}
+                                  fullWidth
+                                  defaultValue={code}
+                                  margin="normal"
+                                  className="mt-0 mb-2"
+                                />
 
-                                                        }}>
-                                                <i className="zmdi zmdi-google-plus"/>
-                                            </IconButton>
-                                        </li>
-
-                                        <li>
-                                            <IconButton className="icon"
-                                                        onClick={() => {
-                                                            this.props.showAuthLoader();
-                                                            this.props.userGithubSignIn();
-                                                        }}>
-                                                <i className="zmdi zmdi-github"/>
-                                            </IconButton>
-                                        </li>
-                                    </ul>
+                                <div className="mb-3 d-flex align-items-center justify-content-between">
+                                    <Button variant="raised" onClick={() => {
+                                      this.props.showAuthLoader();
+                                      this.props.userActivate({_id: signupUser._id, code});
+                                    }} color="primary">
+                                        <IntlMessages
+                                          id="appModule.activate"/>
+                                    </Button>
+                                    <Link to="/signin">
+                                        <IntlMessages id="signUp.alreadyMember"/>
+                                    </Link>
                                 </div>
 
-                            </form>
+                            </form> : null}
                         </div>
                     </div>
 
@@ -178,8 +180,8 @@ class SignUp extends React.Component {
 }
 
 const mapStateToProps = ({auth}) => {
-    const {loader, alertMessage, showMessage, authUser} = auth;
-    return {loader, alertMessage, showMessage, authUser}
+    const {loader, alertMessage, showMessage, authUser, signupUser} = auth;
+    return {loader, alertMessage, showMessage, authUser, signupUser}
 };
 
 export default connect(mapStateToProps, {
@@ -189,5 +191,6 @@ export default connect(mapStateToProps, {
     userFacebookSignIn,
     userGoogleSignIn,
     userGithubSignIn,
-    userTwitterSignIn
+    userTwitterSignIn,
+    userActivate
 })(SignUp);

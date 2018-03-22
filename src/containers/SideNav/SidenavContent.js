@@ -79,8 +79,15 @@ class SidenavContent extends Component {
 
                 <li className="menu no-arrow">
                     <NavLink to="/app/billing">
-                        <i className="zmdi zmdi-trending-up zmdi-hc-fw"/>
+                        <i className="zmdi zmdi-card zmdi-hc-fw"/>
                         <span className="nav-text"><IntlMessages id="sidebar.billing"/></span>
+                    </NavLink>
+                </li>
+
+                <li className="menu no-arrow">
+                    <NavLink to="/app/priceHistory">
+                        <i className="zmdi zmdi-trending-up zmdi-hc-fw"/>
+                        <span className="nav-text"><IntlMessages id="sidebar.priceHistory"/></span>
                     </NavLink>
                 </li>
 

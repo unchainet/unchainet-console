@@ -34,7 +34,9 @@ export const HANDLE_REQUEST_CLOSE = 'handle_request_close';
 
 //Auth const
 export const SIGNUP_USER = 'signup_user';
+export const ACTIVATE_USER = 'activate_user';
 export const SIGNUP_USER_SUCCESS = 'signup_user_success';
+export const ACTIVATE_USER_SUCCESS = 'activate_user_success';
 export const SIGNIN_GOOGLE_USER = 'signin_google_user';
 export const SIGNIN_GOOGLE_USER_SUCCESS = 'signin_google_user_success';
 export const SIGNIN_FACEBOOK_USER = 'signin_facebook_user';
@@ -124,8 +126,7 @@ export const SET_CURRENT_TODO_NULL = 'set_current_todo_null';
 export const REMOVE_LABEL = 'remove_label';
 export const UPDATE_SEARCH = 'update_search';
 
-//// Billing Module const
-
+//billing
 export const FETCH_ALL_BILLING = 'fetch_all_billing';
 export const FETCH_ALL_BILLING_SUCCESS = 'fetch_all_billing_success';
 
@@ -141,3 +142,7 @@ export const FETCH_ALL_REGION_SUCCESS = 'fetch_all_region_success';
 export const ADD_WORKLOAD = 'add_workload';
 export const EDIT_WORKLOAD = 'edit_workload';
 export const REMOVE_WORKLOAD = 'remove_workload';
+
+// price history
+export const FETCH_ALL_PRICE_HISTORY = 'fetch_all_price_history';
+export const FETCH_ALL_PRICE_HISTORY_SUCCESS = 'fetch_all_price_history_success';

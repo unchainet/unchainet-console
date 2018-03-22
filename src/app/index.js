@@ -9,6 +9,7 @@ import Dashboard from './routes/dashboard';
 import Workloads from './routes/workloads';
 import Wallet from './routes/wallet';
 import Billing from './routes/billing';
+import PriceHistory from './routes/priceHistory';
 import Tour from '../components/Tour/index';
 
 import {COLLAPSED_DRAWER, FIXED_DRAWER} from 'constants/ActionTypes';
@@ -49,6 +50,7 @@ class App extends React.Component {
                             <Route path={`${match.url}/workloads`} component={Workloads}/>
                             <Route path={`${match.url}/wallet`} component={Wallet}/>
                             <Route path={`${match.url}/billing`} component={Billing}/>
+                            <Route path={`${match.url}/priceHistory`} component={PriceHistory}/>
                         </div>
                         <Footer/>
                     </main>

@@ -8,6 +8,7 @@ import ToDo from './ToDo';
 import Auth from './Auth';
 import Billing from './Billing';
 import Workloads from './Workloads';
+import PriceHistory from './PriceHistory';
 import Datacenter from './Datacenter';
 import Region from './Region';
 
@@ -22,6 +23,7 @@ const reducers = combineReducers({
     auth: Auth,
     billing: Billing,
     workloads: Workloads,
+    priceHistory: PriceHistory,
     datacenter: Datacenter,
     region: Region,
 });

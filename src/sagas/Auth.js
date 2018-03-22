@@ -15,7 +15,7 @@ import {
     SIGNOUT_USER,
     SIGNUP_USER
 } from 'constants/ActionTypes';
-import {showAuthMessage, userSignInSuccess, userSignOutSuccess, userSignUpSuccess} from 'actions/Auth';
+import {showAuthMessage, userSignInSuccess, userSignOutSuccess, userSignUpSuccess, userActivateSuccess} from 'actions/Auth';
 import {
     userFacebookSignInSuccess,
     userGithubSignInSuccess,
@@ -23,15 +23,21 @@ import {
     userTwitterSignInSuccess
 } from '../actions/Auth';
 
-import {get, post} from './Api';
+import {get, post, errorMessageFormatter} from './Api';
+import {ACTIVATE_USER} from "../constants/ActionTypes";
 
 const createUserWithEmailPasswordRequest = async (email, password) =>
-    await  auth.createUserWithEmailAndPassword(email, password)
-        .then(authUser => authUser)
-        .catch(error => error);
+    await post('/api/users', JSON.stringify({email, password}))
+      .then(response => response.json().then(body => ({ body, response })))
+      .catch(error => error);
+
+const activateUserRequest = async (_id, code) =>
+  await post('/api/users/activate', JSON.stringify({_id, code}))
+    .then(response => response.json().then(body => ({ body, response })))
+    .catch(error => error);
 
 const signInUserWithEmailPasswordRequest = async (email, password) =>
-    await  post('/api/auth/local', JSON.stringify({email, password}))
+    await post('/api/auth/local', JSON.stringify({email, password}))
       .then(response => response.json().then(body => ({ body, response })))
       .catch(error => error);
 
@@ -44,16 +50,30 @@ const signOutRequest = async () =>
 function* createUserWithEmailPassword({payload}) {
     const {email, password} = payload;
     try {
-        const signUpUser = yield call(createUserWithEmailPasswordRequest, email, password);
-        if (signUpUser.message) {
-            yield put(showAuthMessage(signUpUser.message));
+        const {body, response} = yield call(createUserWithEmailPasswordRequest, email, password);
+        if (response.status >= 400) {
+            yield put(showAuthMessage(errorMessageFormatter(body)));
         } else {
-            localStorage.setItem('token', signUpUser.uid);
-            yield put(userSignUpSuccess(signUpUser));
+            yield put(userSignUpSuccess(body));
         }
     } catch (error) {
-        yield put(showAuthMessage(error));
+        yield put(showAuthMessage(errorMessageFormatter(error)));
     }
+}
+
+function* activate({payload}) {
+  const {_id, code} = payload;
+  try {
+    const {body, response} = yield call(activateUserRequest, _id, code);
+    if (response.status >= 400) {
+      yield put(showAuthMessage(errorMessageFormatter(body)));
+    } else {
+      localStorage.setItem('token', body.token);
+      yield put(userActivateSuccess(body));
+    }
+  } catch (error) {
+    yield put(showAuthMessage(errorMessageFormatter(error)));
+  }
 }
 
 const signInUserWithGoogleRequest = async () =>
@@ -144,14 +164,14 @@ function* signInUserWithEmailPassword({payload}) {
     const {email, password} = payload;
     try {
         const {body, response} = yield call(signInUserWithEmailPasswordRequest, email, password);
-        if (response.status > 400) {
-            yield put(showAuthMessage(body.reason));
+        if (response.status >= 400) {
+            yield put(showAuthMessage(errorMessageFormatter(body)));
         } else {
             localStorage.setItem('token', body.token);
             yield put(userSignInSuccess(signInUser));
         }
     } catch (error) {
-        yield put(showAuthMessage(error));
+        yield put(showAuthMessage(errorMessageFormatter(error)));
     }
 }
 
@@ -197,8 +217,13 @@ export function* signOutUser() {
     yield takeEvery(SIGNOUT_USER, signOut);
 }
 
+export function* activateUser() {
+  yield takeEvery(ACTIVATE_USER, activate);
+}
+
 export default function* rootSaga() {
     yield all([fork(signInUser),
+        fork(activateUser),
         fork(createUserAccount),
         fork(signInWithGoogle),
         fork(signInWithFacebook),

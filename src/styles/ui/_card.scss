@@ -95,6 +95,53 @@
     }
   }
 
+  &.jr-card-unet {
+    padding: 0;
+    .jr-card-header, .jr-card-body {
+      padding: 18px;
+    }
+    .jr-card-header {
+      margin-bottom: 0;
+      background-color: #333d46;
+      min-height: 50px;
+      .card-heading {
+        display: none;
+      }
+      .sub-heading {
+        color: #fff;
+        .head-unet {
+          position: relative;
+          .name {
+            text-transform: uppercase;
+          }
+          .middle {
+            position: absolute;
+            left: 50%;
+            top: 0;
+            &:before {
+              content: '';
+              display: inline-block;
+              margin-right: 5px;
+              margin-bottom: 2px;
+              background-color: #2ad862;
+              width: 5px;
+              height: 5px;
+              border-radius: 50%;
+            }
+          }
+          .controls {
+            position: absolute;
+            right: 0;
+            top: -5px;
+            .jr-btn {
+              margin-right: 0;
+            }
+          }
+        }
+      }
+    }
+  }
+
   @media screen and (max-width: 575px) {
     margin-bottom: 18px;
   }
