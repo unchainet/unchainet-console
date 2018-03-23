@@ -7,6 +7,7 @@ const MarkerClustererMap = withGoogleMap(props => (
   <GoogleMap
     defaultZoom={2}
     defaultCenter={{lat: 0, lng: 0}}
+    onZoomChanged={props.onZoomChanged}
     defaultOptions={{
       fullscreenControl: false,
       mapTypeControl: false,
@@ -32,8 +33,7 @@ const MarkerClustererMap = withGoogleMap(props => (
         >
           {props.selected.indexOf(marker._id) > -1 && (
             <InfoWindow onCloseClick={() => props.onMarkerClose(marker._id)} options={{}}>
-            <div>{marker.infoContent}
-            </div>
+              {marker.infoContent}
             </InfoWindow>
           )}
         </Marker>
@@ -50,11 +50,28 @@ export default class MarkerClustererContainer extends Component {
     };
   }
 
+  stylizePopups() {
+    setTimeout(() => {
+      let el = $('.unet-map-region-popup').parents('.gm-style-iw');
+      el.parent().css({'background-color': '#425061', 'border-radius': '7px'});
+      $(el.prev().children()[1]).css({'background-color': '#425061', 'border-radius': '7px'});
+      $($(el.prev().children()[2]).children()[0]).children().css({'background-color': '#425061'});
+      $($(el.prev().children()[2]).children()[1]).children().css({'background-color': '#425061'});
+      $(el.prev().children()[3]).css({'background-color': '#425061', 'border-radius': '7px'});
+      //remove close button
+      el.next().remove();
+    }, 50);
+  }
+
   // Toggle to 'true' to show InfoWindow and re-renders simple
   handleMarkerClick(targetMarker) {
+    if (this.state.markers.indexOf(targetMarker) > -1) {
+      return this.handleMarkerClose(targetMarker);
+    }
     this.setState({
       markers: this.state.markers.concat([targetMarker]),
     });
+    this.stylizePopups();
   }
 
   handleMarkerClose(targetMarker) {
@@ -67,6 +84,10 @@ export default class MarkerClustererContainer extends Component {
     this.setState({markers: markers});
   }
 
+  handleZoomChanged() {
+    this.stylizePopups()
+  }
+
   render() {
     let markers = this.props.items || [];
     markers = markers.map(marker => {
@@ -74,13 +95,25 @@ export default class MarkerClustererContainer extends Component {
         ...marker,
         showInfo: false,
         infoContent: (
-          <div className="d-flex">
-            <div className="ml-1">
-              <p>{marker.name}</p>
-              <p>Providers {marker.stats.numProviders}</p>
-              <p>vCPU {marker.stats.numCPU}</p>
-              <p>RAM {marker.stats.memGB}</p>
-              <p>STORAGE {marker.stats.storageGB}</p>
+          <div className="unet-map-region-popup">
+            <div className="name">{marker.name}</div>
+            <div className="table">
+              <div className="table-row">
+                <div className="table-cell">Providers</div>
+                <div className="table-cell">{marker.stats.numProviders}</div>
+              </div>
+              <div className="table-row">
+                <div className="table-cell">vCPU</div>
+                <div className="table-cell">{marker.stats.numCPU}</div>
+              </div>
+              <div className="table-row">
+                <div className="table-cell">RAM</div>
+                <div className="table-cell">{marker.stats.memGB} GB</div>
+              </div>
+              <div className="table-row">
+                <div className="table-cell">STORAGE</div>
+                <div className="table-cell">{marker.stats.storageGB} GB</div>
+              </div>
             </div>
           </div>
         )
@@ -96,6 +129,7 @@ export default class MarkerClustererContainer extends Component {
         selected={this.state.markers}
         onMarkerClick={this.handleMarkerClick.bind(this)}
         onMarkerClose={this.handleMarkerClose.bind(this)}
+        onZoomChanged={this.handleZoomChanged.bind(this)}
       />
     );
   }

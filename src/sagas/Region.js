@@ -12,8 +12,12 @@ const getAllRegionStub = async () =>
 
 const getAllRegions = async () =>
   await get('/api/regions')
-    .then(response => response.json().then(body => ({ body, response })))
-    .catch(error => error);
+    .then(response => {
+      if (response.status === 404) {
+        throw new Error('Requested api is not found');
+      }
+      return response.json().then(body => ({ body, response }))
+    });
 
 function* fetchAllRegionRequest() {
   try {
