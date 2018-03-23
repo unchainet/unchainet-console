@@ -167,11 +167,12 @@ class ConfigWizard extends React.Component {
     let ctrlValue = null;
     if (type === 'bool') {
       ctrlValue = event.target.checked;
-    } else if (event === null || 'object' !== !typeof(event)) {
+    } else if (event === null || 'object' === !typeof(event)) {
       ctrlValue = event;
     } else {
       ctrlValue = event.target.value;
     }
+    console.log(ctrlValue);
     let value = type === 'int' ? parseInt(ctrlValue) : ctrlValue;
 
     let newState = update(this.state, {
@@ -188,11 +189,11 @@ class ConfigWizard extends React.Component {
 
   changeMapRegion = (regionId) => {
     const {region} = this.props;
-    let selectedRegion = region.allRegions.find(i => i.id === regionId);
+    let selectedRegion = region.allRegions.find(i => i._id === regionId);
     let newState = update(this.state,
       {
-        mapLocation: {$set: selectedRegion.location},
-        mapZoom: {$set: selectedRegion.zoom},
+        mapLocation: {$set: {lng:selectedRegion.location.geo[0], lat:selectedRegion.location.geo[1]}},
+        //mapZoom: {$set: selectedRegion.zoom},
         data: {
           datacenter: {$set: ''}
         }
@@ -213,6 +214,8 @@ class ConfigWizard extends React.Component {
     });
     const coe = selectedDatacenter ? selectedDatacenter.coe : 1;
     const stepsTotal = 6;
+
+    //console.log(region);
 
     return (
       <div className="app-wrapper">
@@ -268,7 +271,7 @@ class ConfigWizard extends React.Component {
                         className={classes.formInput}
                       >
                         {region.allRegions.map(i => (
-                          <MenuItem key={i.id} value={i.id}>{i.name}</MenuItem>
+                          <MenuItem key={i._id} value={i._id}>{i.name}</MenuItem>
                         ))}
                       </Select>
                     </FormControl>
