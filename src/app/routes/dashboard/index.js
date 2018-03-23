@@ -9,12 +9,14 @@ import {
 } from '../../../constants/ActionTypes';
 import {fetchAllRegion} from 'actions/Region';
 import {fetchAllDatacenter} from 'actions/Datacenter';
+import moment from 'moment'
 
 class Dashboard extends React.Component {
 
   constructor() {
     super();
     this.state = {
+      map: false
     }
   }
 
@@ -25,10 +27,12 @@ class Dashboard extends React.Component {
     if (!this.props.region.allRegions.length) {
       this.props.fetchAllRegion();
     }
+    setTimeout(() => this.setState({map: true}), 200);
   }
 
   render() {
     let {list} = this.props.workloads;
+    let {map} = this.state;
     list = list || [];
     let provObj = {};
     list.forEach(function (item) {
@@ -37,14 +41,15 @@ class Dashboard extends React.Component {
     this.props.region.allRegions.forEach(row => {
       row.hasInstance = provObj[row._id];
     });
+    let time = moment().format('HH:mm');
     return (
       <div className="app-wrapper">
         <div className="animated slideInUpTiny animation-duration-3">
           <div className="row">
             <CardBox styleName="col-lg-12" cardStyle="jr-card-unet" heading>
               <div className="head-unet">
-                <div className="name">running instances</div>
-                <div className="middle">12:20</div>
+                <div className="name">RUNNING WORKLOADS</div>
+                <div className="middle">{time}</div>
                 <div className="controls">
                   <Button className="jr-btn jr-btn-sm text-white" onClick={()=>{}} color="primary">
                     <i className="zmdi zmdi-refresh"/>
@@ -62,10 +67,10 @@ class Dashboard extends React.Component {
           <div className="row">
             <CardBox styleName="col-lg-8" cardStyle="jr-card-unet" heading>
               <div className="head-unet">
-                <div className="name">map - running instances</div>
+                <div className="name">map - RUNNING WORKLOADS</div>
               </div>
               <div className="body-unet">
-                <Map items={this.props.region.allRegions}/>
+                {map ? <Map items={this.props.region.allRegions}/> : null}
               </div>
             </CardBox>
             <CardBox styleName="col-lg-4" cardStyle="jr-card-unet" heading>

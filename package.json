@@ -26,7 +26,7 @@
     "material-ui": "v1.0.0-beta.35",
     "material-ui-icons": "^1.0.0-beta.17",
     "material-ui-pickers": "^1.0.0-beta.13.1",
-    "moment": "^2.19.2",
+    "moment": "^2.21.0",
     "node-sass": "^4.7.2",
     "nprogress": "^0.2.0",
     "package.json": "^2.0.1",

@@ -37,7 +37,7 @@ class Workloads extends React.Component {
               <div className="mr-auto">
                 <h3 className="card-heading mb-0">
                   <i className="zmdi zmdi-eye mr-2"/>
-                  Running instances
+                  RUNNING WORKLOADS
                 </h3>
               </div>
               <Button variant="fab" onClick={()=>{this.props.history.push('/app/workloads/wizard')}} className="jr-fab-btn text-white bg-secondary" aria-label="edit">
