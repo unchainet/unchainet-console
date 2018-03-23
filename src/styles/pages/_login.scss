@@ -89,7 +89,9 @@
 }
 
 .app-logo-content {
-  background-color: $app-primary;
+  background-image: $blue_bg_url !important;
+  background-repeat: no-repeat;
+  background-color: $sidebar-bg-color;
   padding: 35px 35px 20px;
   width: 40%;
   order: 2;

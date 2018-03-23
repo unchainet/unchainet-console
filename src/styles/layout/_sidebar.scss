@@ -2,7 +2,7 @@
 
 .side-nav {
   width: $side-nav-width;
-  background-image: url("#{$image_path}/menu_background.png") !important;
+  background-image: $blue_bg_url !important;
   background-repeat: no-repeat;
   background-color: $sidebar-bg-color;
 

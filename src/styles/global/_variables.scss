@@ -90,6 +90,7 @@ $avatar-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.50);
 
 //Default Image Location
 $image_path: "../assets/images" !default;
+$blue_bg_url: url("#{$image_path}/menu_background.png");
 
 // Motion
 // https://material.google.com/motion/duration-easing.html#duration-easing-natural-easing-curves
