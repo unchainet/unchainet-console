@@ -69,7 +69,7 @@ export default class MarkerClustererContainer extends Component {
       return this.handleMarkerClose(targetMarker);
     }
     this.setState({
-      markers: this.state.markers.concat([targetMarker]),
+      markers: [targetMarker],
     });
     this.stylizePopups();
   }
