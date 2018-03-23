@@ -11,7 +11,7 @@ const getAllRegionStub = async () =>
     .catch((error => error));
 
 const getAllRegions = async () =>
-  await get('/api/regions1')
+  await get('/api/regions')
     .then(response => {
       if (response.status === 404) {
         throw new Error('Requested api is not found');
