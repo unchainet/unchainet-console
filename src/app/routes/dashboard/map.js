@@ -1,12 +1,22 @@
 import React, {Component} from 'react';
 
-import {GoogleMap, Marker, withGoogleMap} from 'react-google-maps';
+import {GoogleMap, Marker, InfoWindow, withGoogleMap} from 'react-google-maps';
 import MarkerClusterer from 'react-google-maps/lib/components/addons/MarkerClusterer';
 
 const MarkerClustererMap = withGoogleMap(props => (
   <GoogleMap
-    defaultZoom={3}
-    defaultCenter={{lat: 25.0391667, lng: 121.525}}
+    defaultZoom={2}
+    defaultCenter={{lat: -21.0391667, lng: 140.525}}
+    defaultOptions={{
+      fullscreenControl: false,
+      mapTypeControl: false,
+      panControl: false,
+      rotateControl: false,
+      scaleControl: false,
+      signInControl: false,
+      streetViewControl: false,
+      zoomControl: false
+    }}
   >
     <MarkerClusterer
       averageCenter
@@ -15,38 +25,73 @@ const MarkerClustererMap = withGoogleMap(props => (
     >
       {props.markers.map(marker => (
         <Marker
-          position={{lat: marker.latitude, lng: marker.longitude}}
-          key={marker.photo_id}
-        />
-      ))}
+          position={{lat: marker.location.lat, lng: marker.location.lng}}
+          key={marker.id}
+          onClick={() => props.onMarkerClick(marker.id)}
+        >
+          {props.selected.indexOf(marker.id) > -1 && (
+            <InfoWindow onCloseClick={() => props.onMarkerClose(marker.id)}>
+            <div>{marker.infoContent}
+            </div>
+            </InfoWindow>
+          )}
+        </Marker>
+        ))}
     </MarkerClusterer>
   </GoogleMap>
 ));
 
 export default class MarkerClustererContainer extends Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {
       markers: [],
     };
   }
 
-  componentDidMount() {
-    fetch(`https://gist.githubusercontent.com/farrrr/dfda7dd7fccfec5474d3/raw/758852bbc1979f6c4522ab4e92d1c92cba8fb0dc/data.json`)
-      .then(res => res.json())
-      .then(data => {
-        this.setState({markers: data.photos});
-      });
+  // Toggle to 'true' to show InfoWindow and re-renders simple
+  handleMarkerClick(targetMarker) {
+    this.setState({
+      markers: this.state.markers.concat([targetMarker]),
+    });
+  }
+
+  handleMarkerClose(targetMarker) {
+    let markers = [];
+    this.state.markers.forEach(row => {
+      if (row !== targetMarker) {
+        markers.push(row);
+      }
+    });
+    this.setState({markers: markers});
   }
 
   render() {
+    let markers = this.props.items || [];
+    markers = markers.map(marker => {
+      return {
+        ...marker,
+        showInfo: false,
+        infoContent: (
+          <div className="d-flex">
+            <div className="ml-1">
+              <p>id: {marker.id}</p>
+              <p></p>
+            </div>
+          </div>
+        )
+      };
+    });
     return (
       <MarkerClustererMap
         containerElement={
           <div className="embed-responsive embed-responsive-21by9"/>
         }
         mapElement={<div className="embed-responsive-item"/>}
-        markers={this.state.markers}
+        markers={markers}
+        selected={this.state.markers}
+        onMarkerClick={this.handleMarkerClick.bind(this)}
+        onMarkerClose={this.handleMarkerClose.bind(this)}
       />
     );
   }

@@ -7,6 +7,8 @@ import {
   REMOVE_WORKLOAD
 } from '../../../../../constants/ActionTypes';
 import WorkloadsTable from './table';
+import {fetchAllRegion} from 'actions/Region';
+import {fetchAllDatacenter} from 'actions/Datacenter';
 
 class Workloads extends React.Component {
 
@@ -16,8 +18,17 @@ class Workloads extends React.Component {
     }
   }
 
+  componentDidMount() {
+    if (!this.props.datacenter.allDatacenters.length) {
+      this.props.fetchAllDatacenter();
+    }
+    if (!this.props.region.allRegions.length) {
+      this.props.fetchAllRegion();
+    }
+  }
+
   render() {
-    let {list, providers, regions} = this.props.workloads;
+    let {list} = this.props.workloads;
     return (
       <div className="app-wrapper workloads">
         <div className="animated slideInUpTiny animation-duration-3">
@@ -36,7 +47,7 @@ class Workloads extends React.Component {
                 <i className="zmdi zmdi-more-vert"/>
               </IconButton>*/}
             </div>
-            <WorkloadsTable items={list} providers={providers} regions={regions}/>
+            <WorkloadsTable items={list} providers={this.props.datacenter.allDatacenters} regions={this.props.region.allRegions}/>
           </CardLayout>
         </div>
       </div>
@@ -45,13 +56,14 @@ class Workloads extends React.Component {
   }
 }
 
-function stateToProps(state) {
-  const {workloads} = state;
-  return {workloads};
+function stateToProps({workloads, region, datacenter}) {
+  return {workloads, region, datacenter};
 }
 
 const mapDispatchToProps = {
-  removeItem: (id) => ({type: REMOVE_WORKLOAD, id: id})
+  removeItem: (id) => ({type: REMOVE_WORKLOAD, id: id}),
+  fetchAllRegion,
+  fetchAllDatacenter
 };
 
 export default connect(stateToProps, mapDispatchToProps)(Workloads);

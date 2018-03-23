@@ -29,7 +29,6 @@ class WorkloadsTable extends React.Component {
 
   render() {
     let data = this.props.items || [];
-    console.log('re');
     return (
       <div className="table-responsive-material">
         <Table>
