@@ -53,7 +53,6 @@ export default class MarkerClustererContainer extends Component {
   stylizePopups() {
     setTimeout(() => {
       let el = $('.unet-map-region-popup').parents('.gm-style-iw');
-      console.log(el.length);
       el.parent().css({'background-color': '#425061', 'border-radius': '7px'});
       $(el.prev().children()[1]).css({'background-color': '#425061', 'border-radius': '7px'});
       $($(el.prev().children()[2]).children()[0]).children().css({'background-color': '#425061'});
@@ -61,7 +60,7 @@ export default class MarkerClustererContainer extends Component {
       $(el.prev().children()[3]).css({'background-color': '#425061', 'border-radius': '7px'});
       //remove close button
       el.next().remove();
-    }, 0);
+    }, 50);
   }
 
   // Toggle to 'true' to show InfoWindow and re-renders simple
