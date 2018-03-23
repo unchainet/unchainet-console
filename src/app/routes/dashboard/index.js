@@ -32,9 +32,11 @@ class Dashboard extends React.Component {
     list = list || [];
     let provObj = {};
     list.forEach(function (item) {
-      provObj[item.provider] = true;
+      provObj[item.region] = true;
     });
-    let markers = this.props.datacenter.allDatacenters.filter(row => provObj[row.id]);
+    this.props.region.allRegions.forEach(row => {
+      row.hasInstance = provObj[row._id];
+    });
     return (
       <div className="app-wrapper">
         <div className="animated slideInUpTiny animation-duration-3">
@@ -63,7 +65,7 @@ class Dashboard extends React.Component {
                 <div className="name">map - running instances</div>
               </div>
               <div className="body-unet">
-                <Map items={markers}/>
+                <Map items={this.props.region.allRegions}/>
               </div>
             </CardBox>
             <CardBox styleName="col-lg-4" cardStyle="jr-card-unet" heading>
