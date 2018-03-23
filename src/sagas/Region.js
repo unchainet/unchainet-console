@@ -1,6 +1,7 @@
 import {all, call, put, takeEvery} from 'redux-saga/effects';
 import {fetchAllRegionSuccess,showRegionMessage} from 'actions/Region';
 import {FETCH_ALL_REGION} from 'constants/ActionTypes';
+import {get, post, errorMessageFormatter} from './Api';
 
 const getAllRegionStub = async () =>
   await Promise.resolve()
@@ -9,10 +10,15 @@ const getAllRegionStub = async () =>
     })
     .catch((error => error));
 
+const getAllRegions = async () =>
+  await get('/api/regions')
+    .then(response => response.json().then(body => ({ body, response })))
+    .catch(error => error);
+
 function* fetchAllRegionRequest() {
   try {
-    const data = yield call(getAllRegionStub);
-    yield put(fetchAllRegionSuccess(data));
+    const {body, response} = yield call(getAllRegions);
+    yield put(fetchAllRegionSuccess(body));
   } catch (error) {
     yield put(showRegionMessage(error));
   }

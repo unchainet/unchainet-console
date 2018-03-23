@@ -5,37 +5,9 @@ import {
 
 const INIT_STATE = {
     state: 'loaded',
-    providers: [
-        {
-          id: '1',
-          name: 'Provider ABC',
-          region: '1',
-          location: {lat: -33.8980122, lng: 151.1802367}
-        },
-        {
-          id: '2',
-          name: 'Provider 123',
-          region: '1',
-          location: {lat: -33.879083, lng: 151.1954023}
-        }
-      ],
-    regions: [
-        {
-          id:'1',
-          name: 'Australia',
-          zoom: 4,
-          location: {lat: -23.268353, lng: 134.185811}
-        },
-        {
-          id:'2',
-          name: 'China',
-          zoom: 5,
-          location: {lat: 23.1253503, lng: 112.9476547}
-        }
-    ],
     list: [
       {
-        id: "1",
+        _id: '5ab09de29f0981d245659569',
         name: 'Sydney S1',
         cpuCores: 4,
         ram: 16,
@@ -50,12 +22,12 @@ const INIT_STATE = {
           script: 'some script'
         },
         provider: '1',
-        region: '1',
+        region: '5ab09de29f0981d245659565',
         auctionedPricing: 2,
         eventualAvailability: 4,
         guaranteedAvailability: 0,
         price: 10,
-        priceType: "eventualAvailability",
+        priceType: 'eventualAvailability',
         status: 'running'
       }
     ]

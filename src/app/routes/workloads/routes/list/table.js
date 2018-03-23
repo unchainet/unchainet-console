@@ -24,7 +24,7 @@ class WorkloadsTable extends React.Component {
 
   getRegion (item) {
     let regions = this.props.regions || [];
-    return regions.filter(row => row.id == item.region)[0] || {};
+    return regions.filter(row => row._id == item.region)[0] || {};
   }
 
   render() {
@@ -47,7 +47,7 @@ class WorkloadsTable extends React.Component {
           <TableBody>
             {data.map((n, i) => {
               return (
-                <TableRow key={n.id}>
+                <TableRow key={n._id}>
                   <TableCell>{n.name}</TableCell>
                   <TableCell>{this.getProvider(n).name}</TableCell>
                   <TableCell>{this.getRegion(n).name}</TableCell>
