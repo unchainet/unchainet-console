@@ -1,5 +1,6 @@
 import React from 'react';
 import Avatar from 'material-ui/Avatar'
+import Icon from 'material-ui/Icon';
 import {connect} from 'react-redux'
 import Menu, {MenuItem} from 'material-ui/Menu';
 import {userSignOut} from 'actions/Auth';
@@ -23,11 +24,7 @@ class UserInfo extends React.Component {
     render() {
         return (
             <div className="user-profile d-flex flex-row align-items-center">
-                <Avatar
-                    alt='...'
-                    src='assets/images/aiml-logo.png'
-                    className="user-avatar "
-                />
+                <i className="zmdi zmdi-account zmdi-hc-fw zmdi-hc-3x"/>
                 <div className="user-detail">
                     <h4 className="user-name" onClick={this.handleClick}>Gary D. (AIML Inc.)  <i
                         className="zmdi zmdi-caret-down zmdi-hc-fw align-middle"/>

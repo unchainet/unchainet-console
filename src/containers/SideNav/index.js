@@ -4,7 +4,7 @@ import {withRouter} from 'react-router-dom';
 import Drawer from 'material-ui/Drawer';
 import {Config} from 'constants/ThemeColors';
 import SidenavContent from './SidenavContent';
-import UserInfo from 'components/UserInfo';
+import {Link} from 'react-router-dom';
 import {COLLAPSED_DRAWER, FIXED_DRAWER} from 'constants/ActionTypes';
 import {updateWindowWidth} from 'actions/Setting';
 
@@ -38,7 +38,12 @@ class SideNav extends React.PureComponent {
                             paper: 'side-nav',
                         }}
                 >
-                    <UserInfo/>
+                  <div className={'app-logo-wrapper'}>
+                    <Link className="app-logo" to="/">
+                        <img src="assets/images/logo.png" alt="Unchainet" title="Unchainet"/>
+                    </Link>
+                  </div>
+
                     <SidenavContent/>
                 </Drawer>
             </div>

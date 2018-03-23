@@ -11,25 +11,25 @@
 .app-main-header {
   //z-index: 1302 !important;
   background-color: $app-primary !important;
-  color: $white !important;
+  color: $app-dark-grey !important;
 
   & .search-bar input {
     @include transition($transition-base);
-    background-color: lighten($app-primary, 5%);
-    color: $white;
+    background-color: darken($app-primary, 3%);
+    color: $app-dark-grey;
     & + .search-icon {
       top: 0;
       & i {
-        color: rgba($white, 0.8);
+        color: lighten($app-dark-grey, 15%);;
       }
     }
 
     &:focus {
-      background-color: $white;
+      background-color: darken($app-primary, 6%);
       color: $body-color;
       + .search-icon {
         & i {
-          color: rgba($body-color, 0.8);
+          color: $app-dark-grey;
         }
       }
     }
@@ -196,7 +196,7 @@
 
 .quick-menu {
   & .icon-btn {
-    color: $white;
+    color: $black;
   }
 
   & .icon-alert {

@@ -1,7 +1,7 @@
 import React from 'react';
 import {connect} from 'react-redux';
 import AppBar from 'material-ui/AppBar';
-import {Link} from 'react-router-dom';
+import UserInfo from 'components/UserInfo';
 import Menu, {MenuItem} from 'material-ui/Menu';
 import Toolbar from 'material-ui/Toolbar';
 import IconButton from 'material-ui/IconButton';
@@ -66,14 +66,12 @@ class Header extends React.Component {
         return (
             <AppBar className="app-main-header">
                 <Toolbar className="app-toolbar" disableGutters={false}>
-                    <IconButton className={`jr-menu-icon ${drawerStyle}`} aria-label="Menu"
+                    <IconButton className={`jr-menu-icon ${drawerStyle} `} aria-label="Menu" style={{color: '#333d46'}}
                                 onClick={onToggleCollapsedNav}>
                         <span className="menu-icon"/>
                     </IconButton>
 
-                    <Link className="app-logo" to="/">
-                        <img src="assets/images/logo.png" alt="Unchainet" title="Unchainet"/>
-                    </Link>
+                    <UserInfo/>
 
 
                     <SearchBox styleName="d-none d-sm-block" placeholder=""
@@ -103,7 +101,7 @@ class Header extends React.Component {
                                 </DropdownMenu>
                             </Dropdown>
                         </li>
-                        <li className="list-inline-item">
+                       {/* <li className="list-inline-item">
                             <div className="user-name"
                                  onClick={this.onLangSwitcherSelect}>
                                 <div className="d-flex align-items-center pointer">
@@ -111,7 +109,7 @@ class Header extends React.Component {
                                     <h4 className="mb-0 ml-1">{locale.name}</h4>
                                 </div>
                             </div>
-                        </li>
+                        </li>*/}
                         <li className="list-inline-item app-tour">
                             <Dropdown
                                 className="quick-menu"
@@ -133,7 +131,7 @@ class Header extends React.Component {
                                 </DropdownMenu>
                             </Dropdown>
                         </li>
-                        <li className="list-inline-item mail-tour">
+                        {/*<li className="list-inline-item mail-tour">
                             <Dropdown
                                 className="quick-menu"
                                 isOpen={this.state.mailNotification}
@@ -180,7 +178,7 @@ class Header extends React.Component {
                                 )}
 
                             </Menu>
-                        </li>
+                        </li>*/}
                     </ul>
                 </Toolbar>
             </AppBar>

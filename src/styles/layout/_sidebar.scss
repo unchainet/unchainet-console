@@ -2,14 +2,25 @@
 
 .side-nav {
   width: $side-nav-width;
-  background-color: $sidebar-bg !important;
+  background-image: url("#{$image_path}/menu_background.png") !important;
+  background-repeat: no-repeat;
+  background-color: $sidebar-bg-color;
+
+
   color: $sidebar-text-color !important;
   border-right: 0 none !important;
   z-index: 1250 !important;
 
   & .user-profile {
-    background-color: $sidebar-bg-darken;
     padding: 13px 20px !important;
+  }
+
+  & .app-logo-wrapper {
+    height:$app-bar-height;
+
+    & .app-logo img {
+      margin:18px 25px;
+    }
   }
 
   & .user-avatar {
