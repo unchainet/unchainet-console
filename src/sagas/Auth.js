@@ -26,21 +26,6 @@ import {
 import {get, post, errorMessageFormatter} from './Api';
 import {ACTIVATE_USER} from "../constants/ActionTypes";
 
-const createUserWithEmailPasswordRequest = async (email, password) =>
-    await post('/api/users', JSON.stringify({email, password}))
-      .then(response => response.json().then(body => ({ body, response })))
-      .catch(error => error);
-
-const activateUserRequest = async (_id, code) =>
-  await post('/api/users/activate', JSON.stringify({_id, code}))
-    .then(response => response.json().then(body => ({ body, response })))
-    .catch(error => error);
-
-const signInUserWithEmailPasswordRequest = async (email, password) =>
-    await post('/api/auth/local', JSON.stringify({email, password}))
-      .then(response => response.json().then(body => ({ body, response })))
-      .catch(error => error);
-
 const signOutRequest = async () =>
     await  auth.signOut()
         .then(authUser => authUser)
@@ -50,29 +35,23 @@ const signOutRequest = async () =>
 function* createUserWithEmailPassword({payload}) {
     const {email, password} = payload;
     try {
-        const {body, response} = yield call(createUserWithEmailPasswordRequest, email, password);
-        if (response.status >= 400) {
-            yield put(showAuthMessage(errorMessageFormatter(body)));
-        } else {
-            yield put(userSignUpSuccess(body));
-        }
+        const {body, response} = yield post('/api/users', JSON.stringify({email, password}))
+        yield put(userSignUpSuccess(body));
     } catch (error) {
-        yield put(showAuthMessage(errorMessageFormatter(error)));
+        const {body, response} = error;
+        yield put(showAuthMessage(errorMessageFormatter(body)));
     }
 }
 
 function* activate({payload}) {
   const {_id, code} = payload;
   try {
-    const {body, response} = yield call(activateUserRequest, _id, code);
-    if (response.status >= 400) {
-      yield put(showAuthMessage(errorMessageFormatter(body)));
-    } else {
-      localStorage.setItem('token', body.token);
-      yield put(userActivateSuccess(body));
-    }
+    const {body, response} = yield post('/api/users/activate', JSON.stringify({_id, code}));
+    localStorage.setItem('token', body.token);
+    yield put(userActivateSuccess(body));
   } catch (error) {
-    yield put(showAuthMessage(errorMessageFormatter(error)));
+    const {body, response} = error;
+    yield put(showAuthMessage(errorMessageFormatter(body)));
   }
 }
 
@@ -163,15 +142,12 @@ function* signInUserWithTwitter() {
 function* signInUserWithEmailPassword({payload}) {
     const {email, password} = payload;
     try {
-        const {body, response} = yield call(signInUserWithEmailPasswordRequest, email, password);
-        if (response.status >= 400) {
-            yield put(showAuthMessage(errorMessageFormatter(body)));
-        } else {
-            localStorage.setItem('token', body.token);
-            yield put(userSignInSuccess(signInUser));
-        }
+        const {body, response} = yield post('/api/auth/local', JSON.stringify({email, password}));
+        localStorage.setItem('token', body.token);
+        yield put(userSignInSuccess(signInUser));
     } catch (error) {
-        yield put(showAuthMessage(errorMessageFormatter(error)));
+        const {body, response} = error;
+        yield put(showAuthMessage(errorMessageFormatter(body)));
     }
 }
 

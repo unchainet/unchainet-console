@@ -10,21 +10,13 @@ const getAllRegionStub = async () =>
     })
     .catch((error => error));
 
-const getAllRegions = async () =>
-  await get('/api/regions')
-    .then(response => {
-      if (response.status === 404) {
-        throw new Error('Requested api is not found');
-      }
-      return response.json().then(body => ({ body, response }))
-    });
-
 function* fetchAllRegionRequest() {
   try {
-    const {body, response} = yield call(getAllRegions);
+    const {body, response} = yield get('/api/regions');
     yield put(fetchAllRegionSuccess(body));
   } catch (error) {
-    yield put(showRegionMessage(error));
+    const {body, response} = error;
+    yield put(showRegionMessage(body));
   }
 }
 

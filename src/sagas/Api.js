@@ -1,18 +1,32 @@
 import conf from '../conf';
 const host = conf.domain;
 
-export function get (relativePath){
-  return doFetch(relativePath, getHeaders('GET'));
+export function* get (relativePath){
+  return yield doFetch(relativePath, getHeaders('GET'));
 }
 
-export function post (relativePath, body){
+export function* post (relativePath, body){
   const config = getHeaders('POST');
   config.body = body;
-  return doFetch(relativePath, config);
+  return yield doFetch(relativePath, config);
 }
 
-export function doFetch (relativePath, config){
-  return fetch(`${host}${relativePath}`, config);
+export function* doFetch (relativePath, config){
+  const res = yield fetch(`${host}${relativePath}`, config);
+  if (res.status === 404) {
+    throw({response: res, body: 'Requested api method is not found'});
+  }
+  const copy = res.clone();
+  let body = null;
+  try {
+    body = yield res.json();
+  } catch (e) {
+    body = yield copy.text();
+  }
+  if (res.status >= 400) {
+    throw({response: res, body});
+  }
+  return {response: res, body};
 }
 
 export function errorMessageFormatter (body){
