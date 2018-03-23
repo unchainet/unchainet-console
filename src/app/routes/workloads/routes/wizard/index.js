@@ -7,6 +7,7 @@ import 'rc-slider/assets/index.css';
 import {FormControl, FormControlLabel, FormLabel} from 'material-ui/Form';
 import Select from 'material-ui/Select';
 import MenuItem from 'material-ui/Menu/MenuItem';
+import Checkbox from 'material-ui/Checkbox';
 import {InputLabel} from 'material-ui/Input';
 import CheckIcon from 'material-ui-icons/Check';
 import Map from 'components/map';
@@ -22,6 +23,7 @@ import {fetchAllRegion} from 'actions/Region';
 import {fetchAllDatacenter} from 'actions/Datacenter';
 import CardLayout from 'components/CardLayout';
 import {Marker, InfoWindow} from 'react-google-maps';
+import ContainerHeader from 'components/ContainerHeader';
 
 
 const styles = theme => ({
@@ -62,14 +64,14 @@ const styles = theme => ({
     color: '#fff',
     marginTop: -38,
     '& h2': {
-      fontSize: '1.4em'
+      fontSize: '1.5em'
     },
     '& h3': {
-      fontSize: '.7em',
+      fontSize: '0.8em',
       fontWeight: '200'
     }
   },
-  iwResources: {
+  resources: {
     '& div': {
       lineHeight: '3.5em',
       borderTop: '1px solid #ccc',
@@ -114,10 +116,11 @@ class ConfigWizard extends React.Component {
     isNew: true,
     data: {
       name: '',
-      cpuCores: 1,
-      ram: 4,
-      gpuCores: 0,
-      storage: 10,
+      cpu: 1,
+      ram: 1,
+      gpu: 0,
+      storageHdd: 1,
+      storageSsd: 0,
       containerType: 'Docker',
       datacenter: '',
       region: '',
@@ -130,11 +133,14 @@ class ConfigWizard extends React.Component {
       },
       priceType: '',
       price: 0,
-      status: 'running'
+      status: 'running',
+      sameNetwork: false,
+      pricePerHourForCpu: 4
     },
     availableResources: {
       cpu: 5302,
       ram: 23084,
+      gpu: 439432,
       storageHdd: 296403,
       storageSsd: 843049
     }
@@ -158,7 +164,15 @@ class ConfigWizard extends React.Component {
   };
 
   handleDataChange = (name, type = 'text') => event => {
-    let value = type === 'int' ? parseInt(event.target.value) : event.target.value;
+    let ctrlValue = null;
+    if (type === 'bool') {
+      ctrlValue = event.target.checked;
+    } else if (event === null || 'object' !== !typeof(event)) {
+      ctrlValue = event;
+    } else {
+      ctrlValue = event.target.value;
+    }
+    let value = type === 'int' ? parseInt(ctrlValue) : ctrlValue;
 
     let newState = update(this.state, {
       data: {
@@ -171,26 +185,6 @@ class ConfigWizard extends React.Component {
     return promise;
   };
 
-  handleChange = (name, formData = true, type = 'text') => event => {
-    let newState = null;
-    let value = type === 'int' ? parseInt(event.target.value) : event.target.value;
-
-    if (formData === true) {
-      newState = update(this.state, {
-        data: {
-          [name]: {$set: value},
-        }
-      });
-    } else {
-      newState = update(this.state, {
-        [name]: {$set: value},
-      });
-    }
-    if (name === 'provider') {
-      newState.infoBoxSelectedProviderId = event.target.value;
-    }
-    this.setState(newState);
-  };
 
   changeMapRegion = (regionId) => {
     const {region} = this.props;
@@ -207,20 +201,12 @@ class ConfigWizard extends React.Component {
     this.setState(newState);
   };
 
-  selectProvider = (id) => {
-    this.setState(update(this.state, {
-      data: {
-        provider: {$set: id}
-      }
-    }));
-  };
-
   render() {
     const {classes} = this.props;
     const {datacenter, region} = this.props;
     const {data, mapActiveDatacenterId, availableResources, activeStep} = this.state;
     const state = this.state;
-    const {cpu, ram, storageHdd, storageSsd} = state.availableResources;
+    const {cpu, ram, storageHdd, storageSsd, gpu} = state.availableResources;
 
     const selectedDatacenter = datacenter.allDatacenters.find(i => {
       return i.id === data.datacenter
@@ -231,6 +217,8 @@ class ConfigWizard extends React.Component {
     return (
       <div className="app-wrapper">
         <div className="animated slideInUpTiny animation-duration-3">
+          <ContainerHeader match={this.props.match} title='New Workload Configuration'/>
+
           <div className="row justify-content-around">
             <div className="col-lg-8 col-md-10">
               <CardLayout>
@@ -239,7 +227,7 @@ class ConfigWizard extends React.Component {
                   <section>
                     <div className={classes.section}>
                       <h2>Workload</h2>
-                      <h3>Step {activeStep+1} of {stepsTotal}</h3>
+                      <h3>Step {activeStep + 1} of {stepsTotal}</h3>
                     </div>
                     <FormControl className={classes.formControl}>
                       <TextField
@@ -260,7 +248,7 @@ class ConfigWizard extends React.Component {
                   <section>
                     <div className={classes.section}>
                       <h2>Location</h2>
-                      <h3>Step {activeStep+1} of {stepsTotal}</h3>
+                      <h3>Step {activeStep + 1} of {stepsTotal}</h3>
                     </div>
 
                     <FormControl className={classes.formControl}>
@@ -329,9 +317,10 @@ class ConfigWizard extends React.Component {
                               <div className={classes.infoBox}>
                                 <h2>{i.name}</h2>
                                 <h5>Available resources</h5>
-                                <div className={classes.iwResources}>
-                                  <div><h6>CPUs</h6> <span className='text-red'>{(Math.round(i.coe * cpu)).toLocaleString()}</span></div>
+                                <div className={classes.resources}>
+                                  <div><h6>vCPU (cores)</h6> <span className='text-red'>{(Math.round(i.coe * cpu)).toLocaleString()}</span></div>
                                   <div><h6>RAM (GB)</h6> <span className='text-amber'>{(Math.round(i.coe * ram)).toLocaleString()}</span></div>
+                                  <div><h6>GPU (cores)</h6> <span className='text-blue'>{(Math.round(i.coe * gpu)).toLocaleString()}</span></div>
                                   <div><h6>Storage - HDD (GB)</h6> <span className='text-purple'>{(Math.round(i.coe * storageHdd)).toLocaleString()}</span></div>
                                   <div><h6>Storage - SSD (GB)</h6> <span className='text-green'>{(Math.round(i.coe * storageSsd)).toLocaleString()}</span></div>
                                 </div>
@@ -357,7 +346,7 @@ class ConfigWizard extends React.Component {
 
                     <div className={classes.buttonBox}>
                       <Button color="primary" variant='raised' onClick={() => this.setState({activeStep: 2})}>Next</Button>
-                      <Button color="primary" variant='raised' onClick={() => this.setState({activeStep: 1})}>Previous</Button>
+                      <Button color="primary" variant='raised' onClick={() => this.setState({activeStep: 0})}>Previous</Button>
                       <Button variant='raised'>Cancel</Button>
                     </div>
                   </section>}
@@ -366,7 +355,7 @@ class ConfigWizard extends React.Component {
                   <section>
                     <div className={classes.section}>
                       <h2>Quality</h2>
-                      <h3>Step {activeStep+1} of {stepsTotal}</h3>
+                      <h3>Step {activeStep + 1} of {stepsTotal}</h3>
                     </div>
 
                     <div className={classes.formControl}>
@@ -377,22 +366,152 @@ class ConfigWizard extends React.Component {
                       </div>
                       <div>
                         <h3 className='text-center'>Available resources:</h3>
-                        <div className='jr-card'>
-                          <div>vCPU: {Math.round((100 - state.qualityScore * 0.9) / 100 * cpu * coe)}</div>
-                          <div>RAM (GB): {Math.round((100 - state.qualityScore * 0.9) / 100 * ram * coe)}</div>
-                          <div>Storage (GB): {Math.round((100 - state.qualityScore * 0.9) / 100 * storageHdd * coe)}</div>
-                          <div>Storage - SSD (GB): {Math.round((100 - state.qualityScore * 0.9) / 100 * storageSsd * coe)}</div>
+                        <div className='container'>
+                          <div className='row justify-content-around'>
+                            <div className='col-lg-7 col-md-9'>
+                              <div className='jr-card'>
+                                <div className={classes.resources}>
+                                  <div><h6>vCPU (cores)</h6> <span className='text-red'>{Math.round((100 - state.qualityScore * 0.9) / 100 * cpu * coe).toLocaleString()}</span></div>
+                                  <div><h6>RAM (GB)</h6> <span className='text-amber'>{Math.round((100 - state.qualityScore * 0.9) / 100 * ram * coe).toLocaleString()}</span></div>
+                                  <div><h6>GPU (cores)</h6> <span className='text-blue'>{Math.round((100 - state.qualityScore * 0.9) / 100 * gpu * coe).toLocaleString()}</span></div>
+                                  <div><h6>Storage (GB)</h6> <span className='text-purple'>{Math.round((100 - state.qualityScore * 0.9) / 100 * storageHdd * coe).toLocaleString()}</span></div>
+                                  <div><h6>Storage - SSD (GB)</h6> <span className='text-green'>{Math.round((100 - state.qualityScore * 0.9) / 100 * storageSsd * coe).toLocaleString()}</span></div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
                         </div>
                       </div>
                     </div>
                     <div className={classes.buttonBox}>
                       <Button color="primary" variant='raised' onClick={() => this.setState({activeStep: 3})}>Next</Button>
+                      <Button color="primary" variant='raised' onClick={() => this.setState({activeStep: 1})}>Previous</Button>
+                      <Button variant='raised'>Cancel</Button>
+                    </div>
+                  </section>}
+
+                  {activeStep === 3 &&
+                  <section>
+                    <div className={classes.section}>
+                      <h2>Resources configuration</h2>
+                      <h3>Step {activeStep + 1} of {stepsTotal}</h3>
+                    </div>
+                    <div className={classes.formControl}>
+                      <h4 className='pt-3'>Number of vCPU cores: <span className='text-red'>{data.cpu.toLocaleString()}</span></h4>
+                      <div className='px-5 pb-4 pt-3'>
+                        <Slider
+                          min={1}
+                          max={Math.round((100 - state.qualityScore * 0.9) / 100 * cpu * coe)}
+                          value={data.cpu}
+                          onChange={this.handleDataChange('cpu')}
+                        />
+                      </div>
+                    </div>
+                    <div className={classes.formControl}>
+                      <h4 className='pt-3'>Number of RAM (GB): <span className='text-amber'>{data.ram.toLocaleString()}</span></h4>
+                      <div className='px-5 pb-4 pt-3'>
+                        <Slider
+                          min={1}
+                          max={Math.round((100 - state.qualityScore * 0.9) / 100 * ram * coe)}
+                          value={data.ram}
+                          onChange={this.handleDataChange('ram')}
+                        />
+                      </div>
+                    </div>
+                    <div className={classes.formControl}>
+                      <h4 className='pt-3'>Number of GPU cores: <span className='text-blue'>{data.gpu.toLocaleString()}</span></h4>
+                      <div className='px-5 pb-4 pt-3'>
+                        <Slider
+                          min={0}
+                          max={Math.round((100 - state.qualityScore * 0.9) / 100 * gpu * coe)}
+                          value={data.gpu}
+                          onChange={this.handleDataChange('gpu')}
+                        />
+                      </div>
+                    </div>
+                    <div className={classes.formControl}>
+                      <h4 className='pt-3'>Storage - HDD (GB): <span className='text-purple'>{data.storageHdd.toLocaleString()}</span></h4>
+                      <div className='px-5 pb-4 pt-3'>
+                        <Slider
+                          min={1}
+                          max={Math.round((100 - state.qualityScore * 0.9) / 100 * storageHdd * coe)}
+                          value={data.storageHdd}
+                          onChange={this.handleDataChange('storageHdd')}
+                        />
+                      </div>
+                    </div>
+                    <div className={classes.formControl}>
+                      <h4 className='pt-3'>Storage - SSD (GB): <span className='text-purple'>{data.storageSsd.toLocaleString()}</span></h4>
+                      <div className='px-5 pb-4 pt-3'>
+                        <Slider
+                          min={0}
+                          max={Math.round((100 - state.qualityScore * 0.9) / 100 * storageSsd * coe)}
+                          value={data.storageSsd}
+                          onChange={this.handleDataChange('storageSsd')}
+                        />
+                      </div>
+                    </div>
+                    <div className={classes.formControl}>
+                      <FormControlLabel
+                        control={
+                          <Checkbox
+                            checked={data.sameNetwork}
+                            onChange={this.handleDataChange('sameNetwork', 'bool')}
+                          />
+                        }
+                        label="Deploy to the same datacenter (fast network)"
+                      />
+                    </div>
+
+
+                    <div className={classes.buttonBox}>
+                      <Button color="primary" variant='raised' onClick={() => this.setState({activeStep: 4})}>Next</Button>
                       <Button color="primary" variant='raised' onClick={() => this.setState({activeStep: 2})}>Previous</Button>
                       <Button variant='raised'>Cancel</Button>
                     </div>
                   </section>}
-                  {/*{datacenter.allDatacenters.map((el, i) =>*/}
-                  {/*<div>{el.name}</div>)}*/}
+
+                  {activeStep === 4 &&
+                  <section>
+                    <div className={classes.section}>
+                      <h2>Pricing</h2>
+                      <h3>Step {activeStep + 1} of {stepsTotal}</h3>
+                    </div>
+                    <FormControl className={classes.formControl}>
+                      <h4 className='pt-3'>Set max price for vCPU per hour: {data.pricePerHourForCpu} CRC</h4>
+                      <div className='px-5 pb-4 pt-3'>
+                        <Slider
+                          min={1}
+                          max={100}
+                          value={data.pricePerHourForCpu}
+                          onChange={this.handleDataChange('pricePerHourForCpu')}
+                        />
+                      </div>
+                      <p className='py-3'>Current price for vCPU per hour: <span className='text-green'>3.85 CRC</span></p>
+                      <p>Estimated price....</p>
+                    </FormControl>
+
+                    <div className={classes.buttonBox}>
+                      <Button color="primary" variant='raised' onClick={() => this.setState({activeStep: 5})}>Next</Button>
+                      <Button color="primary" variant='raised' onClick={() => this.setState({activeStep: 3})}>Previous</Button>
+                      <Button variant='raised'>Cancel</Button>
+                    </div>
+                  </section>}
+
+                  {activeStep === 5 &&
+                  <section>
+                    <div className={classes.section}>
+                      <h2>Container Configuration</h2>
+                      <h3>Step {activeStep + 1} of {stepsTotal}</h3>
+                    </div>
+
+                    <div className={classes.buttonBox}>
+                      <Button color="primary" variant='raised' onClick={() => this.setState({activeStep: 6})}>Next</Button>
+                      <Button color="primary" variant='raised' onClick={() => this.setState({activeStep: 4})}>Previous</Button>
+                      <Button variant='raised'>Cancel</Button>
+                    </div>
+                  </section>}
+
 
                 </div>
               </CardLayout>
