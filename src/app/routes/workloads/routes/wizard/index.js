@@ -479,13 +479,15 @@ class ConfigWizard extends React.Component {
                     </div>
                     <FormControl className={classes.formControl}>
                       <h4 className='pt-3'>Set max price for vCPU per hour: {data.pricePerHourForCpu} CRC</h4>
-                      <Slider
-                        min={1}
-                        max={100}
-                        value={data.pricePerHourForCpu}
-                        onChange={this.handleDataChange('pricePerHourForCpu')}
-                      />
-                      <p className='text-center p-3'>Current price for vCPU per hour: <span className='text-green'>3.85 CRC</span></p>
+                      <div className='px-5 pb-4 pt-3'>
+                        <Slider
+                          min={1}
+                          max={100}
+                          value={data.pricePerHourForCpu}
+                          onChange={this.handleDataChange('pricePerHourForCpu')}
+                        />
+                      </div>
+                      <p className='py-3'>Current price for vCPU per hour: <span className='text-green'>3.85 CRC</span></p>
                       <p>Estimated price....</p>
                     </FormControl>
 
