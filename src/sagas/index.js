@@ -8,6 +8,7 @@ import billingSagas from './Billing';
 import regionSagas from './Region';
 import datacenterSagas from './Datacenter';
 import priceHistorySagas from './PriceHistory';
+import walletSagas from './Wallet';
 
 export default function* rootSaga(getState) {
   yield all([
@@ -20,5 +21,6 @@ export default function* rootSaga(getState) {
     regionSagas(),
     datacenterSagas(),
     priceHistorySagas(),
+    walletSagas(),
     ]);
 }

@@ -146,3 +146,7 @@ export const REMOVE_WORKLOAD = 'remove_workload';
 // price history
 export const FETCH_ALL_PRICE_HISTORY = 'fetch_all_price_history';
 export const FETCH_ALL_PRICE_HISTORY_SUCCESS = 'fetch_all_price_history_success';
+
+//wallet
+export const FETCH_ALL_WALLET = 'fetch_all_wallet';
+export const FETCH_ALL_WALLET_SUCCESS = 'fetch_all_wallet_success';
