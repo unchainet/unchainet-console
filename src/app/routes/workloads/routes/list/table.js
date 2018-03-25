@@ -17,16 +17,6 @@ class WorkloadsTable extends React.Component {
     }
   }
 
-  getProvider (item) {
-    let providers = this.props.providers || [];
-    return providers.filter(row => row.id == item.provider)[0] || {};
-  }
-
-  getRegion (item) {
-    let regions = this.props.regions || [];
-    return regions.filter(row => row._id == item.region)[0] || {};
-  }
-
   render() {
     let data = this.props.items || [];
     return (
@@ -49,11 +39,11 @@ class WorkloadsTable extends React.Component {
               return (
                 <TableRow key={n._id}>
                   <TableCell>{n.name}</TableCell>
-                  <TableCell>{this.getProvider(n).name}</TableCell>
-                  <TableCell>{this.getRegion(n).name}</TableCell>
-                  <TableCell numeric>{n.cpuCores}</TableCell>
-                  <TableCell numeric>{n.storage}</TableCell>
-                  <TableCell numeric>{n.gpu}</TableCell>
+                  <TableCell>{''}</TableCell>
+                  <TableCell>{n.region ? n.region.name : ''}</TableCell>
+                  <TableCell numeric>{n.numCPU}</TableCell>
+                  <TableCell numeric>{n.ssdGB}</TableCell>
+                  <TableCell numeric>{n.numGPU}</TableCell>
                   <TableCell numeric>{n.price}</TableCell>
                   <TableCell>
                     <Button className="jr-btn jr-btn-lg" onClick={()=>{this.props.history.push(`/app/workloads/wizard?id=${n.id}`)}} color="primary">

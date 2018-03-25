@@ -9,6 +9,7 @@ import {
 } from '../../../constants/ActionTypes';
 import {fetchAllRegion} from 'actions/Region';
 import {fetchAllDatacenter} from 'actions/Datacenter';
+import {fetchAllWorkloads} from '../../../actions/Workload';
 import moment from 'moment'
 
 class Dashboard extends React.Component {
@@ -21,11 +22,11 @@ class Dashboard extends React.Component {
   }
 
   componentDidMount() {
-    if (!this.props.datacenter.allDatacenters.length) {
-      this.props.fetchAllDatacenter();
-    }
     if (!this.props.region.allRegions.length) {
       this.props.fetchAllRegion();
+    }
+    if (this.props.workloads.state === 'init') {
+      this.props.fetchAllWorkloads();
     }
     setTimeout(() => this.setState({map: true}), 200);
   }
@@ -60,7 +61,7 @@ class Dashboard extends React.Component {
                 </div>
               </div>
               <div className="body-unet">
-                <WorkloadsTable items={list} providers={this.props.datacenter.allDatacenters} regions={this.props.region.allRegions}/>
+                <WorkloadsTable items={list}/>
               </div>
             </CardBox>
           </div>
@@ -96,7 +97,8 @@ function stateToProps({workloads, region, datacenter}) {
 const mapDispatchToProps = {
   removeItem: (id) => ({type: REMOVE_WORKLOAD, id: id}),
   fetchAllRegion,
-  fetchAllDatacenter
+  fetchAllDatacenter,
+  fetchAllWorkloads
 };
 
 export default connect(stateToProps, mapDispatchToProps)(Dashboard);

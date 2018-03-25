@@ -1,12 +1,5 @@
 import {all, call, fork, put, takeEvery} from 'redux-saga/effects';
 import {
-    auth,
-    facebookAuthProvider,
-    githubAuthProvider,
-    googleAuthProvider,
-    twitterAuthProvider
-} from 'firebase/firebase';
-import {
     SIGNIN_FACEBOOK_USER,
     SIGNIN_GITHUB_USER,
     SIGNIN_GOOGLE_USER,
@@ -24,7 +17,7 @@ import {
 } from '../actions/Auth';
 
 import {get, post, errorMessageFormatter} from './Api';
-import {ACTIVATE_USER} from "../constants/ActionTypes";
+import {ACTIVATE_USER} from '../constants/ActionTypes';
 
 const signOutRequest = async () =>
     await  auth.signOut()
@@ -55,90 +48,6 @@ function* activate({payload}) {
   }
 }
 
-const signInUserWithGoogleRequest = async () =>
-    await  auth.signInWithPopup(googleAuthProvider)
-        .then(authUser => authUser)
-        .catch(error => error);
-
-const signInUserWithFacebookRequest = async () =>
-    await  auth.signInWithPopup(facebookAuthProvider)
-        .then(authUser => authUser)
-        .catch(error => error);
-
-const signInUserWithGithubRequest = async () =>
-    await  auth.signInWithPopup(githubAuthProvider)
-        .then(authUser => authUser)
-        .catch(error => error);
-
-const signInUserWithTwitterRequest = async () =>
-    await  auth.signInWithPopup(twitterAuthProvider)
-        .then(authUser => authUser)
-        .catch(error => error);
-
-
-function* signInUserWithGoogle() {
-    try {
-        const signUpUser = yield call(signInUserWithGoogleRequest);
-        if (signUpUser.message) {
-            yield put(showAuthMessage(signUpUser.message));
-        } else {
-            localStorage.setItem('token', signUpUser.uid);
-            yield put(userGoogleSignInSuccess(signUpUser));
-        }
-    } catch (error) {
-        yield put(showAuthMessage(error));
-    }
-}
-
-
-function* signInUserWithFacebook() {
-    try {
-        const signUpUser = yield call(signInUserWithFacebookRequest);
-        if (signUpUser.message) {
-            yield put(showAuthMessage(signUpUser.message));
-        } else {
-            localStorage.setItem('token', signUpUser.uid);
-            yield put(userFacebookSignInSuccess(signUpUser));
-        }
-    } catch (error) {
-        yield put(showAuthMessage(error));
-    }
-}
-
-
-function* signInUserWithGithub() {
-    try {
-        const signUpUser = yield call(signInUserWithGithubRequest);
-        if (signUpUser.message) {
-            yield put(showAuthMessage(signUpUser.message));
-        } else {
-            localStorage.setItem('token', signUpUser.uid);
-            yield put(userGithubSignInSuccess(signUpUser));
-        }
-    } catch (error) {
-        yield put(showAuthMessage(error));
-    }
-}
-
-
-function* signInUserWithTwitter() {
-    try {
-        const signUpUser = yield call(signInUserWithTwitterRequest);
-        if (signUpUser.message) {
-            if (signUpUser.message.length > 100) {
-                yield put(showAuthMessage('Your request has been canceled.'));
-            } else {
-                yield put(showAuthMessage(signUpUser.message));
-            }
-        } else {
-            localStorage.setItem('token', signUpUser.uid);
-            yield put(userTwitterSignInSuccess(signUpUser));
-        }
-    } catch (error) {
-        yield put(showAuthMessage(error));
-    }
-}
-
 function* signInUserWithEmailPassword({payload}) {
     const {email, password} = payload;
     try {
@@ -152,37 +61,12 @@ function* signInUserWithEmailPassword({payload}) {
 }
 
 function* signOut() {
-    try {
-        const signOutUser = yield call(signOutRequest);
-        if (signInUser.message) {
-            yield put(showAuthMessage(signInUser.message));
-        } else {
-            localStorage.removeItem('token');
-            yield put(userSignOutSuccess(signInUser));
-        }
-    } catch (error) {
-        yield put(showAuthMessage(error));
-    }
+    localStorage.removeItem('token');
+    yield put(userSignOutSuccess({}));
 }
 
 export function* createUserAccount() {
     yield takeEvery(SIGNUP_USER, createUserWithEmailPassword);
-}
-
-export function* signInWithGoogle() {
-    yield takeEvery(SIGNIN_GOOGLE_USER, signInUserWithGoogle);
-}
-
-export function* signInWithFacebook() {
-    yield takeEvery(SIGNIN_FACEBOOK_USER, signInUserWithFacebook);
-}
-
-export function* signInWithTwitter() {
-    yield takeEvery(SIGNIN_TWITTER_USER, signInUserWithTwitter);
-}
-
-export function* signInWithGithub() {
-    yield takeEvery(SIGNIN_GITHUB_USER, signInUserWithGithub);
 }
 
 export function* signInUser() {
@@ -201,9 +85,5 @@ export default function* rootSaga() {
     yield all([fork(signInUser),
         fork(activateUser),
         fork(createUserAccount),
-        fork(signInWithGoogle),
-        fork(signInWithFacebook),
-        fork(signInWithTwitter),
-        fork(signInWithGithub),
         fork(signOutUser)]);
 }
