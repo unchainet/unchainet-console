@@ -7,6 +7,7 @@ import Workloads from './Workloads';
 import PriceHistory from './PriceHistory';
 import Datacenter from './Datacenter';
 import Region from './Region';
+import Wallet from './Wallet';
 
 
 const reducers = combineReducers({
@@ -18,6 +19,7 @@ const reducers = combineReducers({
     priceHistory: PriceHistory,
     datacenter: Datacenter,
     region: Region,
+    wallet: Wallet,
 });
 
 export default reducers;

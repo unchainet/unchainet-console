@@ -5,6 +5,7 @@ import regionSagas from './Region';
 import datacenterSagas from './Datacenter';
 import priceHistorySagas from './PriceHistory';
 import workloadSagas from './Workload';
+import walletSagas from './Wallet';
 
 export default function* rootSaga(getState) {
   yield all([
@@ -13,6 +14,7 @@ export default function* rootSaga(getState) {
     regionSagas(),
     datacenterSagas(),
     priceHistorySagas(),
+    walletSagas(),
     workloadSagas()
     ]);
 }
