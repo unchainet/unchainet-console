@@ -1,5 +1,6 @@
 import React from 'react';
 import CardLayout from '../../../components/CardLayout/index';
+import PriceHistoryGraph from '../../../components/PriceHistoryGraph/index';
 import {fetchPriceHistory} from '../../../actions/PriceHistory';
 import {connect} from 'react-redux'
 import {IconButton} from 'material-ui';
@@ -136,20 +137,8 @@ class PriceHistory extends React.Component {
                   </div>
 
                 </form>
-
-            <ResponsiveContainer width="100%" height={200}>
-              <LineChart data={priceHistoryList}
-                         margin={{top: 10, right: 0, left: -25, bottom: 0}}>
-                <XAxis dataKey="name" />
-                <YAxis />
-                <CartesianGrid strokeDasharray="3 3" />
-                <Tooltip />
-                <Legend />
-                <Line type="monotone" dataKey="UNET" stroke="#3367d6" activeDot={{r: 8}} />
-                <Line type="monotone" dataKey="CRC" stroke="#ffc658" />
-                <Line type="monotone" dataKey="USD" stroke="#f04" />
-              </LineChart>
-            </ResponsiveContainer>
+            
+            <PriceHistoryGraph priceHistoryList={priceHistoryList} />
 
           </CardLayout>
         </div>

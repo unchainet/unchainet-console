@@ -2,7 +2,7 @@ import {all, call, put, takeEvery} from 'redux-saga/effects';
 import {fetchPriceHistorySuccess, showPriceHistoryMessage} from 'actions/PriceHistory';
 import {database} from 'firebase/firebase';
 import {FETCH_ALL_PRICE_HISTORY} from 'constants/ActionTypes';
-import priceHistoryListStub from './priceHistoryListStub';
+import priceHistoryListStub from '../stubData/priceHistory';
 
 const getPriceHistoryStub = async () =>
   await Promise.resolve()

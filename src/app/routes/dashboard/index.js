@@ -1,5 +1,7 @@
 import React from 'react';
 import CardBox from '../../../components/CardBox/index';
+import PriceHistoryGraph from '../../../components/PriceHistoryGraph/index';
+import priceHistoryData from '../../../stubData/priceHistoryDashboard'
 import {Button} from 'material-ui';
 import { connect } from 'react-redux';
 import WorkloadsTable from '../workloads/routes/list/table';
@@ -73,12 +75,12 @@ class Dashboard extends React.Component {
                 {map ? <Map items={this.props.region.allRegions}/> : null}
               </div>
             </CardBox>
-            <CardBox styleName="col-lg-4" cardStyle="jr-card-unet" heading>
+            <CardBox styleName="col-lg-4" cardStyle="jr-card-unet" childrenStyle="jr-card-min-height" heading>
               <div className="head-unet">
                 <div className="name">price history - crc tokens</div>
               </div>
               <div className="body-unet">
-                sad
+                <PriceHistoryGraph priceHistoryList={priceHistoryData} height={265}/>
               </div>
             </CardBox>
           </div>

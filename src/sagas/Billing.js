@@ -2,7 +2,7 @@ import {all, call, put, takeEvery} from 'redux-saga/effects';
 import {fetchBillingSuccess, showBillingMessage} from 'actions/Billing';
 import {database} from 'firebase/firebase';
 import {FETCH_ALL_BILLING} from 'constants/ActionTypes';
-import billingListStub from './billingListStub';
+import billingListStub from '../stubData/billing';
 
 const getBillingStub = async () =>
   await Promise.resolve()
