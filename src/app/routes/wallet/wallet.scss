@@ -3,6 +3,7 @@
   margin-left:20px;
   margin-top:25px;
 
+
   .label {
     color: rgba(0, 0, 0, 0.8);
     font-size: 16px;
@@ -45,6 +46,8 @@
   }
   .tooltip-md{
     font-size: 14px;
+    width: 40%;
+    min-width: 270px;
   }
   .deposit-addr{
     min-width: 419px !important;

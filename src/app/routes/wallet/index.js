@@ -104,7 +104,8 @@ class Wallet extends React.Component {
                       classes={{
                         tooltip: 'tooltip-md',
                       }}
-                      style={{display: 'inline-block', position:'relative', left:'-8px'}} id="tooltip-icon"
+                      placement="right"
+                      style={{display: 'inline-block',position:'relative', left:'-8px'}} id="tooltip-icon"
                       title="UNET price can be volatile so if you prefer to have more predictable spending, &nbsp;compute resource coin(CRC) always represent same value of resources. Use the slider below if you would like to adjust your current ratio.">
                       <i className="zmdi zmdi-info-outline"></i>
                     </Tooltip>
@@ -133,10 +134,11 @@ class Wallet extends React.Component {
                     classes={{
                       tooltip: 'tooltip-md',
                     }}
+                    placement="right"
                     style={{display: 'inline-block', position:'relative', left:'-8px'}} id="tooltip-icon" title="Total value of your UNET and CRC tokens in UNET, CRC or USD respectively.">
                     <i className="zmdi zmdi-info-outline"></i>
                   </Tooltip>
-                  <Typography style={{display: 'inline-block', fontSize: '16px', position: 'relative', left: '-2px'}}>Current total balance value</Typography>
+                  <Typography style={{display: 'inline-block', fontSize: '16px', position: 'relative', left: '-2px'}}>Current balance total value</Typography>
                 </div>
               </div>
 
@@ -159,6 +161,7 @@ class Wallet extends React.Component {
                     classes={{
                       tooltip: 'tooltip-md',
                     }}
+                    placement="right"
                     style={{display: 'inline-block', position:'relative', left:'-8px'}} id="tooltip-icon" title="Deposit UNET tokens to this address to top up your service account.">
                     <i className="zmdi zmdi-info-outline"></i>
                   </Tooltip>
