@@ -9,6 +9,7 @@ import {
 import WorkloadsTable from './table';
 import {fetchAllRegion} from 'actions/Region';
 import {fetchAllDatacenter} from 'actions/Datacenter';
+import {fetchAllWorkloads} from '../../../../../actions/Workload';
 
 class Workloads extends React.Component {
 
@@ -19,11 +20,11 @@ class Workloads extends React.Component {
   }
 
   componentDidMount() {
-    if (!this.props.datacenter.allDatacenters.length) {
-      this.props.fetchAllDatacenter();
-    }
     if (!this.props.region.allRegions.length) {
       this.props.fetchAllRegion();
+    }
+    if (this.props.workloads.state === 'init') {
+      this.props.fetchAllWorkloads();
     }
   }
 
@@ -47,7 +48,7 @@ class Workloads extends React.Component {
                 <i className="zmdi zmdi-more-vert"/>
               </IconButton>*/}
             </div>
-            <WorkloadsTable items={list} providers={this.props.datacenter.allDatacenters} regions={this.props.region.allRegions}/>
+            <WorkloadsTable items={list}/>
           </CardLayout>
         </div>
       </div>
@@ -63,7 +64,8 @@ function stateToProps({workloads, region, datacenter}) {
 const mapDispatchToProps = {
   removeItem: (id) => ({type: REMOVE_WORKLOAD, id: id}),
   fetchAllRegion,
-  fetchAllDatacenter
+  fetchAllDatacenter,
+  fetchAllWorkloads
 };
 
 export default connect(stateToProps, mapDispatchToProps)(Workloads);
