@@ -1,5 +1,5 @@
 import conf from '../conf';
-const host = conf.domain;
+const host = conf.apiBaseUrl;
 
 export function* get (relativePath){
   return yield doFetch(relativePath, getHeaders('GET'));
