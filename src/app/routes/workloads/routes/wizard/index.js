@@ -103,7 +103,7 @@ const styles = theme => ({
 class ConfigWizard extends React.Component {
 
   componentDidMount() {
-    this.props.fetchAllDatacenter();
+    //this.props.fetchAllDatacenter();
     this.props.fetchAllRegion();
   }
 
@@ -146,23 +146,6 @@ class ConfigWizard extends React.Component {
     }
   };
 
-  onPrevious = () => {
-    this.setState({activeStep: --this.state.activeStep});
-  };
-
-  onNext = (isLast) => {
-    if (isLast) {
-      this.props.addItem(this.state.data);
-      this.props.history.push('/app/workloads/list');
-    } else {
-      this.setState({activeStep: ++this.state.activeStep});
-    }
-  };
-
-  onCancel = () => {
-    this.props.history.push('/app/workloads/list');
-  };
-
   handleDataChange = (name, type = 'text') => event => {
     let ctrlValue = null;
     if (type === 'bool') {
@@ -192,30 +175,30 @@ class ConfigWizard extends React.Component {
     let selectedRegion = region.allRegions.find(i => i._id === regionId);
     let newState = update(this.state,
       {
-        mapLocation: {$set: {lng:selectedRegion.location.geo[0], lat:selectedRegion.location.geo[1]}},
+        mapLocation: {$set: {lng: selectedRegion.location.geo[0], lat: selectedRegion.location.geo[1]}},
         //mapZoom: {$set: selectedRegion.zoom},
-        data: {
-          datacenter: {$set: ''}
-        }
       });
 
     this.setState(newState);
   };
 
+  getNumOfResources = (resNum) =>{
+    return Math.round((100 - this.state.qualityScore * 0.9) / 100 * (this.state.data.sameNetwork ? 0.5 : 1) * resNum).toLocaleString();
+  }
+
   render() {
     const {classes} = this.props;
     const {datacenter, region} = this.props;
-    const {data, mapActiveDatacenterId, availableResources, activeStep} = this.state;
+    const {data, mapActiveDatacenterId, activeStep} = this.state;
     const state = this.state;
     const {cpu, ram, storageHdd, storageSsd, gpu} = state.availableResources;
-
-    const selectedDatacenter = datacenter.allDatacenters.find(i => {
-      return i.id === data.datacenter
-    });
-    const coe = selectedDatacenter ? selectedDatacenter.coe : 1;
+    const selectedRegion = region.allRegions.find(el => el._id === data.region);
+    let stats = null;
+    if (selectedRegion) {
+      stats = selectedRegion.stats;
+    }
+    console.log('selectedRegion', selectedRegion);
     const stepsTotal = 6;
-
-    //console.log(region);
 
     return (
       <div className="app-wrapper">
@@ -243,7 +226,8 @@ class ConfigWizard extends React.Component {
                       />
                     </FormControl>
                     <div className={classes.buttonBox}>
-                      <Button color="primary" variant='raised' onClick={() => this.setState({activeStep: 1})}>Next</Button><Button variant='raised'>Cancel</Button>
+                      <Button>Cancel</Button>
+                      <Button color="secondary" variant='raised' onClick={() => this.setState({activeStep: 1})}>Next</Button>
                     </div>
                   </section>}
 
@@ -276,81 +260,61 @@ class ConfigWizard extends React.Component {
                       </Select>
                     </FormControl>
 
-                    <FormControl className={classes.formControl}>
-                      <InputLabel htmlFor="datacenter">Datacenter</InputLabel>
-                      <Select
-                        value={data.datacenter}
-                        onChange={e => {
-                          this.handleDataChange('datacenter')(e)
-                            .then(() => {
-                              this.setState({mapActiveDatacenterId: e.target.value});
-                            });
-                        }}
-                        required
-                        inputProps={{
-                          id: 'datacenter'
-                        }}
-                        className={classes.formInput}
-                      >
-                        {datacenter.allDatacenters.filter(i => (i.region === data.region) || !data.region).map(i => (
-                          <MenuItem key={i.id} value={i.id}>{i.name}</MenuItem>
-                        ))}
-                      </Select>
-                    </FormControl>
-                    <FormControl className={classes.formControl} fullWidth>
-                      <Map
-                        googleMapURL="https://maps.googleapis.com/maps/api/js?key=AIzaSyA0wwNWl1SoRNcHLmE94ST06IOSAn4WLho&v=3.exp&libraries=geometry,drawing,places"
-                        loadingElement={<div/>}
-                        containerElement={<div style={{height: `500px`}}/>}
-                        mapElement={<div style={{height: `100%`}}/>}
-                        center={state.mapLocation}
-                        zoom={state.mapZoom}
-                      >
-                        {datacenter.allDatacenters.map(i => (
-                          <Marker
-                            key={i.id}
-                            position={i.location}
-                            onClick={() => this.setState({mapActiveDatacenterId: i.id})}
-                          >
-                            {mapActiveDatacenterId === i.id &&
-                            <InfoWindow
-                              onCloseClick={() => this.setState({mapActiveDatacenterId: null})}
-
-                            >
-                              <div className={classes.infoBox}>
-                                <h2>{i.name}</h2>
-                                <h5>Available resources</h5>
-                                <div className={classes.resources}>
-                                  <div><h6>vCPU (cores)</h6> <span className='text-red'>{(Math.round(i.coe * cpu)).toLocaleString()}</span></div>
-                                  <div><h6>RAM (GB)</h6> <span className='text-amber'>{(Math.round(i.coe * ram)).toLocaleString()}</span></div>
-                                  <div><h6>GPU (cores)</h6> <span className='text-blue'>{(Math.round(i.coe * gpu)).toLocaleString()}</span></div>
-                                  <div><h6>Storage - HDD (GB)</h6> <span className='text-purple'>{(Math.round(i.coe * storageHdd)).toLocaleString()}</span></div>
-                                  <div><h6>Storage - SSD (GB)</h6> <span className='text-green'>{(Math.round(i.coe * storageSsd)).toLocaleString()}</span></div>
-                                </div>
-                                <div className='text-right pr-2 pt-4 pb-2'>
-                                  <Button variant='fab' mini color='primary'
-                                          onClick={() =>
-                                            this.setState(
-                                              update(
-                                                this.state, {
-                                                  data: {
-                                                    datacenter: {$set: i.id}
-                                                  }
-                                                }))}>
-                                    <CheckIcon/>
-                                  </Button>
-                                </div>
-                              </div>
-                            </InfoWindow>}
-                          </Marker>
-                        ))}
-                      </Map>
-                    </FormControl>
+                    {/*<FormControl className={classes.formControl}>*/}
+                    {/*<InputLabel htmlFor="datacenter">Datacenter</InputLabel>*/}
+                    {/*<Select*/}
+                    {/*value={data.datacenter}*/}
+                    {/*onChange={e => {*/}
+                    {/*this.handleDataChange('datacenter')(e)*/}
+                    {/*.then(() => {*/}
+                    {/*this.setState({mapActiveDatacenterId: e.target.value});*/}
+                    {/*});*/}
+                    {/*}}*/}
+                    {/*required*/}
+                    {/*inputProps={{*/}
+                    {/*id: 'datacenter'*/}
+                    {/*}}*/}
+                    {/*className={classes.formInput}*/}
+                    {/*>*/}
+                    {/*{datacenter.allDatacenters.filter(i => (i.region === data.region) || !data.region).map(i => (*/}
+                    {/*<MenuItem key={i.id} value={i.id}>{i.name}</MenuItem>*/}
+                    {/*))}*/}
+                    {/*</Select>*/}
+                    {/*</FormControl>*/}
+                    {stats &&
+                    <div className='row justify-content-around'>
+                      <div className='col-lg-6 col-md-6'>
+                        <div className='jr-card'>
+                            <div className='jr-card-header-color bg-primary d-flex'>
+                              Available resources
+                            </div>
+                          <div className='jr-card-body'>
+                            <div className={classes.resources}>
+                              <div><h6>vCPU (cores)</h6> <span className='text-red'>{stats.numCPU.toLocaleString()}</span></div>
+                              <div><h6>RAM (GB)</h6> <span className='text-amber'>{stats.memGB.toLocaleString()}</span></div>
+                              <div><h6>GPU (cores)</h6> <span className='text-blue'>{stats.numGPU.toLocaleString()}</span></div>
+                              <div><h6>Storage - SSD (GB)</h6> <span className='text-green'>{stats.storageGB.toLocaleString()}</span></div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div className='col-lg-6 col-md-6 pb-3'>
+                        <Map
+                          googleMapURL="https://maps.googleapis.com/maps/api/js?key=AIzaSyA0wwNWl1SoRNcHLmE94ST06IOSAn4WLho&v=3.exp&libraries=geometry,drawing,places"
+                          loadingElement={<div/>}
+                          containerElement={<div style={{height: `300px`}}/>}
+                          mapElement={<div style={{height: `100%`}}/>}
+                          center={state.mapLocation}
+                          zoom={state.mapZoom}
+                        >
+                        </Map>
+                      </div>
+                    </div>}
 
                     <div className={classes.buttonBox}>
-                      <Button color="primary" variant='raised' onClick={() => this.setState({activeStep: 2})}>Next</Button>
-                      <Button color="primary" variant='raised' onClick={() => this.setState({activeStep: 0})}>Previous</Button>
-                      <Button variant='raised'>Cancel</Button>
+                      <Button>Cancel</Button>
+                      <Button color="secondary" variant='raised' onClick={() => this.setState({activeStep: 0})}>Previous</Button>
+                      <Button color="secondary" variant='raised' onClick={() => this.setState({activeStep: 2})}>Next</Button>
                     </div>
                   </section>}
 
@@ -361,35 +325,45 @@ class ConfigWizard extends React.Component {
                       <h3>Step {activeStep + 1} of {stepsTotal}</h3>
                     </div>
 
-                    <div className={classes.formControl}>
+                    <div className={`${classes.formControl} mb-0`}>
                       <h4 className='pt-3'>Set minimal Quality Score: <span className='text-blue'>{state.qualityScore}</span></h4>
                       <div className='px-5 pb-4 pt-3'>
                         <Slider min={0} value={state.qualityScore} onChange={(v) => this.setState({qualityScore: v})}
                                 max={100}/>
                       </div>
-                      <div>
-                        <h3 className='text-center'>Available resources:</h3>
-                        <div className='container'>
-                          <div className='row justify-content-around'>
-                            <div className='col-lg-7 col-md-9'>
-                              <div className='jr-card'>
-                                <div className={classes.resources}>
-                                  <div><h6>vCPU (cores)</h6> <span className='text-red'>{Math.round((100 - state.qualityScore * 0.9) / 100 * cpu * coe).toLocaleString()}</span></div>
-                                  <div><h6>RAM (GB)</h6> <span className='text-amber'>{Math.round((100 - state.qualityScore * 0.9) / 100 * ram * coe).toLocaleString()}</span></div>
-                                  <div><h6>GPU (cores)</h6> <span className='text-blue'>{Math.round((100 - state.qualityScore * 0.9) / 100 * gpu * coe).toLocaleString()}</span></div>
-                                  <div><h6>Storage (GB)</h6> <span className='text-purple'>{Math.round((100 - state.qualityScore * 0.9) / 100 * storageHdd * coe).toLocaleString()}</span></div>
-                                  <div><h6>Storage - SSD (GB)</h6> <span className='text-green'>{Math.round((100 - state.qualityScore * 0.9) / 100 * storageSsd * coe).toLocaleString()}</span></div>
-                                </div>
+                      <div className='row justify-content-around'>
+                        <div className='col-lg-8 col-md-7 col-sm-6'>
+                          <div className='jr-card'>
+                            <div className='jr-card-header-color bg-primary d-flex'>
+                              Available resources
+                            </div>
+                            <div className='jr-card-body'>
+                              <div className={classes.resources}>
+                                <div><h6>vCPU (cores)</h6> <span className='text-red'>{this.getNumOfResources(stats.numCPU)}</span></div>
+                                <div><h6>RAM (GB)</h6> <span className='text-amber'>{this.getNumOfResources(stats.memGB)}</span></div>
+                                <div><h6>GPU (cores)</h6> <span className='text-blue'>{this.getNumOfResources(stats.numGPU)}</span></div>
+                                <div><h6>Storage - SSD (GB)</h6> <span className='text-green'>{this.getNumOfResources(stats.storageGB)}</span></div>
                               </div>
                             </div>
                           </div>
                         </div>
                       </div>
                     </div>
+                    <div className={classes.formControl}>
+                      <FormControlLabel
+                        control={
+                          <Checkbox
+                            checked={data.sameNetwork}
+                            onChange={this.handleDataChange('sameNetwork', 'bool')}
+                          />
+                        }
+                        label="Deploy to the same datacenter (fast network)"
+                      />
+                    </div>
                     <div className={classes.buttonBox}>
-                      <Button color="primary" variant='raised' onClick={() => this.setState({activeStep: 3})}>Next</Button>
-                      <Button color="primary" variant='raised' onClick={() => this.setState({activeStep: 1})}>Previous</Button>
-                      <Button variant='raised'>Cancel</Button>
+                      <Button>Cancel</Button>
+                      <Button color="secondary" variant='raised' onClick={() => this.setState({activeStep: 1})}>Previous</Button>
+                      <Button color="secondary" variant='raised' onClick={() => this.setState({activeStep: 3})}>Next</Button>
                     </div>
                   </section>}
 
@@ -454,23 +428,13 @@ class ConfigWizard extends React.Component {
                         />
                       </div>
                     </div>
-                    <div className={classes.formControl}>
-                      <FormControlLabel
-                        control={
-                          <Checkbox
-                            checked={data.sameNetwork}
-                            onChange={this.handleDataChange('sameNetwork', 'bool')}
-                          />
-                        }
-                        label="Deploy to the same datacenter (fast network)"
-                      />
-                    </div>
+
 
 
                     <div className={classes.buttonBox}>
-                      <Button color="primary" variant='raised' onClick={() => this.setState({activeStep: 4})}>Next</Button>
-                      <Button color="primary" variant='raised' onClick={() => this.setState({activeStep: 2})}>Previous</Button>
-                      <Button variant='raised'>Cancel</Button>
+                      <Button>Cancel</Button>
+                      <Button color="secondary" variant='raised' onClick={() => this.setState({activeStep: 2})}>Previous</Button>
+                      <Button color="secondary" variant='raised' onClick={() => this.setState({activeStep: 4})}>Next</Button>
                     </div>
                   </section>}
 

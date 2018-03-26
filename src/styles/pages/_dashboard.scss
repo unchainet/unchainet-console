@@ -259,17 +259,6 @@
   min-height: $size-120;
 }
 
-.jr-card-header-top {
-  @include display-flex();
-  @include align-items(center);
-  margin-right: -16px;
-}
-
-.jr-card-header-color {
-  padding: 10px 20px 20px;
-  margin: -18px -24px 25px;
-}
-
 .todo-cell-group {
   & .todo-cell {
     &:not(:last-child) {
