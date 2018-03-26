@@ -6,7 +6,7 @@ import MarkerClusterer from 'react-google-maps/lib/components/addons/MarkerClust
 const MarkerClustererMap = withGoogleMap(props => (
   <GoogleMap
     defaultZoom={2}
-    defaultCenter={{lat: 0, lng: 0}}
+    defaultCenter={{lat: 17, lng: 18}}
     onZoomChanged={props.onZoomChanged}
     defaultOptions={{
       fullscreenControl: false,
@@ -100,19 +100,19 @@ export default class MarkerClustererContainer extends Component {
             <div className="table">
               <div className="table-row">
                 <div className="table-cell">Providers</div>
-                <div className="table-cell">{marker.stats.numProviders}</div>
+                <div className="table-cell">{marker.numProviders || 0}</div>
               </div>
               <div className="table-row">
                 <div className="table-cell">vCPU</div>
-                <div className="table-cell">{marker.stats.numCPU}</div>
+                <div className="table-cell">{marker.numCPU || 0}</div>
               </div>
               <div className="table-row">
                 <div className="table-cell">RAM</div>
-                <div className="table-cell">{marker.stats.memGB} GB</div>
+                <div className="table-cell">{marker.memGB || 0} GB</div>
               </div>
               <div className="table-row">
                 <div className="table-cell">STORAGE</div>
-                <div className="table-cell">{marker.stats.storageGB} GB</div>
+                <div className="table-cell">{marker.storageGB || 0} GB</div>
               </div>
             </div>
           </div>
@@ -122,7 +122,7 @@ export default class MarkerClustererContainer extends Component {
     return (
       <MarkerClustererMap
         containerElement={
-          <div className="embed-responsive embed-responsive-21by9"/>
+          <div className="embed-responsive embed-responsive-500h"/>
         }
         mapElement={<div className="embed-responsive-item"/>}
         markers={markers}

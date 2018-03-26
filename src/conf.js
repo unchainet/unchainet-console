@@ -1,3 +1,3 @@
 module.exports = {
-  domain: process.env.DOMAIN || 'https://api.unchainet.com'
+  domain: process.env.DOMAIN || 'http://localhost:4000'
 };

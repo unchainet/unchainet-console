@@ -16,7 +16,7 @@ function* fetchAllRegionRequest() {
     yield put(fetchAllRegionSuccess(body));
   } catch (error) {
     const {body, response} = error;
-    yield put(showRegionMessage(body));
+    yield put(showRegionMessage(errorMessageFormatter(body)));
   }
 }
 
