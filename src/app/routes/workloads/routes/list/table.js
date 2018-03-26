@@ -20,18 +20,17 @@ class WorkloadsTable extends React.Component {
   render() {
     let data = this.props.items || [];
     return (
-      <div className="table-responsive-material">
+      <div className="table-responsive-material table-workloads">
         <Table>
           <TableHead>
             <TableRow>
               <TableCell>Name</TableCell>
-              <TableCell>Provider</TableCell>
               <TableCell>Region</TableCell>
-              <TableCell numeric>CPU cores</TableCell>
-              <TableCell numeric>Storage (Gb)</TableCell>
-              <TableCell numeric>GPU cores</TableCell>
+              <TableCell>CPU/GPU/MEM (GB)/ Storage(GB)</TableCell>
               <TableCell numeric>Price (CRC)</TableCell>
-              <TableCell>Actions</TableCell>
+              <TableCell>Public IP</TableCell>
+              <TableCell>Public hostname</TableCell>
+              <TableCell width="180px">Actions</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -39,12 +38,11 @@ class WorkloadsTable extends React.Component {
               return (
                 <TableRow key={n._id}>
                   <TableCell>{n.name}</TableCell>
-                  <TableCell>{''}</TableCell>
                   <TableCell>{n.region ? n.region.name : ''}</TableCell>
-                  <TableCell numeric>{n.numCPU}</TableCell>
-                  <TableCell numeric>{n.ssdGB}</TableCell>
-                  <TableCell numeric>{n.numGPU}</TableCell>
+                  <TableCell>{`${n.numCPU || 0}/${n.numGPU || 0}/${n.memoryGB || 0}/${n.ssdGB || 0}`}</TableCell>
                   <TableCell numeric>{n.price}</TableCell>
+                  <TableCell>{n.publicIP}</TableCell>
+                  <TableCell>{n.publicHostname}</TableCell>
                   <TableCell>
                     <Button className="jr-btn jr-btn-lg" onClick={()=>{this.props.history.push(`/app/workloads/wizard?id=${n.id}`)}} color="primary">
                       <i className="zmdi zmdi-edit"/>
