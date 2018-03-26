@@ -18,8 +18,8 @@ class Wallet extends React.Component {
   constructor() {
     super();
     this.state = {
-      UNET: 0,
-      CRC: 30,
+      UNET: 144,
+      CRC: 0,
       valueUNET: 144,
       valueCRC: 30,
       valueUSD: 48,

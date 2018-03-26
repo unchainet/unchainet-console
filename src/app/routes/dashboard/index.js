@@ -2,6 +2,7 @@ import React from 'react';
 import CardBox from '../../../components/CardBox/index';
 import PriceHistoryGraph from '../../../components/PriceHistoryGraph/index';
 import priceHistoryData from '../../../stubData/priceHistoryDashboard'
+import priceHistoryData2 from '../../../stubData/priceHistoryDashboard2'
 import {Button} from 'material-ui';
 import { connect } from 'react-redux';
 import WorkloadsTable from '../workloads/routes/list/table';
@@ -68,7 +69,7 @@ class Dashboard extends React.Component {
             </CardBox>
           </div>
           <div className="row">
-            <CardBox styleName="col-lg-8" cardStyle="jr-card-unet" heading>
+            <CardBox styleName="col-lg-7" cardStyle="jr-card-unet" heading>
               <div className="head-unet">
                 <div className="name">map - RUNNING WORKLOADS</div>
               </div>
@@ -76,12 +77,14 @@ class Dashboard extends React.Component {
                 {map ? <Map items={this.props.region.allRegions}/> : null}
               </div>
             </CardBox>
-            <CardBox styleName="col-lg-4" cardStyle="jr-card-unet" childrenStyle="jr-card-min-height" heading>
+            <CardBox styleName="col-lg-5" cardStyle="jr-card-unet" childrenStyle="jr-card-min-height" heading>
               <div className="head-unet">
-                <div className="name">price history - crc tokens</div>
+                <div className="name">price history</div>
               </div>
               <div className="body-unet">
-                <PriceHistoryGraph priceHistoryList={priceHistoryData} height={265}/>
+                <PriceHistoryGraph priceHistoryList={priceHistoryData} height={230}/>
+                <div style={{marginBottom: '30px'}} />
+                <PriceHistoryGraph priceHistoryList={priceHistoryData2} height={230}/>
               </div>
             </CardBox>
           </div>

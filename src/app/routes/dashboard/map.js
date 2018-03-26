@@ -6,7 +6,7 @@ import MarkerClusterer from 'react-google-maps/lib/components/addons/MarkerClust
 const MarkerClustererMap = withGoogleMap(props => (
   <GoogleMap
     defaultZoom={2}
-    defaultCenter={{lat: 17, lng: 18}}
+    defaultCenter={{lat: 17, lng: 35}}
     onZoomChanged={props.onZoomChanged}
     defaultOptions={{
       fullscreenControl: false,
