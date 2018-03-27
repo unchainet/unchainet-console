@@ -13,10 +13,6 @@ import {
 const TblCell = withStyles(theme => ({
   typeBody: {
     padding: '5px'
-  },
-  typeHead: {
-    backgroundColor: '#444',
-    color: '#fff'
   }
 }))(TableCell);
 
