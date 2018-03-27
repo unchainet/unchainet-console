@@ -10,7 +10,6 @@ import MenuItem from 'material-ui/Menu/MenuItem';
 import Checkbox from 'material-ui/Checkbox';
 import {InputLabel} from 'material-ui/Input';
 import Radio, {RadioGroup} from 'material-ui/Radio';
-import CheckIcon from 'material-ui-icons/Check';
 import Map from 'components/map';
 import {connect} from 'react-redux';
 import {
@@ -23,7 +22,6 @@ import {compose} from 'redux';
 import {fetchAllRegion} from 'actions/Region';
 import {fetchAllDatacenter} from 'actions/Datacenter';
 import CardLayout from 'components/CardLayout';
-import {Marker, InfoWindow} from 'react-google-maps';
 import ContainerHeader from 'components/ContainerHeader';
 import DkCodeMirror from 'components/DkCodeMirror';
 import 'codemirror/mode/yaml/yaml';
@@ -115,7 +113,6 @@ const styles = theme => ({
 class ConfigWizard extends React.Component {
 
   componentDidMount() {
-    //this.props.fetchAllDatacenter();
     this.props.fetchAllRegion();
   }
 
@@ -162,7 +159,6 @@ class ConfigWizard extends React.Component {
     }
     let value = type === 'int' ? parseInt(ctrlValue) : ctrlValue;
 
-    debugger;
     let aryPath = name.split('.').reverse();
     let object = null;
     aryPath.forEach((el, i) => {
@@ -173,10 +169,8 @@ class ConfigWizard extends React.Component {
       }
     });
 
-
     let newState = update(this.state, {
       data: object
-      //[name]: {$set: value},
     });
     let promise = new Promise((resolve, reject) => {
       this.setState(newState, () => resolve());
@@ -230,7 +224,7 @@ class ConfigWizard extends React.Component {
   }
 
   getEstimatedStorageCosts = () => {
-    return (this.state.data.storageGB * 0.1);
+    return (this.state.data.storageGB * 0.01);
   }
 
   getTotalCosts = () => {
@@ -239,8 +233,8 @@ class ConfigWizard extends React.Component {
 
   render() {
     const {classes} = this.props;
-    const {datacenter, region} = this.props;
-    const {data, mapActiveDatacenterId, activeStep} = this.state;
+    const { region} = this.props;
+    const {data, activeStep} = this.state;
     const state = this.state;
     const selectedRegion = region.allRegions.find(el => el._id === data.region);
     const stepsTotal = 7;
@@ -442,7 +436,7 @@ class ConfigWizard extends React.Component {
                           <div className='jr-card-body'>
                             <div className={classes.resources}>
                               <div><h6>vCPU + RAM</h6> <span className='text-red'>{this.getEstimatedCpuRamCosts().toLocaleString()}</span></div>
-                              <div><h6>Storage (0.1 CRC per GB)</h6> <span className='text-amber'>{this.getEstimatedStorageCosts().toLocaleString()}</span></div>
+                              <div><h6>Storage (0.01 CRC per GB)</h6> <span className='text-amber'>{this.getEstimatedStorageCosts().toLocaleString()}</span></div>
                               <div><h6><strong>Total</strong></h6> <span className='text-blue'>{this.getTotalCosts().toLocaleString()}</span></div>
                             </div>
                           </div>
@@ -480,7 +474,7 @@ class ConfigWizard extends React.Component {
                       <Button>Cancel</Button>
                       <Button color="secondary" variant='raised' onClick={() => this.setState({activeStep: 2})}>Previous</Button>
                       <Button color="secondary" variant='raised' onClick={() => {
-                        this.setState(update(this.state, {activeStep: {$set: 4}, data: {pricePerHour: {$set: 1.1 * this.getTotalCosts()}}}))
+                        this.setState(update(this.state, {activeStep: {$set: 4}, data: {pricePerHour: {$set: 1.3 * this.getTotalCosts()}}}))
                       }}>Next</Button>
                     </div>
                   </section>}
@@ -603,7 +597,7 @@ class ConfigWizard extends React.Component {
                             <div className='jr-card-body'>
                               <div className={classes.resources}>
                                 <div><h6>vCPU + RAM</h6> <span className='text-red'>{this.getEstimatedCpuRamCosts().toLocaleString()}</span></div>
-                                <div><h6>Storage (0.1 CRC per GB)</h6> <span className='text-amber'>{this.getEstimatedStorageCosts().toLocaleString()}</span></div>
+                                <div><h6>Storage (0.01 CRC per GB)</h6> <span className='text-amber'>{this.getEstimatedStorageCosts().toLocaleString()}</span></div>
                                 <div><h6><strong>Total</strong></h6> <span className='text-blue'>{this.getTotalCosts().toLocaleString()}</span></div>
                               </div>
                             </div>
