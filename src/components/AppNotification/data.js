@@ -1,6 +1,6 @@
 export const notifications = [
     {
-        title: "Your%20workload%20%3Cb%3EWorkload%20547%3C/b%3E%20has%20started."
+        title: "Your%20workload%20%3Cb%3EWorkload%20547%3C/b%3E%20has%20started.",
         time: "4:10 PM",
         date: "2018-03-27",
     }, {
