@@ -19,11 +19,6 @@ import {
 import {get, post, errorMessageFormatter} from './Api';
 import {ACTIVATE_USER} from '../constants/ActionTypes';
 
-const signOutRequest = async () =>
-    await  auth.signOut()
-        .then(authUser => authUser)
-        .catch(error => error);
-
 
 function* createUserWithEmailPassword({payload}) {
     const {email, password} = payload;
@@ -53,7 +48,7 @@ function* signInUserWithEmailPassword({payload}) {
     try {
         const {body, response} = yield post('/api/auth/local', JSON.stringify({email, password}));
         localStorage.setItem('token', body.token);
-        yield put(userSignInSuccess(signInUser));
+        yield put(userSignInSuccess(body));
     } catch (error) {
         const {body, response} = error;
         yield put(showAuthMessage(errorMessageFormatter(body)));

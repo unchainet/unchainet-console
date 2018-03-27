@@ -21,12 +21,23 @@ class UserInfo extends React.Component {
         this.setState({open: false});
     };
 
+    getUserName () {
+      let {data} = this.props.user;
+      if (!data) {
+        return '';
+      }
+      if (!data.name.first && !data.name.last) {
+        return `Account ${data._id.substr(0, 10)}...`;
+      }
+      return data.name.first || data.name.last;
+    };
+
     render() {
         return (
             <div className="user-profile d-flex flex-row align-items-center">
                 <i className="zmdi zmdi-account zmdi-hc-fw zmdi-hc-3x"/>
                 <div className="user-detail">
-                    <h4 className="user-name" onClick={this.handleClick}>Gary D. (AIML Inc.)  <i
+                    <h4 className="user-name" onClick={this.handleClick}>{this.getUserName()}  <i
                         className="zmdi zmdi-caret-down zmdi-hc-fw align-middle"/>
                     </h4>
                 </div>
@@ -66,9 +77,9 @@ class UserInfo extends React.Component {
 }
 
 
-const mapStateToProps = ({settings}) => {
+const mapStateToProps = ({settings, user}) => {
     const {locale} = settings;
-    return {locale}
+    return {locale, user}
 };
 export default connect(mapStateToProps, {userSignOut})(UserInfo);
 
