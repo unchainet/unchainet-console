@@ -9,6 +9,7 @@ import Select from 'material-ui/Select';
 import MenuItem from 'material-ui/Menu/MenuItem';
 import Checkbox from 'material-ui/Checkbox';
 import {InputLabel} from 'material-ui/Input';
+import Radio, {RadioGroup} from 'material-ui/Radio';
 import CheckIcon from 'material-ui-icons/Check';
 import Map from 'components/map';
 import {connect} from 'react-redux';
@@ -59,7 +60,8 @@ const styles = theme => ({
   section: {
     marginLeft: '-44px',
     marginRight: '-44px',
-    padding: '1.8em 2.5em 1.2em',
+    padding: '1.6em 2.5em 1em',
+    marginBottom: '27px',
     backgroundColor: '#555',
     color: '#fff',
     marginTop: -38,
@@ -97,6 +99,16 @@ const styles = theme => ({
     '& button': {
       marginLeft: 10
     }
+  },
+  radioDescription: {
+    fontSize: '12px',
+    fontStyle: 'Italic'
+  },
+  radioLabel: {
+    paddingLeft: '10px'
+  },
+  radioWithDesc: {
+    padding: '0 0 10px 0'
   }
 });
 
@@ -116,11 +128,10 @@ class ConfigWizard extends React.Component {
     isNew: true,
     data: {
       name: '',
-      cpu: 1,
-      ram: 1,
+      numCPU: 1,
       gpu: 0,
       storageHdd: 1,
-      storageSsd: 0,
+      storageGB: 10,
       containerType: 'Docker',
       datacenter: '',
       region: '',
@@ -135,14 +146,8 @@ class ConfigWizard extends React.Component {
       price: 0,
       status: 'running',
       sameNetwork: false,
-      pricePerHourForCpu: 4
-    },
-    availableResources: {
-      cpu: 5302,
-      ram: 23084,
-      gpu: 439432,
-      storageHdd: 296403,
-      storageSsd: 843049
+      pricePerHourForCpu: 4,
+      computeProfile:''
     }
   };
 
@@ -150,12 +155,11 @@ class ConfigWizard extends React.Component {
     let ctrlValue = null;
     if (type === 'bool') {
       ctrlValue = event.target.checked;
-    } else if (event === null || 'object' === !typeof(event)) {
+    } else if (event === null || typeof(event) === 'number' || typeof(event) === 'string') {
       ctrlValue = event;
     } else {
       ctrlValue = event.target.value;
     }
-    console.log(ctrlValue);
     let value = type === 'int' ? parseInt(ctrlValue) : ctrlValue;
 
     let newState = update(this.state, {
@@ -182,8 +186,23 @@ class ConfigWizard extends React.Component {
     this.setState(newState);
   };
 
-  getNumOfResources = (resNum) =>{
-    return Math.round((100 - this.state.qualityScore * 0.9) / 100 * (this.state.data.sameNetwork ? 0.5 : 1) * resNum).toLocaleString();
+  getNumOfResources = (resNum) => {
+    return Math.round((100 - this.state.qualityScore * 0.9) / 100 * (this.state.data.sameNetwork ? 0.5 : 1) * resNum);
+  }
+
+  getMemGb = () => {
+    const {computeProfile, numCPU} = this.state.data;
+    let coe = null;
+    if(computeProfile === 'balanced') {
+      coe = 1;
+    } else if (computeProfile === 'cpuIntensive') {
+      coe = 0.5;
+    } else {
+      coe = 2;
+    }
+
+    return (numCPU * coe).toLocaleString();
+
   }
 
   render() {
@@ -191,13 +210,7 @@ class ConfigWizard extends React.Component {
     const {datacenter, region} = this.props;
     const {data, mapActiveDatacenterId, activeStep} = this.state;
     const state = this.state;
-    const {cpu, ram, storageHdd, storageSsd, gpu} = state.availableResources;
     const selectedRegion = region.allRegions.find(el => el._id === data.region);
-    let stats = null;
-    if (selectedRegion) {
-      stats = selectedRegion.stats;
-    }
-    console.log('selectedRegion', selectedRegion);
     const stepsTotal = 6;
 
     return (
@@ -281,19 +294,19 @@ class ConfigWizard extends React.Component {
                     {/*))}*/}
                     {/*</Select>*/}
                     {/*</FormControl>*/}
-                    {stats &&
+                    {selectedRegion &&
                     <div className='row justify-content-around'>
                       <div className='col-lg-6 col-md-6'>
                         <div className='jr-card'>
-                            <div className='jr-card-header-color bg-primary d-flex'>
-                              Available resources
-                            </div>
+                          <div className='jr-card-header-color bg-primary d-flex'>
+                            Available resources
+                          </div>
                           <div className='jr-card-body'>
                             <div className={classes.resources}>
-                              <div><h6>vCPU (cores)</h6> <span className='text-red'>{stats.numCPU.toLocaleString()}</span></div>
-                              <div><h6>RAM (GB)</h6> <span className='text-amber'>{stats.memGB.toLocaleString()}</span></div>
-                              <div><h6>GPU (cores)</h6> <span className='text-blue'>{stats.numGPU.toLocaleString()}</span></div>
-                              <div><h6>Storage - SSD (GB)</h6> <span className='text-green'>{stats.storageGB.toLocaleString()}</span></div>
+                              <div><h6>vCPU (cores)</h6> <span className='text-red'>{selectedRegion.numCPU.toLocaleString()}</span></div>
+                              <div><h6>RAM (GB)</h6> <span className='text-amber'>{selectedRegion.memGB.toLocaleString()}</span></div>
+                              <div><h6>GPU (cores)</h6> <span className='text-blue'>{selectedRegion.numGPU.toLocaleString()}</span></div>
+                              <div><h6>Storage - SSD (GB)</h6> <span className='text-green'>{selectedRegion.storageGB.toLocaleString()}</span></div>
                             </div>
                           </div>
                         </div>
@@ -326,7 +339,7 @@ class ConfigWizard extends React.Component {
                     </div>
 
                     <div className={`${classes.formControl} mb-0`}>
-                      <h4 className='pt-3'>Set minimal Quality Score: <span className='text-blue'>{state.qualityScore}</span></h4>
+                      <h4>Set minimal Quality Score: <span className='text-blue'>{state.qualityScore}</span></h4>
                       <div className='px-5 pb-4 pt-3'>
                         <Slider min={0} value={state.qualityScore} onChange={(v) => this.setState({qualityScore: v})}
                                 max={100}/>
@@ -339,10 +352,10 @@ class ConfigWizard extends React.Component {
                             </div>
                             <div className='jr-card-body'>
                               <div className={classes.resources}>
-                                <div><h6>vCPU (cores)</h6> <span className='text-red'>{this.getNumOfResources(stats.numCPU)}</span></div>
-                                <div><h6>RAM (GB)</h6> <span className='text-amber'>{this.getNumOfResources(stats.memGB)}</span></div>
-                                <div><h6>GPU (cores)</h6> <span className='text-blue'>{this.getNumOfResources(stats.numGPU)}</span></div>
-                                <div><h6>Storage - SSD (GB)</h6> <span className='text-green'>{this.getNumOfResources(stats.storageGB)}</span></div>
+                                <div><h6>vCPU (cores)</h6> <span className='text-red'>{this.getNumOfResources(selectedRegion.numCPU).toLocaleString()}</span></div>
+                                <div><h6>RAM (GB)</h6> <span className='text-amber'>{this.getNumOfResources(selectedRegion.memGB).toLocaleString()}</span></div>
+                                <div><h6>GPU (cores)</h6> <span className='text-blue'>{this.getNumOfResources(selectedRegion.numGPU).toLocaleString()}</span></div>
+                                <div><h6>Storage - SSD (GB)</h6> <span className='text-green'>{this.getNumOfResources(selectedRegion.storageGB).toLocaleString()}</span></div>
                               </div>
                             </div>
                           </div>
@@ -373,62 +386,83 @@ class ConfigWizard extends React.Component {
                       <h2>Resources configuration</h2>
                       <h3>Step {activeStep + 1} of {stepsTotal}</h3>
                     </div>
+                    <FormControl className={classes.formControl}>
+                      <h4>Compute Profile</h4>
+                      <RadioGroup
+                        value={data.computeProfile}
+                        onChange={this.handleDataChange('computeProfile')}
+                      >
+                        <FormControlLabel value="balanced" control={<Radio/>}
+                                          classes={{root: classes.radioWithDesc}}
+                                          label={<RadioLabel classes={classes} label="Balanced"
+                                                             description={
+                                                               <div>
+                                                                 Description
+                                                               </div>}/>}/>
+                        <FormControlLabel value="cpuIntensive" control={<Radio/>}
+                                          classes={{root: classes.radioWithDesc}}
+                                          label={<RadioLabel classes={classes} label="CPU intensive"
+                                                             description={
+                                                               <div>
+                                                                 Description
+                                                               </div>}/>}/>
+                        <FormControlLabel value="memoryIntensive" control={<Radio/>}
+                                          classes={{root: classes.radioWithDesc}}
+                                          label={<RadioLabel classes={classes} label="Memory intensive"
+                                                             description={<div>
+                                                               Description
+                                                             </div>}/>}/>
+                      </RadioGroup>
+                    </FormControl>
                     <div className={classes.formControl}>
-                      <h4 className='pt-3'>Number of vCPU cores: <span className='text-red'>{data.cpu.toLocaleString()}</span></h4>
-                      <div className='px-5 pb-4 pt-3'>
+
+                      <h4 className='pt-3'>Number of vCPU cores: <span className='text-red'>{data.numCPU.toLocaleString()}</span></h4>
+                      <div className='px-5 pt-3'>
                         <Slider
                           min={1}
-                          max={Math.round((100 - state.qualityScore * 0.9) / 100 * cpu * coe)}
-                          value={data.cpu}
-                          onChange={this.handleDataChange('cpu')}
+                          max={this.getNumOfResources(selectedRegion.numCPU)}
+                          value={data.numCPU}
+                          onChange={this.handleDataChange('numCPU')}
                         />
                       </div>
                     </div>
                     <div className={classes.formControl}>
-                      <h4 className='pt-3'>Number of RAM (GB): <span className='text-amber'>{data.ram.toLocaleString()}</span></h4>
-                      <div className='px-5 pb-4 pt-3'>
-                        <Slider
-                          min={1}
-                          max={Math.round((100 - state.qualityScore * 0.9) / 100 * ram * coe)}
-                          value={data.ram}
-                          onChange={this.handleDataChange('ram')}
-                        />
-                      </div>
-                    </div>
-                    <div className={classes.formControl}>
-                      <h4 className='pt-3'>Number of GPU cores: <span className='text-blue'>{data.gpu.toLocaleString()}</span></h4>
-                      <div className='px-5 pb-4 pt-3'>
-                        <Slider
-                          min={0}
-                          max={Math.round((100 - state.qualityScore * 0.9) / 100 * gpu * coe)}
-                          value={data.gpu}
-                          onChange={this.handleDataChange('gpu')}
-                        />
-                      </div>
-                    </div>
-                    <div className={classes.formControl}>
-                      <h4 className='pt-3'>Storage - HDD (GB): <span className='text-purple'>{data.storageHdd.toLocaleString()}</span></h4>
-                      <div className='px-5 pb-4 pt-3'>
-                        <Slider
-                          min={1}
-                          max={Math.round((100 - state.qualityScore * 0.9) / 100 * storageHdd * coe)}
-                          value={data.storageHdd}
-                          onChange={this.handleDataChange('storageHdd')}
-                        />
-                      </div>
-                    </div>
-                    <div className={classes.formControl}>
-                      <h4 className='pt-3'>Storage - SSD (GB): <span className='text-purple'>{data.storageSsd.toLocaleString()}</span></h4>
-                      <div className='px-5 pb-4 pt-3'>
-                        <Slider
-                          min={0}
-                          max={Math.round((100 - state.qualityScore * 0.9) / 100 * storageSsd * coe)}
-                          value={data.storageSsd}
-                          onChange={this.handleDataChange('storageSsd')}
-                        />
-                      </div>
+                      <h4 className='pt-3'>Number of RAM (GB): <span className='text-amber'>{this.getMemGb()}</span></h4>
                     </div>
 
+                    {/*<div className={classes.formControl}>*/}
+                      {/*<h4 className='pt-3'>Number of RAM (GB): <span className='text-amber'>{data.ram.toLocaleString()}</span></h4>*/}
+                      {/*<div className='px-5 pb-4 pt-3'>*/}
+                        {/*<Slider*/}
+                          {/*min={1}*/}
+                          {/*max={50}*/}
+                          {/*value={data.ram}*/}
+                          {/*onChange={this.handleDataChange('ram')}*/}
+                        {/*/>*/}
+                      {/*</div>*/}
+                    {/*</div>*/}
+                    {/*<div className={classes.formControl}>*/}
+                      {/*<h4 className='pt-3'>Number of GPU cores: <span className='text-blue'>{data.gpu.toLocaleString()}</span></h4>*/}
+                      {/*<div className='px-5 pb-4 pt-3'>*/}
+                        {/*<Slider*/}
+                          {/*min={0}*/}
+                          {/*max={Math.round((100 - state.qualityScore * 0.9) / 100 * gpu * coe)}*/}
+                          {/*value={data.gpu}*/}
+                          {/*onChange={this.handleDataChange('gpu')}*/}
+                        {/*/>*/}
+                      {/*</div>*/}
+                    {/*</div>*/}
+                    <div className={classes.formControl}>
+                      <h4 className='pt-3'>Temporary Storage - SSD (GB): <span className='text-purple'>{data.storageGB.toLocaleString()}</span></h4>
+                      <div className='px-5 pb-4 pt-3'>
+                        <Slider
+                          min={1}
+                          max={this.getNumOfResources(selectedRegion.storageGB)}
+                          value={data.storageGB}
+                          onChange={this.handleDataChange('storageGB')}
+                        />
+                      </div>
+                    </div>
 
 
                     <div className={classes.buttonBox}>
@@ -511,3 +545,11 @@ export default compose(
   }),
   connect(mapStateToProps, mapDispatchToProps),
 )(ConfigWizard);
+
+
+const RadioLabel = ({classes, label, description}) => (
+  <div className={classes.radioLabel}>
+    <div>{label}</div>
+    <div className={classes.radioDescription}>{description}</div>
+  </div>
+);
