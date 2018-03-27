@@ -5,6 +5,7 @@ import {connect} from 'react-redux'
 import Menu, {MenuItem} from 'material-ui/Menu';
 import {userSignOut} from 'actions/Auth';
 import IntlMessages from 'util/IntlMessages';
+import {withRouter} from 'react-router';
 
 class UserInfo extends React.Component {
 
@@ -54,7 +55,10 @@ class UserInfo extends React.Component {
                           }
                       }}
                 >
-                    <MenuItem onClick={this.handleRequestClose}>
+                    <MenuItem onClick={() => {
+                      this.handleRequestClose();
+                      this.props.history.push('/app/user/profile');
+                    }}>
                         <i className="zmdi zmdi-account zmdi-hc-fw mr-2"/>
                         <IntlMessages id="popup.profile"/>
                     </MenuItem>
@@ -81,5 +85,5 @@ const mapStateToProps = ({settings, user}) => {
     const {locale} = settings;
     return {locale, user}
 };
-export default connect(mapStateToProps, {userSignOut})(UserInfo);
+export default connect(mapStateToProps, {userSignOut})(withRouter(UserInfo));
 
