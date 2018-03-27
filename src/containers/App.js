@@ -140,7 +140,7 @@ class App extends Component {
   }
 
   render() {
-    const {match, location, themeColor, isDarkTheme, locale, authUser} = this.props;
+    const {match, location, themeColor, isDarkTheme, locale, authUser, user} = this.props;
     let applyTheme = createMuiTheme(indigoTheme);
     if (isDarkTheme) {
       applyTheme = createMuiTheme(darkTheme)
@@ -166,7 +166,7 @@ class App extends Component {
           >
             <div className="app-main">
               <RestrictedRoute path={`${match.url}app`}
-                               authUser={authUser} component={MainApp}/>
+                               authUser={authUser} user={user} component={MainApp}/>
               <Route path='/signin' component={SignIn}/>
               <Route path='/signup' component={SignUp}/>
               <Route path='/activate' component={Activate}/>
@@ -178,10 +178,10 @@ class App extends Component {
   }
 }
 
-const mapStateToProps = ({settings, auth}) => {
+const mapStateToProps = ({settings, auth, user}) => {
   const {themeColor, sideNavColor, darkTheme, locale} = settings;
   const {authUser} = auth;
-  return {themeColor, sideNavColor, isDarkTheme: darkTheme, locale, authUser}
+  return {themeColor, sideNavColor, isDarkTheme: darkTheme, locale, authUser, user}
 };
 
 export default connect(mapStateToProps)(App);

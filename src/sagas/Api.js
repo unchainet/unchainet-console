@@ -1,5 +1,7 @@
 import conf from '../conf';
 const host = conf.apiBaseUrl;
+import {all, call, fork, put, takeEvery} from 'redux-saga/effects';
+import {userSignOut} from '../actions/Auth';
 
 export function* get (relativePath){
   return yield doFetch(relativePath, getHeaders('GET'));
@@ -24,6 +26,9 @@ export function* doFetch (relativePath, config){
     body = yield copy.text();
   }
   if (res.status >= 400) {
+    if (res.status === 401) {
+      yield put(userSignOut());
+    }
     throw({response: res, body});
   }
   return {response: res, body};

@@ -7,6 +7,7 @@ import SidenavContent from './SidenavContent';
 import {Link} from 'react-router-dom';
 import {COLLAPSED_DRAWER, FIXED_DRAWER} from 'constants/ActionTypes';
 import {updateWindowWidth} from 'actions/Setting';
+import {userFetch} from '../../actions/User';
 
 class SideNav extends React.PureComponent {
 
@@ -18,6 +19,7 @@ class SideNav extends React.PureComponent {
         window.addEventListener('resize', () => {
             this.props.updateWindowWidth($(window).width())
         });
+        this.props.userFetch();
     }
 
     render() {
@@ -56,5 +58,5 @@ const mapStateToProps = ({settings}) => {
     return {navCollapsed, drawerType, width, locale}
 };
 
-export default withRouter(connect(mapStateToProps, {updateWindowWidth})(SideNav));
+export default withRouter(connect(mapStateToProps, {updateWindowWidth, userFetch})(SideNav));
 

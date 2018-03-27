@@ -153,3 +153,8 @@ export const FETCH_ALL_PRICE_HISTORY_SUCCESS = 'fetch_all_price_history_success'
 //wallet
 export const FETCH_ALL_WALLET = 'fetch_all_wallet';
 export const FETCH_ALL_WALLET_SUCCESS = 'fetch_all_wallet_success';
+
+//user
+export const FETCH_USER = 'fetch_user';
+export const FETCH_USER_SUCCESS = 'fetch_user_success';
+export const FETCH_USER_ERROR = 'fetch_user_error';

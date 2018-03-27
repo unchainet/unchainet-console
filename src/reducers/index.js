@@ -8,6 +8,11 @@ import PriceHistory from './PriceHistory';
 import Datacenter from './Datacenter';
 import Region from './Region';
 import Wallet from './Wallet';
+import User from './User';
+
+import {
+  SIGNOUT_USER_SUCCESS,
+} from 'constants/ActionTypes';
 
 
 const reducers = combineReducers({
@@ -20,6 +25,17 @@ const reducers = combineReducers({
     datacenter: Datacenter,
     region: Region,
     wallet: Wallet,
+    user: User
 });
 
-export default reducers;
+const initialState = reducers({}, {});
+
+const rootReducer = (state, action) => {
+  if (action.type === SIGNOUT_USER_SUCCESS) {
+    state = initialState
+  }
+
+  return reducers(state, action);
+};
+
+export default rootReducer;
