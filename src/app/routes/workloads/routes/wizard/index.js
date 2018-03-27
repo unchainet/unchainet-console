@@ -107,6 +107,10 @@ const styles = theme => ({
   },
   radioWithDesc: {
     padding: '0 0 10px 0'
+  },
+  resourcesNote: {
+    fontSize: '12px',
+    paddingTop: '5px'
   }
 });
 
@@ -115,6 +119,21 @@ class ConfigWizard extends React.Component {
   componentDidMount() {
     this.props.fetchAllRegion();
   }
+
+  profileMultipliers = {
+    memory: {
+      balanced: 1,
+      cpuIntensive: 0.5,
+      memoryIntensive: 2
+    },
+    cpuCosts: {
+      balanced: 1,
+      cpuIntensive: 0.7,
+      memoryIntensive: 1.3
+    }
+  };
+
+  crcPerTbTransferred = 0.001;
 
   state = {
     qualityScore: 50,
@@ -197,39 +216,41 @@ class ConfigWizard extends React.Component {
 
   getMemGb = () => {
     const {computeProfile, numCPU} = this.state.data;
+    const {balanced,cpuIntensive,memoryIntensive} = this.profileMultipliers.memory;
     let coe = null;
     if (computeProfile === 'balanced') {
-      coe = 1;
+      coe = balanced;
     } else if (computeProfile === 'cpuIntensive') {
-      coe = 0.5;
+      coe = cpuIntensive;
     } else {
-      coe = 2;
+      coe = memoryIntensive;
     }
 
     return (numCPU * coe).toLocaleString();
-  }
+  };
 
   getEstimatedCpuRamCosts = () => {
     const {computeProfile, numCPU} = this.state.data;
+    const {balanced,cpuIntensive,memoryIntensive} = this.profileMultipliers.cpuCosts;
     let cpuCoe = null;
 
     if (computeProfile === 'balanced') {
-      cpuCoe = 1;
+      cpuCoe = balanced;
     } else if (computeProfile === 'cpuIntensive') {
-      cpuCoe = 0.7;
+      cpuCoe = cpuIntensive;
     } else {
-      cpuCoe = 1.3;
+      cpuCoe = memoryIntensive;
     }
     return (numCPU * cpuCoe);
-  }
+  };
 
   getEstimatedStorageCosts = () => {
     return (this.state.data.storageGB * 0.01);
-  }
+  };
 
   getTotalCosts = () => {
     return this.getEstimatedStorageCosts() + this.getEstimatedCpuRamCosts();
-  }
+  };
 
   render() {
     const {classes} = this.props;
@@ -410,20 +431,23 @@ class ConfigWizard extends React.Component {
                                               label={<RadioLabel classes={classes} label="Balanced"
                                                                  description={
                                                                    <div>
-                                                                     Description
+                                                                     Optimized for the most common workloads.
+                                                                     The ratio of vCPU and RAM is 1:1.
                                                                    </div>}/>}/>
                             <FormControlLabel value="cpuIntensive" control={<Radio/>}
                                               classes={{root: classes.radioWithDesc}}
                                               label={<RadioLabel classes={classes} label="CPU intensive"
                                                                  description={
                                                                    <div>
-                                                                     Description
+                                                                     Optimized for CPU intensive workloads.
+                                                                     The ratio of vCPU and RAM is 1:{this.profileMultipliers.memory.cpuIntensive}.
                                                                    </div>}/>}/>
                             <FormControlLabel value="memoryIntensive" control={<Radio/>}
                                               classes={{root: classes.radioWithDesc}}
                                               label={<RadioLabel classes={classes} label="Memory intensive"
                                                                  description={<div>
-                                                                   Description
+                                                                   Optimized for memory intensive workloads.
+                                                                   The ratio of vCPU and RAM is 1:{this.profileMultipliers.memory.memoryIntensive}.
                                                                  </div>}/>}/>
                           </RadioGroup>
                         </FormControl>
@@ -438,6 +462,9 @@ class ConfigWizard extends React.Component {
                               <div><h6>vCPU + RAM</h6> <span className='text-red'>{this.getEstimatedCpuRamCosts().toLocaleString()}</span></div>
                               <div><h6>Storage (0.01 CRC per GB)</h6> <span className='text-amber'>{this.getEstimatedStorageCosts().toLocaleString()}</span></div>
                               <div><h6><strong>Total</strong></h6> <span className='text-blue'>{this.getTotalCosts().toLocaleString()}</span></div>
+                            </div>
+                            <div className={classes.resourcesNote}>
+                              <i><u>Note:</u> The costs don't include data transfer {this.crcPerTbTransferred} CRC per 1 TB.</i>
                             </div>
                           </div>
                         </div>
@@ -486,7 +513,7 @@ class ConfigWizard extends React.Component {
                       <h3>Step {activeStep + 1} of {stepsTotal}</h3>
                     </div>
                     <FormControl className={classes.formControl}>
-                      <h4 className='pt-3'>Set max bid price for per hour: <span className='text-blue'>{round(data.pricePerHour)}</span> CRC</h4>
+                      <h4 className='pt-3'>Set max bid price for per hour: <span className='text-blue'>{round(data.pricePerHour)} CRC</span></h4>
                       <div className='px-5 pb-4 pt-3'>
                         <Slider
                           min={1}
@@ -495,7 +522,7 @@ class ConfigWizard extends React.Component {
                           onChange={this.handleDataChange('pricePerHour')}
                         />
                       </div>
-                      <p className='py-3'>Current price for vCPU per hour: <span className='text-green'>{round(this.getTotalCosts()).toLocaleString()} CRC</span></p>
+                      <p className='py-3'><i><u>Note:</u> The current price for vCPU per hour: <span className='text-green'>{round(this.getTotalCosts()).toLocaleString()} CRC</span></i></p>
                     </FormControl>
 
                     <div className={classes.buttonBox}>
@@ -599,6 +626,9 @@ class ConfigWizard extends React.Component {
                                 <div><h6>vCPU + RAM</h6> <span className='text-red'>{this.getEstimatedCpuRamCosts().toLocaleString()}</span></div>
                                 <div><h6>Storage (0.01 CRC per GB)</h6> <span className='text-amber'>{this.getEstimatedStorageCosts().toLocaleString()}</span></div>
                                 <div><h6><strong>Total</strong></h6> <span className='text-blue'>{this.getTotalCosts().toLocaleString()}</span></div>
+                              </div>
+                              <div className={classes.resourcesNote}>
+                                <i><u>Note:</u> The costs don't include data transfer {this.crcPerTbTransferred} CRC per 1 TB.</i>
                               </div>
                             </div>
                           </div>
