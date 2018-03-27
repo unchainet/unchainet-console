@@ -25,7 +25,9 @@ import {fetchAllDatacenter} from 'actions/Datacenter';
 import CardLayout from 'components/CardLayout';
 import {Marker, InfoWindow} from 'react-google-maps';
 import ContainerHeader from 'components/ContainerHeader';
-
+import DkCodeMirror from 'components/DkCodeMirror';
+import 'codemirror/mode/yaml/yaml';
+import {round} from 'util/Format';
 
 const styles = theme => ({
   root: {
@@ -60,7 +62,7 @@ const styles = theme => ({
   section: {
     marginLeft: '-44px',
     marginRight: '-44px',
-    padding: '1.6em 2.5em 1em',
+    padding: '1.6em 2.5em .7em',
     marginBottom: '27px',
     backgroundColor: '#555',
     color: '#fff',
@@ -82,10 +84,8 @@ const styles = theme => ({
       },
       '& h6': {
         display: 'inline-block',
-        width: 120
       },
       '& span': {
-        width: 60,
         float: 'right',
         textAlign: 'right',
         display: 'inline-block',
@@ -146,8 +146,8 @@ class ConfigWizard extends React.Component {
       price: 0,
       status: 'running',
       sameNetwork: false,
-      pricePerHourForCpu: 4,
-      computeProfile:''
+      pricePerHour: 4,
+      computeProfile: 'balanced'
     }
   };
 
@@ -162,10 +162,21 @@ class ConfigWizard extends React.Component {
     }
     let value = type === 'int' ? parseInt(ctrlValue) : ctrlValue;
 
-    let newState = update(this.state, {
-      data: {
-        [name]: {$set: value},
+    debugger;
+    let aryPath = name.split('.').reverse();
+    let object = null;
+    aryPath.forEach((el, i) => {
+      if (i === 0) {
+        object = {[el]: {$set: value}};
+      } else {
+        object = {[el]: object}
       }
+    });
+
+
+    let newState = update(this.state, {
+      data: object
+      //[name]: {$set: value},
     });
     let promise = new Promise((resolve, reject) => {
       this.setState(newState, () => resolve());
@@ -187,13 +198,13 @@ class ConfigWizard extends React.Component {
   };
 
   getNumOfResources = (resNum) => {
-    return Math.round((100 - this.state.qualityScore * 0.9) / 100 * (this.state.data.sameNetwork ? 0.5 : 1) * resNum);
+    return round((100 - this.state.qualityScore * 0.9) / 100 * (this.state.data.sameNetwork ? 0.5 : 1) * resNum);
   }
 
   getMemGb = () => {
     const {computeProfile, numCPU} = this.state.data;
     let coe = null;
-    if(computeProfile === 'balanced') {
+    if (computeProfile === 'balanced') {
       coe = 1;
     } else if (computeProfile === 'cpuIntensive') {
       coe = 0.5;
@@ -202,7 +213,28 @@ class ConfigWizard extends React.Component {
     }
 
     return (numCPU * coe).toLocaleString();
+  }
 
+  getEstimatedCpuRamCosts = () => {
+    const {computeProfile, numCPU} = this.state.data;
+    let cpuCoe = null;
+
+    if (computeProfile === 'balanced') {
+      cpuCoe = 1;
+    } else if (computeProfile === 'cpuIntensive') {
+      cpuCoe = 0.7;
+    } else {
+      cpuCoe = 1.3;
+    }
+    return (numCPU * cpuCoe);
+  }
+
+  getEstimatedStorageCosts = () => {
+    return (this.state.data.storageGB * 0.1);
+  }
+
+  getTotalCosts = () => {
+    return this.getEstimatedStorageCosts() + this.getEstimatedCpuRamCosts();
   }
 
   render() {
@@ -211,7 +243,14 @@ class ConfigWizard extends React.Component {
     const {data, mapActiveDatacenterId, activeStep} = this.state;
     const state = this.state;
     const selectedRegion = region.allRegions.find(el => el._id === data.region);
-    const stepsTotal = 6;
+    const stepsTotal = 7;
+
+    const codeMirrorOptions = {
+      lineNumbers: true,
+      mode: 'text/x-yaml',
+      lineWrapping: true
+    };
+
 
     return (
       <div className="app-wrapper">
@@ -272,28 +311,6 @@ class ConfigWizard extends React.Component {
                         ))}
                       </Select>
                     </FormControl>
-
-                    {/*<FormControl className={classes.formControl}>*/}
-                    {/*<InputLabel htmlFor="datacenter">Datacenter</InputLabel>*/}
-                    {/*<Select*/}
-                    {/*value={data.datacenter}*/}
-                    {/*onChange={e => {*/}
-                    {/*this.handleDataChange('datacenter')(e)*/}
-                    {/*.then(() => {*/}
-                    {/*this.setState({mapActiveDatacenterId: e.target.value});*/}
-                    {/*});*/}
-                    {/*}}*/}
-                    {/*required*/}
-                    {/*inputProps={{*/}
-                    {/*id: 'datacenter'*/}
-                    {/*}}*/}
-                    {/*className={classes.formInput}*/}
-                    {/*>*/}
-                    {/*{datacenter.allDatacenters.filter(i => (i.region === data.region) || !data.region).map(i => (*/}
-                    {/*<MenuItem key={i.id} value={i.id}>{i.name}</MenuItem>*/}
-                    {/*))}*/}
-                    {/*</Select>*/}
-                    {/*</FormControl>*/}
                     {selectedRegion &&
                     <div className='row justify-content-around'>
                       <div className='col-lg-6 col-md-6'>
@@ -386,36 +403,53 @@ class ConfigWizard extends React.Component {
                       <h2>Resources configuration</h2>
                       <h3>Step {activeStep + 1} of {stepsTotal}</h3>
                     </div>
-                    <FormControl className={classes.formControl}>
-                      <h4>Compute Profile</h4>
-                      <RadioGroup
-                        value={data.computeProfile}
-                        onChange={this.handleDataChange('computeProfile')}
-                      >
-                        <FormControlLabel value="balanced" control={<Radio/>}
-                                          classes={{root: classes.radioWithDesc}}
-                                          label={<RadioLabel classes={classes} label="Balanced"
-                                                             description={
-                                                               <div>
-                                                                 Description
-                                                               </div>}/>}/>
-                        <FormControlLabel value="cpuIntensive" control={<Radio/>}
-                                          classes={{root: classes.radioWithDesc}}
-                                          label={<RadioLabel classes={classes} label="CPU intensive"
-                                                             description={
-                                                               <div>
-                                                                 Description
-                                                               </div>}/>}/>
-                        <FormControlLabel value="memoryIntensive" control={<Radio/>}
-                                          classes={{root: classes.radioWithDesc}}
-                                          label={<RadioLabel classes={classes} label="Memory intensive"
-                                                             description={<div>
-                                                               Description
-                                                             </div>}/>}/>
-                      </RadioGroup>
-                    </FormControl>
+                    <div className='row justify-content-start'>
+                      <div className='col-lg-6 col-md-6'>
+                        <FormControl className={classes.formControl}>
+                          <h4>Compute Profile</h4>
+                          <RadioGroup
+                            value={data.computeProfile}
+                            onChange={this.handleDataChange('computeProfile')}
+                          >
+                            <FormControlLabel value="balanced" control={<Radio/>}
+                                              classes={{root: classes.radioWithDesc}}
+                                              label={<RadioLabel classes={classes} label="Balanced"
+                                                                 description={
+                                                                   <div>
+                                                                     Description
+                                                                   </div>}/>}/>
+                            <FormControlLabel value="cpuIntensive" control={<Radio/>}
+                                              classes={{root: classes.radioWithDesc}}
+                                              label={<RadioLabel classes={classes} label="CPU intensive"
+                                                                 description={
+                                                                   <div>
+                                                                     Description
+                                                                   </div>}/>}/>
+                            <FormControlLabel value="memoryIntensive" control={<Radio/>}
+                                              classes={{root: classes.radioWithDesc}}
+                                              label={<RadioLabel classes={classes} label="Memory intensive"
+                                                                 description={<div>
+                                                                   Description
+                                                                 </div>}/>}/>
+                          </RadioGroup>
+                        </FormControl>
+                      </div>
+                      <div className='col-lg-6 col-md-6'>
+                        <div className='jr-card'>
+                          <div className='jr-card-header-color bg-primary'>
+                            Estimated costs per hour (CRC)
+                          </div>
+                          <div className='jr-card-body'>
+                            <div className={classes.resources}>
+                              <div><h6>vCPU + RAM</h6> <span className='text-red'>{this.getEstimatedCpuRamCosts().toLocaleString()}</span></div>
+                              <div><h6>Storage (0.1 CRC per GB)</h6> <span className='text-amber'>{this.getEstimatedStorageCosts().toLocaleString()}</span></div>
+                              <div><h6><strong>Total</strong></h6> <span className='text-blue'>{this.getTotalCosts().toLocaleString()}</span></div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
                     <div className={classes.formControl}>
-
                       <h4 className='pt-3'>Number of vCPU cores: <span className='text-red'>{data.numCPU.toLocaleString()}</span></h4>
                       <div className='px-5 pt-3'>
                         <Slider
@@ -429,29 +463,6 @@ class ConfigWizard extends React.Component {
                     <div className={classes.formControl}>
                       <h4 className='pt-3'>Number of RAM (GB): <span className='text-amber'>{this.getMemGb()}</span></h4>
                     </div>
-
-                    {/*<div className={classes.formControl}>*/}
-                      {/*<h4 className='pt-3'>Number of RAM (GB): <span className='text-amber'>{data.ram.toLocaleString()}</span></h4>*/}
-                      {/*<div className='px-5 pb-4 pt-3'>*/}
-                        {/*<Slider*/}
-                          {/*min={1}*/}
-                          {/*max={50}*/}
-                          {/*value={data.ram}*/}
-                          {/*onChange={this.handleDataChange('ram')}*/}
-                        {/*/>*/}
-                      {/*</div>*/}
-                    {/*</div>*/}
-                    {/*<div className={classes.formControl}>*/}
-                      {/*<h4 className='pt-3'>Number of GPU cores: <span className='text-blue'>{data.gpu.toLocaleString()}</span></h4>*/}
-                      {/*<div className='px-5 pb-4 pt-3'>*/}
-                        {/*<Slider*/}
-                          {/*min={0}*/}
-                          {/*max={Math.round((100 - state.qualityScore * 0.9) / 100 * gpu * coe)}*/}
-                          {/*value={data.gpu}*/}
-                          {/*onChange={this.handleDataChange('gpu')}*/}
-                        {/*/>*/}
-                      {/*</div>*/}
-                    {/*</div>*/}
                     <div className={classes.formControl}>
                       <h4 className='pt-3'>Temporary Storage - SSD (GB): <span className='text-purple'>{data.storageGB.toLocaleString()}</span></h4>
                       <div className='px-5 pb-4 pt-3'>
@@ -468,7 +479,9 @@ class ConfigWizard extends React.Component {
                     <div className={classes.buttonBox}>
                       <Button>Cancel</Button>
                       <Button color="secondary" variant='raised' onClick={() => this.setState({activeStep: 2})}>Previous</Button>
-                      <Button color="secondary" variant='raised' onClick={() => this.setState({activeStep: 4})}>Next</Button>
+                      <Button color="secondary" variant='raised' onClick={() => {
+                        this.setState(update(this.state, {activeStep: {$set: 4}, data: {pricePerHour: {$set: 1.1 * this.getTotalCosts()}}}))
+                      }}>Next</Button>
                     </div>
                   </section>}
 
@@ -479,41 +492,140 @@ class ConfigWizard extends React.Component {
                       <h3>Step {activeStep + 1} of {stepsTotal}</h3>
                     </div>
                     <FormControl className={classes.formControl}>
-                      <h4 className='pt-3'>Set max price for vCPU per hour: {data.pricePerHourForCpu} CRC</h4>
+                      <h4 className='pt-3'>Set max bid price for per hour: <span className='text-blue'>{round(data.pricePerHour)}</span> CRC</h4>
                       <div className='px-5 pb-4 pt-3'>
                         <Slider
                           min={1}
-                          max={100}
-                          value={data.pricePerHourForCpu}
-                          onChange={this.handleDataChange('pricePerHourForCpu')}
+                          max={1000}
+                          value={data.pricePerHour}
+                          onChange={this.handleDataChange('pricePerHour')}
                         />
                       </div>
-                      <p className='py-3'>Current price for vCPU per hour: <span className='text-green'>3.85 CRC</span></p>
-                      <p>Estimated price....</p>
+                      <p className='py-3'>Current price for vCPU per hour: <span className='text-green'>{round(this.getTotalCosts()).toLocaleString()} CRC</span></p>
                     </FormControl>
 
                     <div className={classes.buttonBox}>
-                      <Button color="primary" variant='raised' onClick={() => this.setState({activeStep: 5})}>Next</Button>
-                      <Button color="primary" variant='raised' onClick={() => this.setState({activeStep: 3})}>Previous</Button>
                       <Button variant='raised'>Cancel</Button>
+                      <Button color="secondary" variant='raised' onClick={() => this.setState({activeStep: 3})}>Previous</Button>
+                      <Button color="secondary" variant='raised' onClick={() => this.setState({activeStep: 5})}>Next</Button>
                     </div>
                   </section>}
 
                   {activeStep === 5 &&
                   <section>
                     <div className={classes.section}>
-                      <h2>Container Configuration</h2>
+                      <h2>Installation Script</h2>
                       <h3>Step {activeStep + 1} of {stepsTotal}</h3>
                     </div>
+                    <FormControl className={classes.formControl}>
+                      <h4>Container Type</h4>
+                      <RadioGroup
+                        value={data.containerType}
+                        onChange={this.handleDataChange('containerType')}
+                      >
+                        <FormControlLabel value="Docker" control={<Radio/>}
+                                          classes={{root: classes.radioWithDesc}}
+                                          label={<RadioLabel classes={classes} label="Docker"
+                                                             description={
+                                                               <div>
+                                                                 Docker
+                                                               </div>}/>}/>
+                        <FormControlLabel value="Kubernetes" control={<Radio/>}
+                                          classes={{root: classes.radioWithDesc}}
+                                          label={<RadioLabel classes={classes} label="Kubernetes"
+                                                             description={
+                                                               <div>
+                                                                 Kubernetes
+                                                               </div>}/>}/>
+                      </RadioGroup>
+                    </FormControl>
+                    {data.containerType === 'Docker' ?
+                      <div>
+                        <FormControl fullWidth className={classes.formControl}>
+                          <TextField
+                            label="Repository URL"
+                            value={data.dockerConfig.repositoryUrl}
+                            onChange={this.handleDataChange('dockerConfig.repositoryUrl')}
+                            fullWidth
+                            required
+                          />
+                        </FormControl>
+                        <FormControl fullWidth className={classes.formControl}>
+                          <TextField
+                            label="Image Name"
+                            value={data.dockerConfig.imageName}
+                            onChange={this.handleDataChange('dockerConfig.imageName')}
+                            fullWidth
+                            required
+                          />
+                        </FormControl>
+                      </div>
+                      :
+                      <FormControl fullWidth className={classes.formControl}>
+                        <h4>Configuration Script</h4>
+                        <DkCodeMirror options={codeMirrorOptions} onChange={this.handleDataChange('kubernetesConfig.script')} value={data.kubernetesConfig.script}/>
+                      </FormControl>}
 
                     <div className={classes.buttonBox}>
-                      <Button color="primary" variant='raised' onClick={() => this.setState({activeStep: 6})}>Next</Button>
-                      <Button color="primary" variant='raised' onClick={() => this.setState({activeStep: 4})}>Previous</Button>
                       <Button variant='raised'>Cancel</Button>
+                      <Button color="secondary" variant='raised' onClick={() => this.setState({activeStep: 4})}>Previous</Button>
+                      <Button color="secondary" variant='raised' onClick={() => this.setState({activeStep: 6})}>Next</Button>
                     </div>
                   </section>}
 
+                  {activeStep === 6 &&
+                  <section>
+                    <div className={classes.section}>
+                      <h2>Configuration Review</h2>
+                      <h3>Step {activeStep + 1} of {stepsTotal}</h3>
+                    </div>
+                    <FormControl className={classes.formControl}>
+                      <div className='row justify-content-around'>
+                        <div className='col-lg-6 col-md-6'>
+                          <div className='jr-card'>
+                            <div className='jr-card-header-color bg-primary d-flex'>
+                              Resources
+                            </div>
+                            <div className='jr-card-body'>
+                              <div className={classes.resources}>
+                                <div><h6>vCPU (cores)</h6> <span className='text-red'>{data.numCPU.toLocaleString()}</span></div>
+                                <div><h6>RAM (GB)</h6> <span className='text-amber'>{this.getMemGb().toLocaleString()}</span></div>
+                                <div><h6>Storage - SSD (GB)</h6> <span className='text-green'>{data.storageGB.toLocaleString()}</span></div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div className='col-lg-6 col-md-6'>
+                          <div className='jr-card'>
+                            <div className='jr-card-header-color bg-primary'>
+                              Estimated costs per hour (CRC)
+                            </div>
+                            <div className='jr-card-body'>
+                              <div className={classes.resources}>
+                                <div><h6>vCPU + RAM</h6> <span className='text-red'>{this.getEstimatedCpuRamCosts().toLocaleString()}</span></div>
+                                <div><h6>Storage (0.1 CRC per GB)</h6> <span className='text-amber'>{this.getEstimatedStorageCosts().toLocaleString()}</span></div>
+                                <div><h6><strong>Total</strong></h6> <span className='text-blue'>{this.getTotalCosts().toLocaleString()}</span></div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <FormControl className={classes.formControl}>
+                        <h4 className='pt-3'>Max bid price for per hour: <span className='text-blue'>{round(data.pricePerHour)} CRC</span></h4>
+                      </FormControl>
+                      <div className='p-5 text-center'>
+                          <Button color="secondary" variant="raised" className="jr-btn">
+                            <i className="zmdi zmdi-play animated infinite fadeInLeft zmdi-hc-fw"/>
+                            <span>Launch</span>
+                          </Button>
+                      </div>
 
+                    </FormControl>
+                    <div className={classes.buttonBox}>
+                      <Button variant='raised'>Cancel</Button>
+                      <Button color="secondary" variant='raised' onClick={() => this.setState({activeStep: 5})}>Previous</Button>
+                    </div>
+                  </section>}
                 </div>
               </CardLayout>
             </div>
