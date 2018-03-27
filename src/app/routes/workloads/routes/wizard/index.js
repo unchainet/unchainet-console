@@ -614,7 +614,10 @@ class ConfigWizard extends React.Component {
                         <h4 className='pt-3'>Max bid price for per hour: <span className='text-blue'>{round(data.pricePerHour)} CRC</span></h4>
                       </FormControl>
                       <div className='p-5 text-center'>
-                        <Button color="secondary" variant='raised'>Launch</Button>
+                          <Button color="secondary" variant="raised" className="jr-btn">
+                            <i className="zmdi zmdi-play animated infinite fadeInLeft zmdi-hc-fw"/>
+                            <span>Launch</span>
+                          </Button>
                       </div>
 
                     </FormControl>
