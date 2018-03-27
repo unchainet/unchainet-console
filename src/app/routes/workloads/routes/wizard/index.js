@@ -92,10 +92,10 @@ const styles = theme => ({
     }
   },
   buttonBox: {
-    marginBottom: 10,
     textAlign: 'right',
     '& button': {
-      marginLeft: 10
+      marginLeft: 10,
+      marginBottom: 10
     }
   },
   radioDescription: {
@@ -499,7 +499,7 @@ class ConfigWizard extends React.Component {
                     </FormControl>
 
                     <div className={classes.buttonBox}>
-                      <Button variant='raised'>Cancel</Button>
+                      <Button>Cancel</Button>
                       <Button color="secondary" variant='raised' onClick={() => this.setState({activeStep: 3})}>Previous</Button>
                       <Button color="secondary" variant='raised' onClick={() => this.setState({activeStep: 5})}>Next</Button>
                     </div>
@@ -561,7 +561,7 @@ class ConfigWizard extends React.Component {
                       </FormControl>}
 
                     <div className={classes.buttonBox}>
-                      <Button variant='raised'>Cancel</Button>
+                      <Button>Cancel</Button>
                       <Button color="secondary" variant='raised' onClick={() => this.setState({activeStep: 4})}>Previous</Button>
                       <Button color="secondary" variant='raised' onClick={() => this.setState({activeStep: 6})}>Next</Button>
                     </div>
