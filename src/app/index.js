@@ -7,6 +7,7 @@ import Sidebar from 'containers/SideNav/index';
 import Footer from 'components/Footer';
 import Dashboard from './routes/dashboard';
 import Workloads from './routes/workloads';
+import User from './routes/user';
 import Wallet from './routes/wallet';
 import Billing from './routes/billing';
 import PriceHistory from './routes/priceHistory';
@@ -46,6 +47,7 @@ class App extends React.Component {
 
                     <main className="app-main-content-wrapper">
                         <div className="app-main-content">
+                            <Route path={`${match.url}/user`} component={User}/>
                             <Route path={`${match.url}/dashboard`} component={Dashboard}/>
                             <Route path={`${match.url}/workloads`} component={Workloads}/>
                             <Route path={`${match.url}/wallet`} component={Wallet}/>
