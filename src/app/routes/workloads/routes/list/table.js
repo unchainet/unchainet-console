@@ -3,10 +3,22 @@ import {Button} from 'material-ui';
 import './workloads.scss';
 import Table, {TableBody, TableCell, TableHead, TableRow} from 'material-ui/Table';
 import { connect } from 'react-redux';
-import {withRouter} from 'react-router'
+import {withRouter} from 'react-router';
+import {withStyles} from 'material-ui/styles/index';
+
 import {
   REMOVE_WORKLOAD
 } from '../../../../../constants/ActionTypes';
+
+const TblCell = withStyles(theme => ({
+  typeBody: {
+    padding: '5px'
+  },
+  typeHead: {
+    backgroundColor: '#444',
+    color: '#fff'
+  }
+}))(TableCell);
 
 class WorkloadsTable extends React.Component {
 
@@ -24,33 +36,33 @@ class WorkloadsTable extends React.Component {
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell>Name</TableCell>
-              <TableCell>Region</TableCell>
-              <TableCell>CPU/GPU/MEM (GB)/ Storage(GB)</TableCell>
-              <TableCell numeric>Price (CRC)</TableCell>
-              <TableCell>Public IP</TableCell>
-              <TableCell>Public hostname</TableCell>
-              <TableCell width="180px">Actions</TableCell>
+              <TblCell>Name</TblCell>
+              <TblCell>Region</TblCell>
+              <TblCell>CPU/GPU/MEM (GB)/ Storage(GB)</TblCell>
+              <TblCell numeric>Price (CRC)</TblCell>
+              <TblCell>Public IP</TblCell>
+              <TblCell>Public hostname</TblCell>
+              <TblCell width="180px">Actions</TblCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {data.map((n, i) => {
               return (
                 <TableRow key={n._id}>
-                  <TableCell>{n.name}</TableCell>
-                  <TableCell>{n.region ? n.region.name : ''}</TableCell>
-                  <TableCell>{`${n.numCPU || 0}/${n.numGPU || 0}/${n.memoryGB || 0}/${n.ssdGB || 0}`}</TableCell>
-                  <TableCell numeric>{n.price}</TableCell>
-                  <TableCell>{n.publicIP}</TableCell>
-                  <TableCell>{n.publicHostname}</TableCell>
-                  <TableCell>
+                  <TblCell>{n.name}</TblCell>
+                  <TblCell>{n.region ? n.region.name : ''}</TblCell>
+                  <TblCell>{`${n.numCPU || 0}/${n.numGPU || 0}/${n.memoryGB || 0}/${n.ssdGB || 0}`}</TblCell>
+                  <TblCell numeric>{n.price}</TblCell>
+                  <TblCell>{n.publicIP}</TblCell>
+                  <TblCell>{n.publicHostname}</TblCell>
+                  <TblCell>
                     <Button className="jr-btn jr-btn-lg" onClick={()=>{this.props.history.push(`/app/workloads/wizard?id=${n.id}`)}} color="primary">
                       <i className="zmdi zmdi-edit"/>
                     </Button>
                     <Button className="jr-btn jr-btn-lg" onClick={()=>{this.props.removeItem(n.id)}} color="primary">
                       <i className="zmdi zmdi-delete"/>
                     </Button>
-                  </TableCell>
+                  </TblCell>
                 </TableRow>
               );
             })}
