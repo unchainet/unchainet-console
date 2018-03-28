@@ -27,10 +27,10 @@ class UserInfo extends React.Component {
       if (!data) {
         return '';
       }
-      if (!data.name.first && !data.name.last) {
+      if (!data.name) {
         return `Account ${data._id.substr(0, 10)}...`;
       }
-      return data.name.first || data.name.last;
+      return data.name;
     };
 
     render() {

@@ -1,10 +1,11 @@
 import {all, call, fork, put, takeEvery} from 'redux-saga/effects';
 import {
-  FETCH_USER
+  FETCH_USER,
+  UPDATE_USER
 } from '../constants/ActionTypes';
-import {userFetchSuccess, userFetchError} from '../actions/User';
+import {userFetchSuccess, userFetchError, userUpdateError} from '../actions/User';
 
-import {get, post, errorMessageFormatter} from './Api';
+import {get, patch, errorMessageFormatter} from './Api';
 
 
 function* fetchUserRequest() {
@@ -17,12 +18,27 @@ function* fetchUserRequest() {
     }
 }
 
+function* updateUserRequest(user) {
+  try {
+    const {body, response} = yield patch('/api/users/me', JSON.stringify(user.payload));
+    yield put(userFetchSuccess(body));
+  } catch (error) {
+    const {body, response} = error;
+    yield put(userUpdateError(errorMessageFormatter(body)));
+  }
+}
+
 export function* fetchUser() {
     yield takeEvery(FETCH_USER, fetchUserRequest);
 }
 
+export function* updateUser() {
+  yield takeEvery(UPDATE_USER, updateUserRequest);
+}
+
 export default function* rootSaga() {
     yield all([
-      fork(fetchUser)
+      fork(fetchUser),
+      fork(updateUser)
     ]);
 }

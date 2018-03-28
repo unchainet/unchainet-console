@@ -158,3 +158,6 @@ export const FETCH_ALL_WALLET_SUCCESS = 'fetch_all_wallet_success';
 export const FETCH_USER = 'fetch_user';
 export const FETCH_USER_SUCCESS = 'fetch_user_success';
 export const FETCH_USER_ERROR = 'fetch_user_error';
+export const UPDATE_USER = 'update_user';
+export const UPDATE_USER_SUCCESS = 'update_user_success';
+export const UPDATE_USER_ERROR = 'update_user_error';

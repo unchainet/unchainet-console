@@ -1,7 +1,10 @@
 import {
     FETCH_USER_SUCCESS,
     FETCH_USER_ERROR,
-    FETCH_USER
+    FETCH_USER,
+    UPDATE_USER_SUCCESS,
+    UPDATE_USER_ERROR,
+    UPDATE_USER
 } from '../constants/ActionTypes';
 
 export const userFetch = () => {
@@ -19,6 +22,20 @@ export const userFetchSuccess = (user) => {
 export const userFetchError = (err) => {
   return {
     type: FETCH_USER_ERROR,
+    payload: err
+  };
+};
+
+export const userUpdate = (user) => {
+  return {
+    type: UPDATE_USER,
+    payload: user
+  };
+};
+
+export const userUpdateError = (err) => {
+  return {
+    type: UPDATE_USER_ERROR,
     payload: err
   };
 };

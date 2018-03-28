@@ -1,7 +1,10 @@
 import {
   FETCH_USER_SUCCESS,
   FETCH_USER_ERROR,
-  FETCH_USER
+  FETCH_USER,
+  UPDATE_USER_SUCCESS,
+  UPDATE_USER_ERROR,
+  UPDATE_USER
 } from '../constants/ActionTypes';
 
 const INIT_STATE = {
@@ -26,6 +29,7 @@ export default (state = INIT_STATE, action) => {
         ...state,
         loader: false,
         data: action.payload,
+        error: null
       }
     }
 
@@ -34,6 +38,21 @@ export default (state = INIT_STATE, action) => {
         ...state,
         loader: false,
         data: null,
+        error: action.payload
+      }
+    }
+
+    case UPDATE_USER: {
+      return {
+        ...state,
+        loader: true
+      }
+    }
+
+    case UPDATE_USER_ERROR: {
+      return {
+        ...state,
+        loader: false,
         error: action.payload
       }
     }

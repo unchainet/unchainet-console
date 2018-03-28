@@ -13,6 +13,12 @@ export function* post (relativePath, body){
   return yield doFetch(relativePath, config);
 }
 
+export function* patch (relativePath, body){
+  const config = getHeaders('PUT');
+  config.body = body;
+  return yield doFetch(relativePath, config);
+}
+
 export function* doFetch (relativePath, config){
   const res = yield fetch(`${host}${relativePath}`, config);
   if (res.status === 404) {
