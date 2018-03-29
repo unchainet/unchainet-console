@@ -4,7 +4,7 @@ import TextField from 'material-ui/TextField';
 import Button from 'material-ui/Button';
 import Slider from 'rc-slider';
 import 'rc-slider/assets/index.css';
-import {FormControl, FormControlLabel, FormLabel} from 'material-ui/Form';
+import {FormControl, FormControlLabel, FormLabel, FormHelperText} from 'material-ui/Form';
 import Select from 'material-ui/Select';
 import MenuItem from 'material-ui/Menu/MenuItem';
 import Checkbox from 'material-ui/Checkbox';
@@ -28,6 +28,8 @@ import 'codemirror/mode/yaml/yaml';
 import {round} from 'util/Format';
 import {goToTourStep} from 'actions/Tour';
 
+import {genWorkloadName} from 'util/Generator'
+import _ from 'lodash';
 
 const styles = theme => ({
   root: {
@@ -118,6 +120,62 @@ const styles = theme => ({
 
 class ConfigWizard extends React.Component {
 
+  constructor(props){
+    super(props);
+    this.setActiveStep = this.setActiveStep.bind(this);
+    this.fields = {
+      name: this.getFieldInfo(true, 0),
+      region: this.getFieldInfo(true, 1),
+      sameNetwork: this.getFieldInfo(false, 2),
+      computeProfile: this.getFieldInfo(false, 3),
+      numCPU: this.getFieldInfo(false, 3),
+      storageGB: this.getFieldInfo(false, 3),
+      pricePerHour: this.getFieldInfo(false, 4),
+      containerType: this.getFieldInfo(false, 5),
+      dockerConfig_repositoryUrl: this.getFieldInfo(true, 5, {name: 'containerType', value: 'Docker'}),
+      dockerConfig_imageName: this.getFieldInfo(true, 5, {name: 'containerType', value: 'Docker'}),
+      kubernetesConfig_script: this.getFieldInfo(true, 5, {name: 'containerType', value: 'Kubernetes'}),
+      //onChange={this.handleDataChange('computeProfile')}
+      //onChange={this.handleDataChange('dockerConfig.repositoryUrl')} //required
+      //onChange={this.handleDataChange('dockerConfig.imageName')} //required
+      //onChange={this.handleDataChange('kubernetesConfig.script')} //required
+    };
+    this.state = {
+      qualityScore: 50,
+      activeStep: 0,
+      activeStepError: null,
+      mapLocation: {lat: -33.8527273, lng: 151.2345705},
+      mapZoom: 11,
+      mapActiveDatacenterId: null,
+      isNew: true,
+      data: {
+        name: genWorkloadName(this.props.user),
+        numCPU: 1,
+        gpu: 0,
+        storageHdd: 1,
+        storageGB: 10,
+        containerType: 'Docker',
+        datacenter: '',
+        region: '',
+        dockerConfig: {
+          repositoryUrl: '',
+          imageName: ''
+        },
+        kubernetesConfig: {
+          script: ''
+        },
+        priceType: '',
+        price: 0,
+        status: 'running',
+        sameNetwork: false,
+        pricePerHour: 4,
+        computeProfile: 'balanced'
+      }
+    };
+  }
+
+
+
   componentDidMount() {
     this.props.fetchAllRegion();
   }
@@ -137,36 +195,61 @@ class ConfigWizard extends React.Component {
 
   crcPerTbTransferred = 0.001;
 
-  state = {
-    qualityScore: 50,
-    activeStep: 0,
-    mapLocation: {lat: -33.8527273, lng: 151.2345705},
-    mapZoom: 11,
-    mapActiveDatacenterId: null,
-    isNew: true,
-    data: {
-      name: '',
-      numCPU: 1,
-      gpu: 0,
-      storageHdd: 1,
-      storageGB: 10,
-      containerType: 'Docker',
-      datacenter: '',
-      region: '',
-      dockerConfig: {
-        repositoryUrl: '',
-        imageName: ''
-      },
-      kubernetesConfig: {
-        script: ''
-      },
-      priceType: '',
-      price: 0,
-      status: 'running',
-      sameNetwork: false,
-      pricePerHour: 4,
-      computeProfile: 'balanced'
+  hasError(fieldName){
+    const name = fieldName.replace('.', '_');
+    const field = this.fields[name];
+    const {activeStep, activeStepError} = this.state;
+    const value = this.getFieldStateValue(name);
+    return (field.dirty || (activeStep === activeStepError && activeStep === field.step)) && !value;
+  }
+
+  getFieldInfo(required, step, depend = {}) {
+    return {
+      required: required,
+      depend: depend,
+      dirty: false,
+      error: false,
+      step: step,
     }
+  }
+
+  getFieldStateValue(fieldName) {
+    const {data} = this.state;
+    const name = fieldName.replace('_', '.');
+    const splitted = name.split('.');
+    let val = splitted.length === 1 ? data[name] : data[splitted[0]][splitted[1]];
+    val = typeof(val) === 'string' ? val.trim() : val;
+    return val;
+  }
+
+  setActiveStep(from, to) {
+
+    if(from < to){
+      const requiredEmptyFields = _.pickBy(this.fields,
+        (field, fieldName) => {
+            let isRequiredEmptyField = field.step === from && field.required === true && !this.getFieldStateValue(fieldName); //data[fieldName];
+            isRequiredEmptyField = field.depend.name ? isRequiredEmptyField && this.getFieldStateValue(field.depend.name) === field.depend.value : isRequiredEmptyField;
+            return isRequiredEmptyField;
+        });
+
+      if (_.size(requiredEmptyFields) === 0) {
+        this.setState({
+          activeStep: to,
+          activeStepError: null
+        });
+      }
+      else{
+        this.setState({
+          activeStepError: from
+        })
+      }
+    }else{
+      this.setState({
+        activeStep: to,
+        activeStepError: null
+      });
+    }
+
   };
 
   handleDataChange = (name, type = 'text') => event => {
@@ -179,8 +262,12 @@ class ConfigWizard extends React.Component {
       ctrlValue = event.target.value;
     }
     let value = type === 'int' ? parseInt(ctrlValue) : ctrlValue;
-
     let aryPath = name.split('.').reverse();
+
+    //set dirtyflag
+    const fieldName = name.replace('.', '_');
+    this.fields[fieldName].dirty = true;
+
     let object = null;
     aryPath.forEach((el, i) => {
       if (i === 0) {
@@ -198,6 +285,7 @@ class ConfigWizard extends React.Component {
     });
     return promise;
   };
+
 
 
   changeMapRegion = (regionId) => {
@@ -255,11 +343,6 @@ class ConfigWizard extends React.Component {
     return this.getEstimatedStorageCosts() + this.getEstimatedCpuRamCosts();
   };
 
-  goToStep1 = () => {
-    this.setState({activeStep: 1});
-    this.props.goToTourStep(2);
-  }
-
   render() {
     const {classes} = this.props;
     const { region} = this.props;
@@ -294,16 +377,23 @@ class ConfigWizard extends React.Component {
                       <TextField
                         label='Workload Name'
                         required
+                        inputProps={{
+                          name: 'name'
+                        }}
                         onChange={this.handleDataChange('name')}
                         value={data.name}
                         className='tour-workload-name formInputText'
                         style={{minWidth: '230px'}}
-                        helperText='Enter unique workload identifier'
+                        error={this.hasError('name')}
+                        helperText={'Enter unique workload identifier'}
                       />
                     </FormControl>
                     <div className={classes.buttonBox}>
-                      <Button>Cancel</Button>
-                      <Button color="secondary" variant='raised' onClick={this.goToStep1}>Next</Button>
+                      <Button onClick={()=>{this.props.history.push('/app/workloads/list')}}>Cancel</Button>
+                      <Button color="secondary" variant='raised' onClick={() => {
+                        this.setActiveStep(0,1);
+                        this.props.goToTourStep(2);}
+                      }>Next</Button>
                     </div>
                   </section>}
 
@@ -314,7 +404,7 @@ class ConfigWizard extends React.Component {
                       <h3>Step {activeStep + 1} of {stepsTotal}</h3>
                     </div>
 
-                    <FormControl className={classes.formControl}>
+                    <FormControl className={classes.formControl} error={this.hasError('region')}>
                       <InputLabel htmlFor="region">Region</InputLabel>
                       <Select
                         value={data.region}
@@ -334,6 +424,8 @@ class ConfigWizard extends React.Component {
                           <MenuItem key={i._id} value={i._id}>{i.name}</MenuItem>
                         ))}
                       </Select>
+                      <FormHelperText>
+                        {'Enter region'}</FormHelperText>
                     </FormControl>
                     {selectedRegion &&
                     <div className='row justify-content-around'>
@@ -366,9 +458,9 @@ class ConfigWizard extends React.Component {
                     </div>}
 
                     <div className={classes.buttonBox}>
-                      <Button>Cancel</Button>
-                      <Button color="secondary" variant='raised' onClick={() => this.setState({activeStep: 0})}>Previous</Button>
-                      <Button color="secondary" variant='raised' onClick={() => this.setState({activeStep: 2})}>Next</Button>
+                      <Button onClick={()=>{this.props.history.push('/app/workloads/list')}}>Cancel</Button>
+                      <Button color="secondary" variant='raised' onClick={() => this.setActiveStep(1,0)}>Previous</Button>
+                      <Button color="secondary" variant='raised' onClick={() => this.setActiveStep(1,2)}>Next</Button>
                     </div>
                   </section>}
 
@@ -415,7 +507,7 @@ class ConfigWizard extends React.Component {
                       />
                     </div>
                     <div className={classes.buttonBox}>
-                      <Button>Cancel</Button>
+                      <Button onClick={()=>{this.props.history.push('/app/workloads/list')}}>Cancel</Button>
                       <Button color="secondary" variant='raised' onClick={() => this.setState({activeStep: 1})}>Previous</Button>
                       <Button color="secondary" variant='raised' onClick={() => this.setState({activeStep: 3})}>Next</Button>
                     </div>
@@ -578,6 +670,7 @@ class ConfigWizard extends React.Component {
                             onChange={this.handleDataChange('dockerConfig.repositoryUrl')}
                             fullWidth
                             required
+                            error={this.hasError('dockerConfig.repositoryUrl')}
                           />
                         </FormControl>
                         <FormControl fullWidth className={classes.formControl}>
@@ -587,19 +680,22 @@ class ConfigWizard extends React.Component {
                             onChange={this.handleDataChange('dockerConfig.imageName')}
                             fullWidth
                             required
+                            error={this.hasError('dockerConfig.imageName')}
                           />
                         </FormControl>
                       </div>
                       :
-                      <FormControl fullWidth className={classes.formControl}>
+                      <FormControl fullWidth className={classes.formControl} error={this.hasError('kubernetesConfig.script')}>
                         <h4>Configuration Script</h4>
                         <DkCodeMirror options={codeMirrorOptions} onChange={this.handleDataChange('kubernetesConfig.script')} value={data.kubernetesConfig.script}/>
+                        <FormHelperText>
+                          {'Enter kubernetes config.'}</FormHelperText>
                       </FormControl>}
 
                     <div className={classes.buttonBox}>
-                      <Button>Cancel</Button>
-                      <Button color="secondary" variant='raised' onClick={() => this.setState({activeStep: 4})}>Previous</Button>
-                      <Button color="secondary" variant='raised' onClick={() => this.setState({activeStep: 6})}>Next</Button>
+                      <Button onClick={()=>{this.props.history.push('/app/workloads/list')}}>Cancel</Button>
+                      <Button color="secondary" variant='raised' onClick={() => this.setActiveStep(5,4)}>Previous</Button>
+                      <Button color="secondary" variant='raised' onClick={() => this.setActiveStep(5,6)}>Next</Button>
                     </div>
                   </section>}
 
@@ -656,7 +752,7 @@ class ConfigWizard extends React.Component {
                     </FormControl>
                     <div className={classes.buttonBox}>
                       <Button variant='raised'>Cancel</Button>
-                      <Button color="secondary" variant='raised' onClick={() => this.setState({activeStep: 5})}>Previous</Button>
+                      <Button color="secondary" variant='raised' onClick={() => this.setActiveStep(6,5)}>Previous</Button>
                     </div>
                   </section>}
                 </div>
@@ -677,10 +773,11 @@ const mapDispatchToProps = {
   goToTourStep
 };
 
-const mapStateToProps = ({datacenter, region}) => {
+const mapStateToProps = ({datacenter, region, user}) => {
   return {
     datacenter,
     region,
+    user,
   }
 };
 
