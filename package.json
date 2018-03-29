@@ -25,6 +25,7 @@
     "jss": "^9.8.1",
     "jss-extend": "^6.2.0",
     "jss-preset-default": "^4.3.0",
+    "lodash": "^4.17.5",
     "lodash.debounce": "^4.0.8",
     "material-ui": "v1.0.0-beta.35",
     "material-ui-icons": "^1.0.0-beta.17",
