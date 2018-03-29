@@ -56,7 +56,7 @@ class SidenavContent extends Component {
                 this.nav = c;
             }}>
 
-                <li className="menu no-arrow">
+                <li className="menu no-arrow tour-dashboard">
                     <NavLink to="/app/dashboard">
                         <i className="zmdi zmdi-view-dashboard zmdi-hc-fw"/>
                         <span className="nav-text"><IntlMessages id="sidebar.dashboard"/></span>

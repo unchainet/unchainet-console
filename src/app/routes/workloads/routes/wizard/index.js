@@ -26,6 +26,8 @@ import ContainerHeader from 'components/ContainerHeader';
 import DkCodeMirror from 'components/DkCodeMirror';
 import 'codemirror/mode/yaml/yaml';
 import {round} from 'util/Format';
+import {goToTourStep} from 'actions/Tour';
+
 
 const styles = theme => ({
   root: {
@@ -208,6 +210,7 @@ class ConfigWizard extends React.Component {
       });
 
     this.setState(newState);
+    this.props.goToTourStep(3);
   };
 
   getNumOfResources = (resNum) => {
@@ -252,6 +255,11 @@ class ConfigWizard extends React.Component {
     return this.getEstimatedStorageCosts() + this.getEstimatedCpuRamCosts();
   };
 
+  goToStep1 = () => {
+    this.setState({activeStep: 1});
+    this.props.goToTourStep(2);
+  }
+
   render() {
     const {classes} = this.props;
     const { region} = this.props;
@@ -288,13 +296,14 @@ class ConfigWizard extends React.Component {
                         required
                         onChange={this.handleDataChange('name')}
                         value={data.name}
-                        className={classes.formInputText}
+                        className='tour-workload-name formInputText'
+                        style={{minWidth: '230px'}}
                         helperText='Enter unique workload identifier'
                       />
                     </FormControl>
                     <div className={classes.buttonBox}>
                       <Button>Cancel</Button>
-                      <Button color="secondary" variant='raised' onClick={() => this.setState({activeStep: 1})}>Next</Button>
+                      <Button color="secondary" variant='raised' onClick={this.goToStep1}>Next</Button>
                     </div>
                   </section>}
 
@@ -319,7 +328,7 @@ class ConfigWizard extends React.Component {
                           id: 'region'
                         }}
                         required
-                        className={classes.formInput}
+                        className={classes.formInput + ' tour-workload-region'}
                       >
                         {region.allRegions.map(i => (
                           <MenuItem key={i._id} value={i._id}>{i.name}</MenuItem>
@@ -329,7 +338,7 @@ class ConfigWizard extends React.Component {
                     {selectedRegion &&
                     <div className='row justify-content-around'>
                       <div className='col-lg-6 col-md-6'>
-                        <div className='jr-card'>
+                        <div className='jr-card tour-available-resources'>
                           <div className='jr-card-header-color bg-primary d-flex'>
                             Available resources
                           </div>
@@ -664,7 +673,8 @@ class ConfigWizard extends React.Component {
 const mapDispatchToProps = {
   addItem: (item) => ({type: ADD_WORKLOAD, item: item}),
   fetchAllRegion,
-  fetchAllDatacenter
+  fetchAllDatacenter,
+  goToTourStep
 };
 
 const mapStateToProps = ({datacenter, region}) => {

@@ -1,6 +1,7 @@
 import React from 'react';
 import Joyride from 'react-joyride';
-
+import { updateTourStep } from '../../actions/Tour';
+import {connect} from 'react-redux';
 class Tour extends React.PureComponent {
 
     static defaultProps = {
@@ -13,40 +14,93 @@ class Tour extends React.PureComponent {
 
     constructor(props) {
         super(props);
+
+        this.allSteps = [
+          [{
+              title: 'Welcome to the UNCHAINET Console',
+              text: 'Dashboard is the first place you see with all important information. From menu you can modify your ' +
+              'workloads, top up your wallet or look at price and billing history.',
+              textAlign: 'center',
+              selector: '.app-container .app-sidebar .tour-dashboard',
+              position: 'right',
+              isFixed: true,
+            },
+            {
+              title: 'Workloads',
+              text: 'The key element in the console is Workload. It\'s a bucket of resources you buy from provider and ' +
+              'the launch configuration you run on it. Every workload shows region, allocated resoures and ip address you can access it on.',
+              textAlign: 'center',
+              selector: '.app-container .tour-workloads',
+              position: 'top',
+              isFixed: true,
+            },
+            {
+              title: 'New Workload',
+              text: 'Click on a button and we will guide you by creating a new workload.',
+              textAlign: 'center',
+              selector: '.app-container .tour-new-workload',
+              position: 'top',
+              isFixed: false,
+            }],
+          [{
+              title: 'Workload name',
+              text: 'Enter easy to remember name and click next.',
+              textAlign: 'center',
+              selector: '.app-container .tour-workload-name',
+              position: 'top',
+              isFixed: false,
+            }],
+          [{
+              title: 'Workload Region',
+              text: 'Select one of the regions where you want to run your workloads. Regions are large geographical ' +
+              'locations containing several datacenters.',
+              textAlign: 'center',
+              selector: '.app-container .tour-workload-region',
+              position: 'top',
+              isFixed: false,
+            }],
+          [{
+              title: 'Available resources',
+              text: 'Every region has limited number of computing resources.',
+              textAlign: 'center',
+              selector: '.app-container .tour-available-resources',
+              position: 'top',
+              isFixed: false,
+            }]
+        ];
+
         this.state = {
             autoStart: false,
             running: false,
-            steps: [
-                {
-                    text: 'Shows logged-in user\'s info with dropdown context menu.',
-                    textAlign: 'center',
-                    selector: '.app-container .app-sidebar .user-profile',
-                    position: 'right',
-                    isFixed: true,
-                },
-                {
-                    title: 'Notifications',
-                    text: 'Keep yourself notified with the upcoming alerts and announcements',
-                    textAlign: 'center',
-                    selector: '.app-container .app-main-container .app-main-header .app-tour',
-                    position: 'top',
-                    isFixed: true,
-                },
-                {
-                    title: 'Messages',
-                    text: 'Check your recent messages from your connections.',
-                    textAlign: 'center',
-                    selector: '.app-container .app-main-container .app-main-header .mail-tour',
-                    position: 'top',
-                    isFixed: false,
-                }
-            ],
+            steps: ( props.tour.lastVisitedStep < 0 ) ? this.allSteps[0] : [],
             step: 0,
         };
 
         this.handleNextButtonClick = this.handleNextButtonClick.bind(this);
         this.handleJoyrideCallback = this.handleJoyrideCallback.bind(this);
     }
+
+    componentWillReceiveProps(nextProps){
+
+      if (nextProps.tour.lastVisitedStep < nextProps.tour.goToStep){
+        //without resetting the component in the DOM it behaves randomly (doesn't show for steps 2+)
+        this.setState({
+          disableTour: true
+        });
+
+        setTimeout(() => {
+          this.setState({
+            autoStart:true,
+            running:true,
+            disableTour:false,
+            steps: this.allSteps[nextProps.tour.goToStep],
+            step: 0
+          })
+        }, 1000);
+      }
+
+    }
+
 
     handleNextButtonClick() {
         if (this.state.step === 1) {
@@ -65,11 +119,13 @@ class Tour extends React.PureComponent {
         if (result.type === 'finished' && this.state.running) {
             // Need to set our running state to false, so we can restart if we click start again.
             this.setState({running: false});
+            this.props.updateTourStep(this.props.tour.goToStep);
+
         }
 
         if (result.type === 'error:target_not_found') {
             this.setState({
-                step: result.action === 'back' ? result.index - 1 : result.index + 1,
+                //step: result.action === 'back' ? result.index - 1 : result.index + 1,
                 autoStart: result.action !== 'close' && result.action !== 'esc',
             });
         }
@@ -82,7 +138,7 @@ class Tour extends React.PureComponent {
     componentDidMount() {
         setTimeout(() => {
             this.setState({
-                running: true,
+                running: ( this.props.tour.lastVisitedStep < 0 ),
                 step: 0,
             });
         }, 1000);
@@ -102,6 +158,9 @@ class Tour extends React.PureComponent {
             steps: joyride.steps || this.state.steps,
             type: joyride.type || 'continuous'
         };
+        if (this.state.disableTour){
+          return null;
+        }
         return ( <Joyride
                 {...joyrideProps}
                 ref={c => (this.joyride = c)}/>
@@ -111,5 +170,14 @@ class Tour extends React.PureComponent {
     }
 }
 
-export default Tour;
+function stateToProps({tour}) {
+  return { tour };
+}
+
+const mapDispatchToProps = {
+  updateTourStep
+};
+
+export default connect(stateToProps, mapDispatchToProps)(Tour);
+
 

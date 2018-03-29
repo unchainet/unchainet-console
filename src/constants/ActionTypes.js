@@ -161,3 +161,7 @@ export const FETCH_USER_ERROR = 'fetch_user_error';
 export const UPDATE_USER = 'update_user';
 export const UPDATE_USER_SUCCESS = 'update_user_success';
 export const UPDATE_USER_ERROR = 'update_user_error';
+
+//tour
+export const UPDATE_TOUR_STEP = 'update_tour_step';
+export const GO_TO_TOUR_STEP = 'go_to_tour_step';
