@@ -460,7 +460,10 @@ class ConfigWizard extends React.Component {
                     <div className={classes.buttonBox}>
                       <Button onClick={()=>{this.props.history.push('/app/workloads/list')}}>Cancel</Button>
                       <Button color="secondary" variant='raised' onClick={() => this.setActiveStep(1,0)}>Previous</Button>
-                      <Button color="secondary" variant='raised' onClick={() => this.setActiveStep(1,2)}>Next</Button>
+                      <Button color="secondary" variant='raised' onClick={() => {
+                        this.setActiveStep(1,2);
+                        this.props.goToTourStep(4);
+                      }}>Next</Button>
                     </div>
                   </section>}
 
@@ -473,7 +476,7 @@ class ConfigWizard extends React.Component {
 
                     <div className={`${classes.formControl} mb-0`}>
                       <h4>Set minimal Quality Score: <span className='text-blue'>{state.qualityScore}</span></h4>
-                      <div className='px-5 pb-4 pt-3'>
+                      <div className='px-5 pb-4 pt-3 tour-quality-score'>
                         <Slider min={0} value={state.qualityScore} onChange={(v) => this.setState({qualityScore: v})}
                                 max={100}/>
                       </div>
@@ -499,6 +502,7 @@ class ConfigWizard extends React.Component {
                       <FormControlLabel
                         control={
                           <Checkbox
+                            className={'tour-same-network'}
                             checked={data.sameNetwork}
                             onChange={this.handleDataChange('sameNetwork', 'bool')}
                           />
@@ -509,7 +513,10 @@ class ConfigWizard extends React.Component {
                     <div className={classes.buttonBox}>
                       <Button onClick={()=>{this.props.history.push('/app/workloads/list')}}>Cancel</Button>
                       <Button color="secondary" variant='raised' onClick={() => this.setState({activeStep: 1})}>Previous</Button>
-                      <Button color="secondary" variant='raised' onClick={() => this.setState({activeStep: 3})}>Next</Button>
+                      <Button color="secondary" variant='raised' onClick={() => {
+                        this.setState({activeStep: 3});
+                        this.props.goToTourStep(5);
+                      }}>Next</Button>
                     </div>
                   </section>}
 
@@ -519,7 +526,7 @@ class ConfigWizard extends React.Component {
                       <h2>Resources configuration</h2>
                       <h3>Step {activeStep + 1} of {stepsTotal}</h3>
                     </div>
-                    <div className='row justify-content-start'>
+                    <div className='row justify-content-start tour-profile-resources'>
                       <div className='col-lg-6 col-md-6'>
                         <FormControl className={classes.formControl}>
                           <h4>Compute Profile</h4>
@@ -554,7 +561,7 @@ class ConfigWizard extends React.Component {
                         </FormControl>
                       </div>
                       <div className='col-lg-6 col-md-6'>
-                        <div className='jr-card'>
+                        <div className='jr-card tour-price-estimate'>
                           <div className='jr-card-header-color bg-primary'>
                             Estimated costs per hour (CRC)
                           </div>
@@ -602,7 +609,8 @@ class ConfigWizard extends React.Component {
                       <Button>Cancel</Button>
                       <Button color="secondary" variant='raised' onClick={() => this.setState({activeStep: 2})}>Previous</Button>
                       <Button color="secondary" variant='raised' onClick={() => {
-                        this.setState(update(this.state, {activeStep: {$set: 4}, data: {pricePerHour: {$set: 1.3 * this.getTotalCosts()}}}))
+                        this.setState(update(this.state, {activeStep: {$set: 4}, data: {pricePerHour: {$set: 1.3 * this.getTotalCosts()}}}));
+                        this.props.goToTourStep(6);
                       }}>Next</Button>
                     </div>
                   </section>}
@@ -615,7 +623,7 @@ class ConfigWizard extends React.Component {
                     </div>
                     <FormControl className={classes.formControl}>
                       <h4 className='pt-3'>Set max bid price for per hour: <span className='text-blue'>{round(data.pricePerHour)} CRC</span></h4>
-                      <div className='px-5 pb-4 pt-3'>
+                      <div className='px-5 pb-4 pt-3 tour-max-bid-price'>
                         <Slider
                           min={1}
                           max={1000}
@@ -629,7 +637,10 @@ class ConfigWizard extends React.Component {
                     <div className={classes.buttonBox}>
                       <Button>Cancel</Button>
                       <Button color="secondary" variant='raised' onClick={() => this.setState({activeStep: 3})}>Previous</Button>
-                      <Button color="secondary" variant='raised' onClick={() => this.setState({activeStep: 5})}>Next</Button>
+                      <Button color="secondary" variant='raised' onClick={() => {
+                        this.setState({activeStep: 5});
+                        this.props.goToTourStep(7);
+                      }}>Next</Button>
                     </div>
                   </section>}
 
@@ -643,6 +654,7 @@ class ConfigWizard extends React.Component {
                       <h4>Container Type</h4>
                       <RadioGroup
                         value={data.containerType}
+                        className={'tour-installation-script'}
                         onChange={this.handleDataChange('containerType')}
                       >
                         <FormControlLabel value="Docker" control={<Radio/>}
@@ -695,7 +707,10 @@ class ConfigWizard extends React.Component {
                     <div className={classes.buttonBox}>
                       <Button onClick={()=>{this.props.history.push('/app/workloads/list')}}>Cancel</Button>
                       <Button color="secondary" variant='raised' onClick={() => this.setActiveStep(5,4)}>Previous</Button>
-                      <Button color="secondary" variant='raised' onClick={() => this.setActiveStep(5,6)}>Next</Button>
+                      <Button color="secondary" variant='raised' onClick={() => {
+                        this.setActiveStep(5,6);
+                        this.props.goToTourStep(8);
+                      }}>Next</Button>
                     </div>
                   </section>}
 
@@ -743,7 +758,7 @@ class ConfigWizard extends React.Component {
                         <h4 className='pt-3'>Max bid price for per hour: <span className='text-blue'>{round(data.pricePerHour)} CRC</span></h4>
                       </FormControl>
                       <div className='p-5 text-center'>
-                          <Button color="secondary" variant="raised" className="jr-btn">
+                          <Button color="secondary" variant="raised" className="jr-btn tour-workload-launch">
                             <i className="zmdi zmdi-play animated infinite fadeInLeft zmdi-hc-fw"/>
                             <span>Launch</span>
                           </Button>

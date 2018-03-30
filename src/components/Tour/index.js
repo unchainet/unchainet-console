@@ -66,6 +66,66 @@ class Tour extends React.PureComponent {
               selector: '.app-container .tour-available-resources',
               position: 'top',
               isFixed: false,
+            }],
+          [{
+              title: 'Quality Score',
+              text: 'Quality of providers is measured by their availability, internet speed, hardware type and other metrics.' +
+              'The higher the score, the better service, the higher price per resource.',
+              textAlign: 'center',
+              selector: '.app-container .tour-quality-score',
+              position: 'top',
+              isFixed: false,
+            }, {
+              title: 'Same datacenter',
+              text: 'You can choose if your workload should be deployed in a single datacenter (for applications requiring ' +
+              'to run on the same network) or across multiple datacenters (for more available resources).',
+              textAlign: 'center',
+              selector: '.app-container .tour-same-network',
+              position: 'top',
+              isFixed: false,
+            }],
+          [{
+              title: 'Select profile and resources',
+              text: 'Select the computing profile for your workload, then choose number of CPUs and required storage. ',
+              textAlign: 'center',
+              selector: '.app-container .tour-profile-resources',
+              position: 'top',
+              isFixed: false,
+            }, {
+              title: 'Price estimate',
+              text: 'As you change the amount and profile of required resources, you can see the live preview of expected' +
+              ' price in CRC/hour. 1 CRC is approximately $0.01',
+              textAlign: 'center',
+              selector: '.app-container .tour-price-estimate',
+              position: 'top',
+              isFixed: false,
+            }],
+          [{
+              title: 'Max bid price',
+              text: 'UNCHAINET launches with spot pricing model. You can set maximum price you are willing to pay, and you ' +
+              'will pay the price of the second highest bidder. This way it\'s fair and affordable for everyone and UNCHAINET can ' +
+              'build a large liquid market of computing power.',
+              textAlign: 'center',
+              selector: '.app-container .tour-max-bid-price',
+              position: 'top',
+              isFixed: false,
+            }],
+          [{
+              title: 'Install config',
+              text: 'UNCHAINET currently supports Kubernetes configurations and single container deployments. In the near ' +
+              'future we will add OpenStack and other interfaces for an effortless migration to the UNCHAINET platform.',
+              textAlign: 'center',
+              selector: '.app-container .tour-installation-script',
+              position: 'top',
+              isFixed: false,
+            }],
+          [{
+              title: 'Launch workload',
+              text: 'Review and launch the workload.',
+              textAlign: 'center',
+              selector: '.app-container .tour-workload-launch',
+              position: 'top',
+              isFixed: false,
             }]
         ];
 
