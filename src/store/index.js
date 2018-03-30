@@ -11,7 +11,7 @@ const routeMiddleware = routerMiddleware(history);
 const sagaMiddleware = createSagaMiddleware();
 
 //every redux store from the whitelist (first parameter) is automatically stored and reloaded from local storage
-const persistEnhancer = persistState(['tour'], {key: 'unchainet-data'});
+const persistEnhancer = persistState(['tour', 'auth'], {key: 'unchainet-data'});
 
 const middlewares = [sagaMiddleware, routeMiddleware];
 

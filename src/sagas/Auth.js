@@ -35,7 +35,7 @@ function* activate({payload}) {
   const {_id, code} = payload;
   try {
     const {body, response} = yield post('/api/users/activate', JSON.stringify({_id, code}));
-    localStorage.setItem('token', body.token);
+    // localStorage.setItem('token', body.token);
     yield put(userActivateSuccess(body));
   } catch (error) {
     const {body, response} = error;
@@ -47,7 +47,7 @@ function* signInUserWithEmailPassword({payload}) {
     const {email, password} = payload;
     try {
         const {body, response} = yield post('/api/auth/local', JSON.stringify({email, password}));
-        localStorage.setItem('token', body.token);
+        // localStorage.setItem('token', body.token);
         yield put(userSignInSuccess(body));
     } catch (error) {
         const {body, response} = error;

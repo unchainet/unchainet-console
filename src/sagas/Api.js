@@ -2,6 +2,7 @@ import conf from '../conf';
 const host = conf.apiBaseUrl;
 import {all, call, fork, put, takeEvery} from 'redux-saga/effects';
 import {userSignOut} from '../actions/Auth';
+import {store} from '../MainApp';
 
 export function* get (relativePath){
   return yield doFetch(relativePath, getHeaders('GET'));
@@ -49,10 +50,14 @@ export function errorMessageFormatter (body){
 }
 
 function getHeaders (method) {
+  let token = '';
+  try {
+    token = store.getState().auth.authUser.token;
+  } catch (e) {}
   return {
     method: method,
     headers: {
-      'authorization': 'Bearer ' + localStorage.getItem('token'),
+      'authorization': 'Bearer ' + token,
       'Content-Type': 'application/json'
     }
   }
