@@ -46,7 +46,9 @@ class Dashboard extends React.Component {
     list = list || [];
     let provObj = {};
     list.forEach(function (item) {
-      provObj[item.region] = true;
+      if (item.region) {
+        provObj[item.region._id] = true;
+      }
     });
     this.props.region.allRegions.forEach(row => {
       row.hasInstance = provObj[row._id];
