@@ -12,7 +12,8 @@ import {
 } from '../../../constants/ActionTypes';
 import {fetchAllRegion} from 'actions/Region';
 import {fetchAllDatacenter} from 'actions/Datacenter';
-import {fetchAllWorkloads} from '../../../actions/Workload';
+import {fetchAllWorkloads} from 'actions/Workload';
+import {goToTourStep} from 'actions/Tour';
 import moment from 'moment'
 
 class Dashboard extends React.Component {
@@ -34,13 +35,20 @@ class Dashboard extends React.Component {
     setTimeout(() => this.setState({map: true}), 200);
   }
 
+  newWorkload = () => {
+    this.props.history.push('/app/workloads/wizard');
+    this.props.goToTourStep(1);
+  }
+
   render() {
     let {list} = this.props.workloads;
     let {map} = this.state;
     list = list || [];
     let provObj = {};
     list.forEach(function (item) {
-      provObj[item.region] = true;
+      if (item.region) {
+        provObj[item.region._id] = true;
+      }
     });
     this.props.region.allRegions.forEach(row => {
       row.hasInstance = provObj[row._id];
@@ -49,17 +57,16 @@ class Dashboard extends React.Component {
     return (
       <div className="app-wrapper">
         <div className="animated slideInUpTiny animation-duration-3">
-          <div className="row">
+          <div className="row tour-workloads">
             <CardBox styleName="col-lg-12" cardStyle="jr-card-unet" heading>
               <div className="head-unet">
                 <div className="name">RUNNING WORKLOADS</div>
                 <div className="middle">{time}</div>
-                <div className="controls">
-                  <Button className="jr-btn jr-btn-sm text-white" onClick={()=>{}} color="primary">
-                    <i className="zmdi zmdi-refresh"/>
-                  </Button>
-                  <Button className="jr-btn jr-btn-sm text-white" onClick={()=>{}} color="primary">
-                    <i className="zmdi zmdi-close"/>
+                <div className="controls tour-new-workload">
+                  <Button variant="fab" onClick={this.newWorkload}
+                          className="jr-fab-btn text-white bg-secondary tour-trigger-new-workload"
+                          aria-label="edit">
+                    <i className="zmdi zmdi-plus zmdi-hc-fw zmdi-hc-lg"/>
                   </Button>
                 </div>
               </div>
@@ -103,7 +110,8 @@ const mapDispatchToProps = {
   removeItem: (id) => ({type: REMOVE_WORKLOAD, id: id}),
   fetchAllRegion,
   fetchAllDatacenter,
-  fetchAllWorkloads
+  fetchAllWorkloads,
+  goToTourStep
 };
 
 export default connect(stateToProps, mapDispatchToProps)(Dashboard);

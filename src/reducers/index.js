@@ -9,6 +9,7 @@ import Datacenter from './Datacenter';
 import Region from './Region';
 import Wallet from './Wallet';
 import User from './User';
+import Tour from './Tour';
 
 import {
   SIGNOUT_USER_SUCCESS,
@@ -25,7 +26,8 @@ const reducers = combineReducers({
     datacenter: Datacenter,
     region: Region,
     wallet: Wallet,
-    user: User
+    user: User,
+    tour: Tour
 });
 
 const initialState = reducers({}, {});

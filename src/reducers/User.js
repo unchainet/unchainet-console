@@ -45,7 +45,8 @@ export default (state = INIT_STATE, action) => {
     case UPDATE_USER: {
       return {
         ...state,
-        loader: true
+        loader: true,
+        error: null
       }
     }
 

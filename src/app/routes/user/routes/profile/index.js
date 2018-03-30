@@ -1,11 +1,10 @@
 import React from 'react';
-import CardLayout from '../../../../../components/CardLayout';
 import {Button} from 'material-ui';
 import { connect } from 'react-redux';
 import {userFetch, userUpdate} from '../../../../../actions/User'
 import TextField from 'material-ui/TextField';
-import {FormControl, FormControlLabel, FormLabel} from 'material-ui/Form';
-import {InputLabel} from 'material-ui/Input';
+import {CircularProgress} from 'material-ui/Progress';
+import {NotificationContainer, NotificationManager} from 'react-notifications';
 import CardBox from '../../../../../components/CardBox/index';
 
 class Profile extends React.Component {
@@ -94,6 +93,7 @@ class Profile extends React.Component {
 
   render() {
     let {user} = this.state;
+    const {loader, error} = this.props.user;
     let requiredErrorText = 'Required field';
     return (
       <div className="app-wrapper user-profile">
@@ -276,6 +276,8 @@ class Profile extends React.Component {
             </form>
           </CardBox>
         </div>
+        {error && NotificationManager.error(error)}
+        <NotificationContainer/>
       </div>
 
     );

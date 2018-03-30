@@ -27,6 +27,9 @@ import DkCodeMirror from 'components/DkCodeMirror';
 import 'codemirror/mode/yaml/yaml';
 import {round} from 'util/Format';
 import {genWorkloadName, randomIp} from 'util/Generator'
+import {goToTourStep} from 'actions/Tour';
+
+import {genWorkloadName} from 'util/Generator'
 import _ from 'lodash';
 import qs from 'query-string';
 
@@ -121,7 +124,6 @@ class ConfigWizard extends React.Component {
 
   constructor(props){
     super(props);
-    console.log('this.props', this.props)
     this.setActiveStep = this.setActiveStep.bind(this);
     this.saveWorkload = this.saveWorkload.bind(this);
     this.fields = {
@@ -250,11 +252,10 @@ class ConfigWizard extends React.Component {
         activeStepError: null
       });
     }
-    setTimeout(() => console.log(this.state), 300);
+
   };
 
   handleDataChange = (name, type = 'text') => event => {
-    if(name=='region') debugger;
     let ctrlValue = null;
     if (type === 'bool') {
       ctrlValue = event.target.checked;
@@ -284,6 +285,7 @@ class ConfigWizard extends React.Component {
         //mapZoom: {$set: selectedRegion.zoom},
       });
     this.setState(newState);
+    this.props.goToTourStep(3);
   };
 
   getNumOfResources = (resNum) => {
@@ -344,6 +346,7 @@ class ConfigWizard extends React.Component {
       containerImageUrl,
       containerImageName,
       kubernetesConfig,
+      minQualityScore,
     } = this.state;
     const state = this.state;
     const selectedRegion = regions.allRegions.find(el => el._id === region);
@@ -380,14 +383,18 @@ class ConfigWizard extends React.Component {
                         }}
                         onChange={this.handleDataChange('name')}
                         value={name}
-                        className={classes.formInputText}
+                        className='tour-workload-name formInputText'
+                        style={{minWidth: '230px'}}
                         error={this.hasError('name')}
                         helperText={'Enter unique workload identifier'}
                       />
                     </FormControl>
                     <div className={classes.buttonBox}>
                       <Button onClick={()=>{this.props.history.push('/app/workloads/list')}}>Cancel</Button>
-                      <Button color="secondary" variant='raised' onClick={() => this.setActiveStep(0,1)}>Next</Button>
+                      <Button color="secondary" variant='raised' onClick={() => {
+                        this.setActiveStep(0,1);
+                        this.props.goToTourStep(2);}
+                      }>Next</Button>
                     </div>
                   </section>}
 
@@ -412,7 +419,7 @@ class ConfigWizard extends React.Component {
                           id: 'region'
                         }}
                         required
-                        className={classes.formInput}
+                        className={classes.formInput + ' tour-workload-region'}
                       >
                         {regions.allRegions.map(i => (
                           <MenuItem key={i._id} value={i._id}>{i.name}</MenuItem>
@@ -424,7 +431,7 @@ class ConfigWizard extends React.Component {
                     {selectedRegion &&
                     <div className='row justify-content-around'>
                       <div className='col-lg-6 col-md-6'>
-                        <div className='jr-card'>
+                        <div className='jr-card tour-available-resources'>
                           <div className='jr-card-header-color bg-primary d-flex'>
                             Available resources
                           </div>
@@ -454,7 +461,10 @@ class ConfigWizard extends React.Component {
                     <div className={classes.buttonBox}>
                       <Button onClick={()=>{this.props.history.push('/app/workloads/list')}}>Cancel</Button>
                       <Button color="secondary" variant='raised' onClick={() => this.setActiveStep(1,0)}>Previous</Button>
-                      <Button color="secondary" variant='raised' onClick={() => this.setActiveStep(1,2)}>Next</Button>
+                      <Button color="secondary" variant='raised' onClick={() => {
+                        this.setActiveStep(1,2);
+                        this.props.goToTourStep(4);
+                      }}>Next</Button>
                     </div>
                   </section>}
 
@@ -467,8 +477,8 @@ class ConfigWizard extends React.Component {
 
                     <div className={`${classes.formControl} mb-0`}>
                       <h4>Set minimal Quality Score: <span className='text-blue'>{state.minQualityScore}</span></h4>
-                      <div className='px-5 pb-4 pt-3'>
-                        <Slider min={0} value={state.minQualityScore} onChange={(v) => this.setState({minQualityScore: v})}
+                      <div className='px-5 pb-4 pt-3 tour-quality-score'>
+                        <Slider min={0} value={minQualityScore} onChange={(v) => this.setState({minQualityScore: v})}
                                 max={100}/>
                       </div>
                       <div className='row justify-content-around'>
@@ -493,6 +503,7 @@ class ConfigWizard extends React.Component {
                       <FormControlLabel
                         control={
                           <Checkbox
+                            className={'tour-same-network'}
                             checked={sameNetwork}
                             onChange={this.handleDataChange('sameNetwork', 'bool')}
                           />
@@ -503,7 +514,10 @@ class ConfigWizard extends React.Component {
                     <div className={classes.buttonBox}>
                       <Button onClick={()=>{this.props.history.push('/app/workloads/list')}}>Cancel</Button>
                       <Button color="secondary" variant='raised' onClick={() => this.setState({activeStep: 1})}>Previous</Button>
-                      <Button color="secondary" variant='raised' onClick={() => this.setState({activeStep: 3})}>Next</Button>
+                      <Button color="secondary" variant='raised' onClick={() => {
+                        this.setState({activeStep: 3});
+                        this.props.goToTourStep(5);
+                      }}>Next</Button>
                     </div>
                   </section>}
 
@@ -513,7 +527,7 @@ class ConfigWizard extends React.Component {
                       <h2>Resources configuration</h2>
                       <h3>Step {activeStep + 1} of {stepsTotal}</h3>
                     </div>
-                    <div className='row justify-content-start'>
+                    <div className='row justify-content-start tour-profile-resources'>
                       <div className='col-lg-6 col-md-6'>
                         <FormControl className={classes.formControl}>
                           <h4>Compute Profile</h4>
@@ -548,7 +562,7 @@ class ConfigWizard extends React.Component {
                         </FormControl>
                       </div>
                       <div className='col-lg-6 col-md-6'>
-                        <div className='jr-card'>
+                        <div className='jr-card tour-price-estimate'>
                           <div className='jr-card-header-color bg-primary'>
                             Estimated costs per hour (CRC)
                           </div>
@@ -601,6 +615,7 @@ class ConfigWizard extends React.Component {
                           object.maxBidCRC = 1.3 * this.getTotalCosts();
                         }
                         this.setState(object);
+                        this.props.goToTourStep(6);
                       }}>Next</Button>
                     </div>
                   </section>}
@@ -613,7 +628,7 @@ class ConfigWizard extends React.Component {
                     </div>
                     <FormControl className={classes.formControl}>
                       <h4 className='pt-3'>Set max bid price for per hour: <span className='text-blue'>{round(maxBidCRC)} CRC</span></h4>
-                      <div className='px-5 pb-4 pt-3'>
+                      <div className='px-5 pb-4 pt-3 tour-max-bid-price'>
                         <Slider
                           min={1}
                           max={1000}
@@ -627,7 +642,10 @@ class ConfigWizard extends React.Component {
                     <div className={classes.buttonBox}>
                       <Button>Cancel</Button>
                       <Button color="secondary" variant='raised' onClick={() => this.setState({activeStep: 3})}>Previous</Button>
-                      <Button color="secondary" variant='raised' onClick={() => this.setState({activeStep: 5})}>Next</Button>
+                      <Button color="secondary" variant='raised' onClick={() => {
+                        this.setState({activeStep: 5});
+                        this.props.goToTourStep(7);
+                      }}>Next</Button>
                     </div>
                   </section>}
 
@@ -641,6 +659,7 @@ class ConfigWizard extends React.Component {
                       <h4>Container Type</h4>
                       <RadioGroup
                         value={containerType}
+                        className={'tour-installation-script'}
                         onChange={this.handleDataChange('containerType')}
                       >
                         <FormControlLabel value="Docker" control={<Radio/>}
@@ -674,18 +693,18 @@ class ConfigWizard extends React.Component {
                         <FormControl fullWidth className={classes.formControl}>
                           <TextField
                             label="Image Name"
-                            value={containerImageName}
-                            onChange={this.handleDataChange('containerImageName')}
+                            value={data.dockerConfig.imageName}
+                            onChange={this.handleDataChange('dockerConfig.imageName')}
                             fullWidth
                             required
-                            error={this.hasError('containerImageName')}
+                            error={this.hasError('dockerConfig.imageName')}
                           />
                         </FormControl>
                       </div>
                       :
-                      <FormControl fullWidth className={classes.formControl} error={this.hasError('kubernetesConfig')}>
+                      <FormControl fullWidth className={classes.formControl} error={this.hasError('kubernetesConfig.script')}>
                         <h4>Configuration Script</h4>
-                        <DkCodeMirror options={codeMirrorOptions} onChange={this.handleDataChange('kubernetesConfig')} value={kubernetesConfig}/>
+                        <DkCodeMirror options={codeMirrorOptions} onChange={this.handleDataChange('kubernetesConfig.script')} value={data.kubernetesConfig.script}/>
                         <FormHelperText>
                           {'Enter kubernetes config.'}</FormHelperText>
                       </FormControl>}
@@ -693,7 +712,10 @@ class ConfigWizard extends React.Component {
                     <div className={classes.buttonBox}>
                       <Button onClick={()=>{this.props.history.push('/app/workloads/list')}}>Cancel</Button>
                       <Button color="secondary" variant='raised' onClick={() => this.setActiveStep(5,4)}>Previous</Button>
-                      <Button color="secondary" variant='raised' onClick={() => this.setActiveStep(5,6)}>Next</Button>
+                      <Button color="secondary" variant='raised' onClick={() => {
+                        this.setActiveStep(5,6);
+                        this.props.goToTourStep(8);
+                      }}>Next</Button>
                     </div>
                   </section>}
 
@@ -741,7 +763,7 @@ class ConfigWizard extends React.Component {
                         <h4 className='pt-3'>Max bid price for per hour: <span className='text-blue'>{round(maxBidCRC)} CRC</span></h4>
                       </FormControl>
                       <div className='p-5 text-center'>
-                          <Button color="secondary" variant="raised" className="jr-btn" onClick={this.saveWorkload}>
+                          <Button color="secondary" variant="raised" className="jr-btn tour-workload-launch" onClick={this.saveWorkload}>
                             <i className="zmdi zmdi-play animated infinite fadeInLeft zmdi-hc-fw"/>
                             <span>{!this.state._id ? 'Launch' : 'Save'}</span>
                           </Button>
@@ -749,7 +771,7 @@ class ConfigWizard extends React.Component {
 
                     </FormControl>
                     <div className={classes.buttonBox}>
-                      <Button variant='raised' onClick={()=>{this.props.history.push('/app/workloads/list')}}>Cancel</Button>
+                      <Button variant='raised'>Cancel</Button>
                       <Button color="secondary" variant='raised' onClick={() => this.setActiveStep(6,5)}>Previous</Button>
                     </div>
                   </section>}
@@ -767,7 +789,8 @@ class ConfigWizard extends React.Component {
 const mapDispatchToProps = {
   processWorkload,
   fetchAllRegion,
-  fetchAllDatacenter
+  fetchAllDatacenter,
+  goToTourStep
 };
 
 const mapStateToProps = ({datacenter, region, user, workloads}) => {
