@@ -13,7 +13,6 @@ import Radio, {RadioGroup} from 'material-ui/Radio';
 import Map from 'components/map';
 import {connect} from 'react-redux';
 import {
-  ADD_WORKLOAD,
   EDIT_WORKLOAD,
   REMOVE_WORKLOAD,
 } from 'constants/ActionTypes';
@@ -21,15 +20,17 @@ import {withStyles} from 'material-ui/styles/index';
 import {compose} from 'redux';
 import {fetchAllRegion} from 'actions/Region';
 import {fetchAllDatacenter} from 'actions/Datacenter';
+import {processWorkload} from 'actions/Workload';
 import CardLayout from 'components/CardLayout';
 import ContainerHeader from 'components/ContainerHeader';
 import DkCodeMirror from 'components/DkCodeMirror';
 import 'codemirror/mode/yaml/yaml';
 import {round} from 'util/Format';
+import {genWorkloadName, randomIp} from 'util/Generator'
 import {goToTourStep} from 'actions/Tour';
 
-import {genWorkloadName} from 'util/Generator'
 import _ from 'lodash';
+import qs from 'query-string';
 
 const styles = theme => ({
   root: {
@@ -123,61 +124,66 @@ class ConfigWizard extends React.Component {
   constructor(props){
     super(props);
     this.setActiveStep = this.setActiveStep.bind(this);
+    this.saveWorkload = this.saveWorkload.bind(this);
     this.fields = {
       name: this.getFieldInfo(true, 0),
       region: this.getFieldInfo(true, 1),
       sameNetwork: this.getFieldInfo(false, 2),
       computeProfile: this.getFieldInfo(false, 3),
       numCPU: this.getFieldInfo(false, 3),
-      storageGB: this.getFieldInfo(false, 3),
-      pricePerHour: this.getFieldInfo(false, 4),
+      ssdGB: this.getFieldInfo(false, 3),
+      maxBidCRC: this.getFieldInfo(false, 4),
       containerType: this.getFieldInfo(false, 5),
-      dockerConfig_repositoryUrl: this.getFieldInfo(true, 5, {name: 'containerType', value: 'Docker'}),
-      dockerConfig_imageName: this.getFieldInfo(true, 5, {name: 'containerType', value: 'Docker'}),
-      kubernetesConfig_script: this.getFieldInfo(true, 5, {name: 'containerType', value: 'Kubernetes'}),
-      //onChange={this.handleDataChange('computeProfile')}
-      //onChange={this.handleDataChange('dockerConfig.repositoryUrl')} //required
-      //onChange={this.handleDataChange('dockerConfig.imageName')} //required
-      //onChange={this.handleDataChange('kubernetesConfig.script')} //required
+      containerImageUrl: this.getFieldInfo(true, 5, {name: 'containerType', value: 'Docker'}),
+      containerImageName: this.getFieldInfo(true, 5, {name: 'containerType', value: 'Docker'}),
+      kubernetesConfig: this.getFieldInfo(true, 5, {name: 'containerType', value: 'Kubernetes'}),
     };
     this.state = {
-      qualityScore: 50,
       activeStep: 0,
       activeStepError: null,
       mapLocation: {lat: -33.8527273, lng: 151.2345705},
       mapZoom: 11,
-      mapActiveDatacenterId: null,
-      isNew: true,
-      data: {
-        name: genWorkloadName(this.props.user),
-        numCPU: 1,
-        gpu: 0,
-        storageHdd: 1,
-        storageGB: 10,
-        containerType: 'Docker',
-        datacenter: '',
-        region: '',
-        dockerConfig: {
-          repositoryUrl: '',
-          imageName: ''
-        },
-        kubernetesConfig: {
-          script: ''
-        },
-        priceType: '',
-        price: 0,
-        status: 'running',
-        sameNetwork: false,
-        pricePerHour: 4,
-        computeProfile: 'balanced'
-      }
+      minQualityScore: 50,
+      name: genWorkloadName(this.props.user),
+      numCPU: 1,
+      numGPU: 0,
+      ssdGB: 10,
+      containerType: 'Docker',
+      datacenter: '',
+      region: '',
+      containerImageUrl:'',
+      containerImageName: '',
+      kubernetesConfig: '',
+      status: 'requested',
+      sameNetwork: false,
+      maxBidCRC: 4,
+      computeProfile: 'balanced',
+      publicIP: '52.65.63.123',
+      publicHostname: 'http://workload1.aiml.syd.unchai.net/',
     };
   }
 
-
+  saveWorkload() {
+    this.props.processWorkload(_.omit(this.state, ['activeStep', 'activeStepError', 'mapLocation']));
+    this.props.history.push('/app/workloads/list');
+  }
 
   componentDidMount() {
     this.props.fetchAllRegion();
+
+    const params = qs.parse(this.props.location.search);
+    const paramId = params.id;
+    if (paramId) {
+      const {list} = this.props.workloads;
+      let found = list &&  _.find(list, {_id: paramId});
+      if(found){
+        this.setState({
+          ...this.state,
+          ...found,
+          region: found.region.hasOwnProperty('_id') ? found.region._id : found.region,//todo change after model clarification
+        });
+      };
+    }
   }
 
   profileMultipliers = {
@@ -195,11 +201,11 @@ class ConfigWizard extends React.Component {
 
   crcPerTbTransferred = 0.001;
 
-  hasError(fieldName){
-    const name = fieldName.replace('.', '_');
+  hasError(name){
     const field = this.fields[name];
     const {activeStep, activeStepError} = this.state;
     const value = this.getFieldStateValue(name);
+
     return (field.dirty || (activeStep === activeStepError && activeStep === field.step)) && !value;
   }
 
@@ -213,11 +219,8 @@ class ConfigWizard extends React.Component {
     }
   }
 
-  getFieldStateValue(fieldName) {
-    const {data} = this.state;
-    const name = fieldName.replace('_', '.');
-    const splitted = name.split('.');
-    let val = splitted.length === 1 ? data[name] : data[splitted[0]][splitted[1]];
+  getFieldStateValue(name) {
+    let val = this.state[name];
     val = typeof(val) === 'string' ? val.trim() : val;
     return val;
   }
@@ -227,7 +230,7 @@ class ConfigWizard extends React.Component {
     if(from < to){
       const requiredEmptyFields = _.pickBy(this.fields,
         (field, fieldName) => {
-            let isRequiredEmptyField = field.step === from && field.required === true && !this.getFieldStateValue(fieldName); //data[fieldName];
+            let isRequiredEmptyField = field.step === from && field.required === true && !this.getFieldStateValue(fieldName);
             isRequiredEmptyField = field.depend.name ? isRequiredEmptyField && this.getFieldStateValue(field.depend.name) === field.depend.value : isRequiredEmptyField;
             return isRequiredEmptyField;
         });
@@ -262,24 +265,8 @@ class ConfigWizard extends React.Component {
       ctrlValue = event.target.value;
     }
     let value = type === 'int' ? parseInt(ctrlValue) : ctrlValue;
-    let aryPath = name.split('.').reverse();
-
-    //set dirtyflag
-    const fieldName = name.replace('.', '_');
-    this.fields[fieldName].dirty = true;
-
-    let object = null;
-    aryPath.forEach((el, i) => {
-      if (i === 0) {
-        object = {[el]: {$set: value}};
-      } else {
-        object = {[el]: object}
-      }
-    });
-
-    let newState = update(this.state, {
-      data: object
-    });
+    this.fields[name].dirty = true;
+    let newState = update(this.state, {[name]: {$set: value}});
     let promise = new Promise((resolve, reject) => {
       this.setState(newState, () => resolve());
     });
@@ -288,25 +275,25 @@ class ConfigWizard extends React.Component {
 
 
 
-  changeMapRegion = (regionId) => {
-    const {region} = this.props;
-    let selectedRegion = region.allRegions.find(i => i._id === regionId);
+  changeMapRegion = (region) => {
+
+    const {regions} = this.props;
+    let selectedRegion = regions.allRegions.find(i => i._id === region);
     let newState = update(this.state,
       {
         mapLocation: {$set: {lng: selectedRegion.location.geo[0], lat: selectedRegion.location.geo[1]}},
         //mapZoom: {$set: selectedRegion.zoom},
       });
-
     this.setState(newState);
     this.props.goToTourStep(3);
   };
 
   getNumOfResources = (resNum) => {
-    return round((100 - this.state.qualityScore * 0.9) / 100 * (this.state.data.sameNetwork ? 0.5 : 1) * resNum);
+    return round((100 - this.state.minQualityScore * 0.9) / 100 * (this.state.sameNetwork ? 0.5 : 1) * resNum);
   }
 
   getMemGb = () => {
-    const {computeProfile, numCPU} = this.state.data;
+    const {computeProfile, numCPU} = this.state;
     const {balanced,cpuIntensive,memoryIntensive} = this.profileMultipliers.memory;
     let coe = null;
     if (computeProfile === 'balanced') {
@@ -321,7 +308,7 @@ class ConfigWizard extends React.Component {
   };
 
   getEstimatedCpuRamCosts = () => {
-    const {computeProfile, numCPU} = this.state.data;
+    const {computeProfile, numCPU} = this.state;
     const {balanced,cpuIntensive,memoryIntensive} = this.profileMultipliers.cpuCosts;
     let cpuCoe = null;
 
@@ -336,7 +323,7 @@ class ConfigWizard extends React.Component {
   };
 
   getEstimatedStorageCosts = () => {
-    return (this.state.data.storageGB * 0.01);
+    return (this.state.ssdGB * 0.01);
   };
 
   getTotalCosts = () => {
@@ -345,10 +332,24 @@ class ConfigWizard extends React.Component {
 
   render() {
     const {classes} = this.props;
-    const { region} = this.props;
-    const {data, activeStep} = this.state;
+    const { regions} = this.props;
+    const {
+      region,
+      name,
+      sameNetwork,
+      activeStep,
+      computeProfile,
+      numCPU,
+      ssdGB,
+      maxBidCRC,
+      containerType,
+      containerImageUrl,
+      containerImageName,
+      kubernetesConfig,
+      minQualityScore,
+    } = this.state;
     const state = this.state;
-    const selectedRegion = region.allRegions.find(el => el._id === data.region);
+    const selectedRegion = regions.allRegions.find(el => el._id === region);
     const stepsTotal = 7;
 
     const codeMirrorOptions = {
@@ -381,7 +382,7 @@ class ConfigWizard extends React.Component {
                           name: 'name'
                         }}
                         onChange={this.handleDataChange('name')}
-                        value={data.name}
+                        value={name}
                         className='tour-workload-name formInputText'
                         style={{minWidth: '230px'}}
                         error={this.hasError('name')}
@@ -407,7 +408,7 @@ class ConfigWizard extends React.Component {
                     <FormControl className={classes.formControl} error={this.hasError('region')}>
                       <InputLabel htmlFor="region">Region</InputLabel>
                       <Select
-                        value={data.region}
+                        value={region}
                         onChange={(e) => {
                           this.handleDataChange('region')(e)
                             .then(() => {
@@ -420,7 +421,7 @@ class ConfigWizard extends React.Component {
                         required
                         className={classes.formInput + ' tour-workload-region'}
                       >
-                        {region.allRegions.map(i => (
+                        {regions.allRegions.map(i => (
                           <MenuItem key={i._id} value={i._id}>{i.name}</MenuItem>
                         ))}
                       </Select>
@@ -475,9 +476,9 @@ class ConfigWizard extends React.Component {
                     </div>
 
                     <div className={`${classes.formControl} mb-0`}>
-                      <h4>Set minimal Quality Score: <span className='text-blue'>{state.qualityScore}</span></h4>
+                      <h4>Set minimal Quality Score: <span className='text-blue'>{state.minQualityScore}</span></h4>
                       <div className='px-5 pb-4 pt-3 tour-quality-score'>
-                        <Slider min={0} value={state.qualityScore} onChange={(v) => this.setState({qualityScore: v})}
+                        <Slider min={0} value={minQualityScore} onChange={(v) => this.setState({minQualityScore: v})}
                                 max={100}/>
                       </div>
                       <div className='row justify-content-around'>
@@ -503,7 +504,7 @@ class ConfigWizard extends React.Component {
                         control={
                           <Checkbox
                             className={'tour-same-network'}
-                            checked={data.sameNetwork}
+                            checked={sameNetwork}
                             onChange={this.handleDataChange('sameNetwork', 'bool')}
                           />
                         }
@@ -531,7 +532,7 @@ class ConfigWizard extends React.Component {
                         <FormControl className={classes.formControl}>
                           <h4>Compute Profile</h4>
                           <RadioGroup
-                            value={data.computeProfile}
+                            value={computeProfile}
                             onChange={this.handleDataChange('computeProfile')}
                           >
                             <FormControlLabel value="balanced" control={<Radio/>}
@@ -579,12 +580,12 @@ class ConfigWizard extends React.Component {
                       </div>
                     </div>
                     <div className={classes.formControl}>
-                      <h4 className='pt-3'>Number of vCPU cores: <span className='text-red'>{data.numCPU.toLocaleString()}</span></h4>
+                      <h4 className='pt-3'>Number of vCPU cores: <span className='text-red'>{numCPU.toLocaleString()}</span></h4>
                       <div className='px-5 pt-3'>
                         <Slider
                           min={1}
                           max={this.getNumOfResources(selectedRegion.numCPU)}
-                          value={data.numCPU}
+                          value={numCPU}
                           onChange={this.handleDataChange('numCPU')}
                         />
                       </div>
@@ -593,13 +594,13 @@ class ConfigWizard extends React.Component {
                       <h4 className='pt-3'>Number of RAM (GB): <span className='text-amber'>{this.getMemGb()}</span></h4>
                     </div>
                     <div className={classes.formControl}>
-                      <h4 className='pt-3'>Temporary Storage - SSD (GB): <span className='text-purple'>{data.storageGB.toLocaleString()}</span></h4>
+                      <h4 className='pt-3'>Temporary Storage - SSD (GB): <span className='text-purple'>{ssdGB.toLocaleString()}</span></h4>
                       <div className='px-5 pb-4 pt-3'>
                         <Slider
                           min={1}
                           max={this.getNumOfResources(selectedRegion.storageGB)}
-                          value={data.storageGB}
-                          onChange={this.handleDataChange('storageGB')}
+                          value={ssdGB}
+                          onChange={this.handleDataChange('ssdGB')}
                         />
                       </div>
                     </div>
@@ -609,7 +610,11 @@ class ConfigWizard extends React.Component {
                       <Button>Cancel</Button>
                       <Button color="secondary" variant='raised' onClick={() => this.setState({activeStep: 2})}>Previous</Button>
                       <Button color="secondary" variant='raised' onClick={() => {
-                        this.setState(update(this.state, {activeStep: {$set: 4}, data: {pricePerHour: {$set: 1.3 * this.getTotalCosts()}}}));
+                        const object = {activeStep:4}
+                        if(!this.state.id && !this.state._id){
+                          object.maxBidCRC = 1.3 * this.getTotalCosts();
+                        }
+                        this.setState(object);
                         this.props.goToTourStep(6);
                       }}>Next</Button>
                     </div>
@@ -622,13 +627,13 @@ class ConfigWizard extends React.Component {
                       <h3>Step {activeStep + 1} of {stepsTotal}</h3>
                     </div>
                     <FormControl className={classes.formControl}>
-                      <h4 className='pt-3'>Set max bid price for per hour: <span className='text-blue'>{round(data.pricePerHour)} CRC</span></h4>
+                      <h4 className='pt-3'>Set max bid price for per hour: <span className='text-blue'>{round(maxBidCRC)} CRC</span></h4>
                       <div className='px-5 pb-4 pt-3 tour-max-bid-price'>
                         <Slider
                           min={1}
                           max={1000}
-                          value={data.pricePerHour}
-                          onChange={this.handleDataChange('pricePerHour')}
+                          value={maxBidCRC}
+                          onChange={this.handleDataChange('maxBidCRC')}
                         />
                       </div>
                       <p className='py-3'><i><u>Note:</u> The current price for vCPU per hour: <span className='text-green'>{round(this.getTotalCosts()).toLocaleString()} CRC</span></i></p>
@@ -653,7 +658,7 @@ class ConfigWizard extends React.Component {
                     <FormControl className={classes.formControl}>
                       <h4>Container Type</h4>
                       <RadioGroup
-                        value={data.containerType}
+                        value={containerType}
                         className={'tour-installation-script'}
                         onChange={this.handleDataChange('containerType')}
                       >
@@ -673,33 +678,33 @@ class ConfigWizard extends React.Component {
                                                                </div>}/>}/>
                       </RadioGroup>
                     </FormControl>
-                    {data.containerType === 'Docker' ?
+                    {containerType === 'Docker' ?
                       <div>
                         <FormControl fullWidth className={classes.formControl}>
                           <TextField
                             label="Repository URL"
-                            value={data.dockerConfig.repositoryUrl}
-                            onChange={this.handleDataChange('dockerConfig.repositoryUrl')}
+                            value={containerImageUrl}
+                            onChange={this.handleDataChange('containerImageUrl')}
                             fullWidth
                             required
-                            error={this.hasError('dockerConfig.repositoryUrl')}
+                            error={this.hasError('containerImageUrl')}
                           />
                         </FormControl>
                         <FormControl fullWidth className={classes.formControl}>
                           <TextField
                             label="Image Name"
-                            value={data.dockerConfig.imageName}
-                            onChange={this.handleDataChange('dockerConfig.imageName')}
+                            value={containerImageName}
+                            onChange={this.handleDataChange('containerImageName')}
                             fullWidth
                             required
-                            error={this.hasError('dockerConfig.imageName')}
+                            error={this.hasError('containerImageName')}
                           />
                         </FormControl>
                       </div>
                       :
-                      <FormControl fullWidth className={classes.formControl} error={this.hasError('kubernetesConfig.script')}>
+                      <FormControl fullWidth className={classes.formControl} error={this.hasError('kubernetesConfig')}>
                         <h4>Configuration Script</h4>
-                        <DkCodeMirror options={codeMirrorOptions} onChange={this.handleDataChange('kubernetesConfig.script')} value={data.kubernetesConfig.script}/>
+                        <DkCodeMirror options={codeMirrorOptions} onChange={this.handleDataChange('kubernetesConfig')} value={kubernetesConfig}/>
                         <FormHelperText>
                           {'Enter kubernetes config.'}</FormHelperText>
                       </FormControl>}
@@ -729,9 +734,9 @@ class ConfigWizard extends React.Component {
                             </div>
                             <div className='jr-card-body'>
                               <div className={classes.resources}>
-                                <div><h6>vCPU (cores)</h6> <span className='text-red'>{data.numCPU.toLocaleString()}</span></div>
+                                <div><h6>vCPU (cores)</h6> <span className='text-red'>{numCPU.toLocaleString()}</span></div>
                                 <div><h6>RAM (GB)</h6> <span className='text-amber'>{this.getMemGb().toLocaleString()}</span></div>
-                                <div><h6>Storage - SSD (GB)</h6> <span className='text-green'>{data.storageGB.toLocaleString()}</span></div>
+                                <div><h6>Storage - SSD (GB)</h6> <span className='text-green'>{ssdGB.toLocaleString()}</span></div>
                               </div>
                             </div>
                           </div>
@@ -755,12 +760,12 @@ class ConfigWizard extends React.Component {
                         </div>
                       </div>
                       <FormControl className={classes.formControl}>
-                        <h4 className='pt-3'>Max bid price for per hour: <span className='text-blue'>{round(data.pricePerHour)} CRC</span></h4>
+                        <h4 className='pt-3'>Max bid price for per hour: <span className='text-blue'>{round(maxBidCRC)} CRC</span></h4>
                       </FormControl>
                       <div className='p-5 text-center'>
-                          <Button color="secondary" variant="raised" className="jr-btn tour-workload-launch">
+                          <Button color="secondary" variant="raised" className="jr-btn tour-workload-launch" onClick={this.saveWorkload}>
                             <i className="zmdi zmdi-play animated infinite fadeInLeft zmdi-hc-fw"/>
-                            <span>Launch</span>
+                            <span>{!this.state._id ? 'Launch' : 'Save'}</span>
                           </Button>
                       </div>
 
@@ -782,17 +787,18 @@ class ConfigWizard extends React.Component {
 
 
 const mapDispatchToProps = {
-  addItem: (item) => ({type: ADD_WORKLOAD, item: item}),
+  processWorkload,
   fetchAllRegion,
   fetchAllDatacenter,
   goToTourStep
 };
 
-const mapStateToProps = ({datacenter, region, user}) => {
+const mapStateToProps = ({datacenter, region, user, workloads}) => {
   return {
-    datacenter,
-    region,
+    datacenters: datacenter,
+    regions: region,
     user,
+    workloads,
   }
 };
 

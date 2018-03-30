@@ -139,12 +139,14 @@ export const FETCH_ALL_REGION = 'fetch_all_region';
 export const FETCH_ALL_REGION_SUCCESS = 'fetch_all_region_success';
 
 //// Workloads
-export const ADD_WORKLOAD = 'add_workload';
+export const SAVE_WORKLOAD = 'save_workload';
+export const PROCESS_WORKLOAD = 'process_workload';
 export const EDIT_WORKLOAD = 'edit_workload';
 export const REMOVE_WORKLOAD = 'remove_workload';
 export const FETCH_ALL_WORKLOADS = 'fetch_all_workloads';
 export const FETCH_ALL_WORKLOADS_SUCCESS = 'fetch_all_workloads_success';
-
+export const LAUNCH_WORKLOAD = 'launch_workload';
+export const LAUNCH_WORKLOAD_SUCCESS = 'launch_workload_success';
 
 // price history
 export const FETCH_ALL_PRICE_HISTORY = 'fetch_all_price_history';

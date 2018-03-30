@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+const mapStyles = require('../../../mapStyles.json');
 
 import {GoogleMap, Marker, InfoWindow, withGoogleMap} from 'react-google-maps';
 import MarkerClusterer from 'react-google-maps/lib/components/addons/MarkerClusterer';
@@ -16,7 +17,8 @@ const MarkerClustererMap = withGoogleMap(props => (
       scaleControl: false,
       signInControl: false,
       streetViewControl: false,
-      zoomControl: false
+      zoomControl: false,
+      styles: mapStyles
     }}
   >
     <MarkerClusterer
