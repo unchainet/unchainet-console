@@ -1,7 +1,7 @@
 import React from 'react';
 import {Button} from 'material-ui';
 import { connect } from 'react-redux';
-import {userFetch, userUpdate} from '../../../../../actions/User'
+import {userFetch, userUpdate, userUpdateErrorHide} from '../../../../../actions/User'
 import TextField from 'material-ui/TextField';
 import {CircularProgress} from 'material-ui/Progress';
 import {NotificationContainer, NotificationManager} from 'react-notifications';
@@ -39,6 +39,14 @@ class Profile extends React.Component {
 
   componentDidMount() {
     this.props.userFetch();
+  }
+
+  componentDidUpdate() {
+    if (this.props.user.error) {
+      setTimeout(() => {
+        this.props.userUpdateErrorHide();
+      }, 100);
+    }
   }
 
   componentWillReceiveProps(props) {
@@ -288,4 +296,4 @@ function stateToProps({user}) {
   return {user};
 }
 
-export default connect(stateToProps, {userFetch, userUpdate})(Profile);
+export default connect(stateToProps, {userFetch, userUpdate, userUpdateErrorHide})(Profile);

@@ -4,7 +4,8 @@ import {
   FETCH_USER,
   UPDATE_USER_SUCCESS,
   UPDATE_USER_ERROR,
-  UPDATE_USER
+  UPDATE_USER,
+  UPDATE_USER_ERROR_HIDE
 } from '../constants/ActionTypes';
 
 const INIT_STATE = {
@@ -55,6 +56,14 @@ export default (state = INIT_STATE, action) => {
         ...state,
         loader: false,
         error: action.payload
+      }
+    }
+
+    case UPDATE_USER_ERROR_HIDE: {
+      return {
+        ...state,
+        loader: false,
+        error: null
       }
     }
 
