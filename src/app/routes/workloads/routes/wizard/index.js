@@ -158,7 +158,8 @@ class ConfigWizard extends React.Component {
       sameNetwork: false,
       maxBidCRC: 4,
       computeProfile: 'balanced',
-      publicIP: randomIp(),
+      publicIP: '52.65.63.123',
+      publicHostname: 'http://workload1.aiml.syd.unchai.net/',
     };
   }
 

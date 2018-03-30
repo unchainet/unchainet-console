@@ -34,7 +34,8 @@ class WorkloadsTable extends React.Component {
   }
 
   render() {
-    let data = this.props.items || [];
+    const items = this.props.items || [];
+    let data = items.slice().reverse();
     return (
       <div className="table-responsive-material table-workloads">
         <Table>
@@ -63,7 +64,9 @@ class WorkloadsTable extends React.Component {
                     {n.status}
                   </TblCell>
                   <TblCell>{n.publicIP}</TblCell>
-                  <TblCell>{n.publicHostname}</TblCell>
+                  <TblCell>
+                    <a href={n.publicHostname} target='_blank'>{n.publicHostname}</a>
+                    </TblCell>
                   <TblCell>
                     <Button className="jr-btn jr-btn-lg" onClick={()=>{this.props.history.push(`/app/workloads/wizard?id=${n._id}`)}} color="primary">
                       <i className="zmdi zmdi-edit"/>
