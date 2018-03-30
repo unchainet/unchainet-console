@@ -65,7 +65,7 @@ class SidenavContent extends Component {
 
                 <li className="menu no-arrow">
                     <NavLink to="/app/workloads/list">
-                        <i className="zmdi zmdi-eye zmdi-hc-fw"/>
+                        <i className="zmdi zmdi-play zmdi-hc-fw"/>
                         <span className="nav-text"><IntlMessages id="sidebar.workloads"/></span>
                     </NavLink>
                 </li>

@@ -1,5 +1,5 @@
 import indigo from 'material-ui/colors/indigo';
-import pink from 'material-ui/colors/pink';
+import orange from 'material-ui/colors/orange';
 
 export default {
     palette: {
@@ -10,9 +10,9 @@ export default {
             contrastText: '#fff'
         },
         secondary: {
-            light: pink[300],
-            main: pink['A200'],
-            dark: pink[700],
+            light: orange[300],
+            main: orange['A200'],
+            dark: orange[700],
             contrastText: '#fff'
         }
     },
