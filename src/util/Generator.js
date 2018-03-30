@@ -14,7 +14,7 @@ function randHex(len) {
 export function genWorkloadName(user=null){
   if(user === null || !user.data || !user.data.name)
     return '';
-  let name = user.data.name.replace(/\s/g,'');
+  let name = user.data.name.replace(/\W+/g, '').toLowerCase();
   name = name.trim();
   name = name + '-' + randHex(8);
   return name;
