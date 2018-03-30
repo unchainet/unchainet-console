@@ -47,7 +47,6 @@ export default (state = INIT_STATE, action) => {
             }
         }
         case FETCH_ALL_WORKLOADS_SUCCESS: {
-          debugger;
             return {
               ...state,
               state: 'loaded',

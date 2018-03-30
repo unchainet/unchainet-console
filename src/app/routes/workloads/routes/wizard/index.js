@@ -29,7 +29,6 @@ import {round} from 'util/Format';
 import {genWorkloadName, randomIp} from 'util/Generator'
 import {goToTourStep} from 'actions/Tour';
 
-import {genWorkloadName} from 'util/Generator'
 import _ from 'lodash';
 import qs from 'query-string';
 
@@ -693,18 +692,18 @@ class ConfigWizard extends React.Component {
                         <FormControl fullWidth className={classes.formControl}>
                           <TextField
                             label="Image Name"
-                            value={data.dockerConfig.imageName}
-                            onChange={this.handleDataChange('dockerConfig.imageName')}
+                            value={containerImageName}
+                            onChange={this.handleDataChange('containerImageName')}
                             fullWidth
                             required
-                            error={this.hasError('dockerConfig.imageName')}
+                            error={this.hasError('containerImageName')}
                           />
                         </FormControl>
                       </div>
                       :
-                      <FormControl fullWidth className={classes.formControl} error={this.hasError('kubernetesConfig.script')}>
+                      <FormControl fullWidth className={classes.formControl} error={this.hasError('kubernetesConfig')}>
                         <h4>Configuration Script</h4>
-                        <DkCodeMirror options={codeMirrorOptions} onChange={this.handleDataChange('kubernetesConfig.script')} value={data.kubernetesConfig.script}/>
+                        <DkCodeMirror options={codeMirrorOptions} onChange={this.handleDataChange('kubernetesConfig')} value={kubernetesConfig}/>
                         <FormHelperText>
                           {'Enter kubernetes config.'}</FormHelperText>
                       </FormControl>}

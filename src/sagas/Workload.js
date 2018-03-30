@@ -9,7 +9,6 @@ import {delay} from 'redux-saga'
 
 function* fetchAllWorkloadsRequest() {
   try {
-    debugger;
     const {body, response} = yield get('/api/workloads');
     yield put(fetchAllWorkloadsSuccess(body));
   } catch (error) {
