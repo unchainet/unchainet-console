@@ -51,7 +51,7 @@ class Dashboard extends React.Component {
       }
     });
     this.props.region.allRegions.forEach(row => {
-      row.hasInstance = provObj[row._id];
+      row.hasInstance = provObj[row._id] || false;
     });
     let time = moment().format('HH:mm');
     return (
@@ -81,7 +81,7 @@ class Dashboard extends React.Component {
                 <div className="name">map - RUNNING WORKLOADS</div>
               </div>
               <div className="body-unet">
-                {map ? <Map items={this.props.region.allRegions}/> : null}
+                <Map items={this.props.region.allRegions}/>
               </div>
             </CardBox>
             <CardBox styleName="col-lg-5" cardStyle="jr-card-unet" childrenStyle="jr-card-min-height" heading>

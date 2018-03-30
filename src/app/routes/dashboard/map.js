@@ -28,7 +28,7 @@ const MarkerClustererMap = withGoogleMap(props => (
         <Marker
           defaultIcon={`https://raw.githubusercontent.com/googlemaps/v3-utility-library/master/markerclustererplus/images/m${marker.hasInstance ? 2 : 1}.png`}
           position={{lat: marker.location.geo[1], lng: marker.location.geo[0]}}
-          key={marker._id}
+          key={marker.key}
           onClick={() => props.onMarkerClick(marker._id)}
         >
           {props.selected.indexOf(marker._id) > -1 && (
@@ -93,7 +93,7 @@ export default class MarkerClustererContainer extends Component {
     markers = markers.map(marker => {
       return {
         ...marker,
-        showInfo: false,
+        key: marker._id + new Date().getTime(),
         infoContent: (
           <div className="unet-map-region-popup">
             <div className="name">{marker.name}</div>
