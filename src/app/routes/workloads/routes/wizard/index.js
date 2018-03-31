@@ -4,7 +4,7 @@ import TextField from 'material-ui/TextField';
 import Button from 'material-ui/Button';
 import Slider from 'rc-slider';
 import 'rc-slider/assets/index.css';
-import {FormControl, FormControlLabel, FormLabel, FormHelperText} from 'material-ui/Form';
+import {FormControl, FormControlLabel, FormHelperText} from 'material-ui/Form';
 import Select from 'material-ui/Select';
 import MenuItem from 'material-ui/Menu/MenuItem';
 import Checkbox from 'material-ui/Checkbox';
@@ -12,25 +12,20 @@ import {InputLabel} from 'material-ui/Input';
 import Radio, {RadioGroup} from 'material-ui/Radio';
 import Map from 'components/map';
 import {connect} from 'react-redux';
-import {
-  EDIT_WORKLOAD,
-  REMOVE_WORKLOAD,
-} from 'constants/ActionTypes';
 import {withStyles} from 'material-ui/styles/index';
 import {compose} from 'redux';
 import {fetchAllRegion} from 'actions/Region';
 import {fetchAllDatacenter} from 'actions/Datacenter';
 import {processWorkload} from 'actions/Workload';
 import CardLayout from 'components/CardLayout';
-import ContainerHeader from 'components/ContainerHeader';
 import DkCodeMirror from 'components/DkCodeMirror';
 import 'codemirror/mode/yaml/yaml';
 import {round} from 'util/Format';
-import {genWorkloadName, randomIp} from 'util/Generator'
+import {genWorkloadName} from 'util/Generator'
 import {goToTourStep} from 'actions/Tour';
+import PropTypes from 'prop-types';
 
 import _ from 'lodash';
-import qs from 'query-string';
 
 const styles = theme => ({
   root: {
@@ -63,19 +58,27 @@ const styles = theme => ({
     padding: '25px 0 0 15px'
   },
   section: {
-    marginLeft: '-44px',
-    marginRight: '-44px',
+    margin: '-38px -44px 27px',
     padding: '1.6em 2.5em .7em',
-    marginBottom: '27px',
     backgroundColor: '#555',
+    position: 'relative',
     color: '#fff',
-    marginTop: -38,
     '& h2': {
-      fontSize: '1.5em'
+      fontSize: '1.5em',
+      marginBottom: '4px'
     },
-    '& h3': {
+    '& h4': {
       fontSize: '0.8em',
       fontWeight: '200'
+    },
+    '& h3': {
+      fontSize: '22px',
+      position: 'absolute',
+      right: '30px',
+      top: '50%',
+      transform: 'translateY(-50%)',
+      marginBottom: 0,
+      color: theme.palette.secondary.light,
     }
   },
   resources: {
@@ -96,12 +99,18 @@ const styles = theme => ({
       }
     }
   },
-  buttonBox: {
+  btnBox: {
+    backgroundColor: '#eee',
+    margin: '25px -44px -28px',
+    padding: '12px 12px 2px',
     textAlign: 'right',
     '& button': {
       marginLeft: 10,
       marginBottom: 10
-    }
+    },
+  },
+  btnBack: {
+    float: 'left'
   },
   radioDescription: {
     fontSize: '12px',
@@ -121,7 +130,7 @@ const styles = theme => ({
 
 class ConfigWizard extends React.Component {
 
-  constructor(props){
+  constructor(props) {
     super(props);
     this.setActiveStep = this.setActiveStep.bind(this);
     this.saveWorkload = this.saveWorkload.bind(this);
@@ -140,6 +149,7 @@ class ConfigWizard extends React.Component {
     };
     this.state = {
       activeStep: 0,
+      isNew: true,
       activeStepError: null,
       mapLocation: {lat: -33.8527273, lng: 151.2345705},
       mapZoom: 11,
@@ -151,7 +161,7 @@ class ConfigWizard extends React.Component {
       containerType: 'Docker',
       datacenter: '',
       region: '',
-      containerImageUrl:'',
+      containerImageUrl: '',
       containerImageName: '',
       kubernetesConfig: '',
       status: 'requested',
@@ -165,24 +175,27 @@ class ConfigWizard extends React.Component {
 
   saveWorkload() {
     this.props.processWorkload(_.omit(this.state, ['activeStep', 'activeStepError', 'mapLocation']));
-    this.props.history.push('/app/workloads/list');
+    this.props.history.push('/app/workloads');
   }
 
   componentDidMount() {
     this.props.fetchAllRegion();
 
-    const params = qs.parse(this.props.location.search);
-    const paramId = params.id;
+    let paramId = this.props.match.params.id;
+
+    let isNew = !paramId;
+
     if (paramId) {
       const {list} = this.props.workloads;
-      let found = list &&  _.find(list, {_id: paramId});
-      if(found){
+      let found = list && _.find(list, {_id: paramId});
+      if (found) {
         this.setState({
           ...this.state,
           ...found,
           region: found.region.hasOwnProperty('_id') ? found.region._id : found.region,//todo change after model clarification
+          isNew
         });
-      };
+      }
     }
   }
 
@@ -201,7 +214,7 @@ class ConfigWizard extends React.Component {
 
   crcPerTbTransferred = 0.001;
 
-  hasError(name){
+  hasError(name) {
     const field = this.fields[name];
     const {activeStep, activeStepError} = this.state;
     const value = this.getFieldStateValue(name);
@@ -227,12 +240,12 @@ class ConfigWizard extends React.Component {
 
   setActiveStep(from, to) {
 
-    if(from < to){
+    if (from < to) {
       const requiredEmptyFields = _.pickBy(this.fields,
         (field, fieldName) => {
-            let isRequiredEmptyField = field.step === from && field.required === true && !this.getFieldStateValue(fieldName);
-            isRequiredEmptyField = field.depend.name ? isRequiredEmptyField && this.getFieldStateValue(field.depend.name) === field.depend.value : isRequiredEmptyField;
-            return isRequiredEmptyField;
+          let isRequiredEmptyField = field.step === from && field.required === true && !this.getFieldStateValue(fieldName);
+          isRequiredEmptyField = field.depend.name ? isRequiredEmptyField && this.getFieldStateValue(field.depend.name) === field.depend.value : isRequiredEmptyField;
+          return isRequiredEmptyField;
         });
 
       if (_.size(requiredEmptyFields) === 0) {
@@ -241,12 +254,12 @@ class ConfigWizard extends React.Component {
           activeStepError: null
         });
       }
-      else{
+      else {
         this.setState({
           activeStepError: from
         })
       }
-    }else{
+    } else {
       this.setState({
         activeStep: to,
         activeStepError: null
@@ -274,7 +287,6 @@ class ConfigWizard extends React.Component {
   };
 
 
-
   changeMapRegion = (region) => {
 
     const {regions} = this.props;
@@ -294,7 +306,7 @@ class ConfigWizard extends React.Component {
 
   getMemGb = () => {
     const {computeProfile, numCPU} = this.state;
-    const {balanced,cpuIntensive,memoryIntensive} = this.profileMultipliers.memory;
+    const {balanced, cpuIntensive, memoryIntensive} = this.profileMultipliers.memory;
     let coe = null;
     if (computeProfile === 'balanced') {
       coe = balanced;
@@ -309,7 +321,7 @@ class ConfigWizard extends React.Component {
 
   getEstimatedCpuRamCosts = () => {
     const {computeProfile, numCPU} = this.state;
-    const {balanced,cpuIntensive,memoryIntensive} = this.profileMultipliers.cpuCosts;
+    const {balanced, cpuIntensive, memoryIntensive} = this.profileMultipliers.cpuCosts;
     let cpuCoe = null;
 
     if (computeProfile === 'balanced') {
@@ -332,7 +344,7 @@ class ConfigWizard extends React.Component {
 
   render() {
     const {classes} = this.props;
-    const { regions} = this.props;
+    const {regions} = this.props;
     const {
       region,
       name,
@@ -347,10 +359,10 @@ class ConfigWizard extends React.Component {
       containerImageName,
       kubernetesConfig,
       minQualityScore,
+      isNew,
     } = this.state;
     const state = this.state;
     const selectedRegion = regions.allRegions.find(el => el._id === region);
-    const stepsTotal = 7;
 
     const codeMirrorOptions = {
       lineNumbers: true,
@@ -362,18 +374,13 @@ class ConfigWizard extends React.Component {
     return (
       <div className="app-wrapper">
         <div className="animated slideInUpTiny animation-duration-3">
-          <ContainerHeader match={this.props.match} title='New Workload Configuration'/>
-
           <div className="row justify-content-around">
             <div className="col-lg-8 col-md-10">
               <CardLayout>
                 <div className={classes.form}>
                   {activeStep === 0 &&
                   <section>
-                    <div className={classes.section}>
-                      <h2>Workload</h2>
-                      <h3>Step {activeStep + 1} of {stepsTotal}</h3>
-                    </div>
+                    <SectionHeader activeStep={activeStep} label='Name' isNew={isNew}/>
                     <FormControl className={classes.formControl}>
                       <TextField
                         label='Workload Name'
@@ -389,21 +396,19 @@ class ConfigWizard extends React.Component {
                         helperText={'Enter unique workload identifier'}
                       />
                     </FormControl>
-                    <div className={classes.buttonBox}>
-                      <Button onClick={()=>{this.props.history.push('/app/workloads/list')}}>Cancel</Button>
-                      <Button color="secondary" variant='raised' onClick={() => {
-                        this.setActiveStep(0,1);
-                        this.props.goToTourStep(2);}
-                      }>Next</Button>
-                    </div>
+                    <FormButtons
+                      activeStep={activeStep}
+                      onCancel={() => this.props.history.push('/app/workloads')}
+                      onNext={() => {
+                        this.setActiveStep(0, 1);
+                        this.props.goToTourStep(2);
+                      }}
+                    />
                   </section>}
 
                   {activeStep === 1 &&
                   <section>
-                    <div className={classes.section}>
-                      <h2>Location</h2>
-                      <h3>Step {activeStep + 1} of {stepsTotal}</h3>
-                    </div>
+                    <SectionHeader activeStep={activeStep} label='Location' isNew={isNew}/>
 
                     <FormControl className={classes.formControl} error={this.hasError('region')}>
                       <InputLabel htmlFor="region">Region</InputLabel>
@@ -458,31 +463,31 @@ class ConfigWizard extends React.Component {
                       </div>
                     </div>}
 
-                    <div className={classes.buttonBox}>
-                      <Button onClick={()=>{this.props.history.push('/app/workloads/list')}}>Cancel</Button>
-                      <Button color="secondary" variant='raised' onClick={() => this.setActiveStep(1,0)}>Previous</Button>
-                      <Button color="secondary" variant='raised' onClick={() => {
-                        this.setActiveStep(1,2);
+                    <FormButtons
+                      activeStep={activeStep}
+                      onCancel={() => this.props.history.push('/app/workloads')}
+                      onNext={() => {
+                        this.setActiveStep(1, 2);
                         this.props.goToTourStep(4);
-                      }}>Next</Button>
-                    </div>
+                      }}
+                      onPrevious={() => this.setActiveStep(1, 0)}
+                    />
                   </section>}
 
                   {activeStep === 2 &&
                   <section>
-                    <div className={classes.section}>
-                      <h2>Quality</h2>
-                      <h3>Step {activeStep + 1} of {stepsTotal}</h3>
-                    </div>
+                    <SectionHeader activeStep={activeStep} label='Quality' isNew={isNew}/>
 
                     <div className={`${classes.formControl} mb-0`}>
                       <h4>Set minimal Quality Score: <span className='text-blue'>{state.minQualityScore}</span></h4>
-                      <div className='px-5 pb-4 pt-3 tour-quality-score'>
-                        <Slider min={0} value={minQualityScore} onChange={(v) => this.setState({minQualityScore: v})}
-                                max={100}/>
+                      <div className='row pb-4 pt-3 tour-quality-score'>
+                        <div className='col-lg-8 col-md-8 col-sm-8'>
+                          <Slider min={0} value={minQualityScore} onChange={(v) => this.setState({minQualityScore: v})}
+                                  max={100}/>
+                        </div>
                       </div>
-                      <div className='row justify-content-around'>
-                        <div className='col-lg-8 col-md-7 col-sm-6'>
+                      <div className='row'>
+                        <div className='col-lg-8 col-md-8 col-sm-8'>
                           <div className='jr-card'>
                             <div className='jr-card-header-color bg-primary d-flex'>
                               Available resources
@@ -511,22 +516,21 @@ class ConfigWizard extends React.Component {
                         label="Deploy to the same datacenter (fast network)"
                       />
                     </div>
-                    <div className={classes.buttonBox}>
-                      <Button onClick={()=>{this.props.history.push('/app/workloads/list')}}>Cancel</Button>
-                      <Button color="secondary" variant='raised' onClick={() => this.setState({activeStep: 1})}>Previous</Button>
-                      <Button color="secondary" variant='raised' onClick={() => {
+                    <FormButtons
+                      activeStep={activeStep}
+                      onCancel={() => this.props.history.push('/app/workloads')}
+                      onNext={() => {
                         this.setState({activeStep: 3});
                         this.props.goToTourStep(5);
-                      }}>Next</Button>
-                    </div>
+                      }}
+                      onPrevious={() => this.setState({activeStep: 1})}
+                    />
                   </section>}
 
                   {activeStep === 3 &&
                   <section>
-                    <div className={classes.section}>
-                      <h2>Resources configuration</h2>
-                      <h3>Step {activeStep + 1} of {stepsTotal}</h3>
-                    </div>
+                    <SectionHeader activeStep={activeStep} label='Resources configuration' isNew={isNew}/>
+
                     <div className='row justify-content-start tour-profile-resources'>
                       <div className='col-lg-6 col-md-6'>
                         <FormControl className={classes.formControl}>
@@ -581,13 +585,15 @@ class ConfigWizard extends React.Component {
                     </div>
                     <div className={classes.formControl}>
                       <h4 className='pt-3'>Number of vCPU cores: <span className='text-red'>{numCPU.toLocaleString()}</span></h4>
-                      <div className='px-5 pt-3'>
-                        <Slider
-                          min={1}
-                          max={this.getNumOfResources(selectedRegion.numCPU)}
-                          value={numCPU}
-                          onChange={this.handleDataChange('numCPU')}
-                        />
+                      <div className='row pt-3'>
+                        <div className='col-lg-8 col-md-8 col-sm-8'>
+                          <Slider
+                            min={1}
+                            max={this.getNumOfResources(selectedRegion.numCPU)}
+                            value={numCPU}
+                            onChange={this.handleDataChange('numCPU')}
+                          />
+                        </div>
                       </div>
                     </div>
                     <div className={classes.formControl}>
@@ -595,66 +601,69 @@ class ConfigWizard extends React.Component {
                     </div>
                     <div className={classes.formControl}>
                       <h4 className='pt-3'>Temporary Storage - SSD (GB): <span className='text-purple'>{ssdGB.toLocaleString()}</span></h4>
-                      <div className='px-5 pb-4 pt-3'>
-                        <Slider
-                          min={1}
-                          max={this.getNumOfResources(selectedRegion.storageGB)}
-                          value={ssdGB}
-                          onChange={this.handleDataChange('ssdGB')}
-                        />
+                      <div className='row pb-4 pt-3'>
+                        <div className='col-lg-8 col-md-8 col-sm-8'>
+                          <Slider
+                            min={1}
+                            max={this.getNumOfResources(selectedRegion.storageGB)}
+                            value={ssdGB}
+                            onChange={this.handleDataChange('ssdGB')}
+                          />
+                        </div>
                       </div>
                     </div>
 
-
-                    <div className={classes.buttonBox}>
-                      <Button>Cancel</Button>
-                      <Button color="secondary" variant='raised' onClick={() => this.setState({activeStep: 2})}>Previous</Button>
-                      <Button color="secondary" variant='raised' onClick={() => {
-                        const object = {activeStep:4}
-                        if(!this.state.id && !this.state._id){
-                          object.maxBidCRC = 1.3 * this.getTotalCosts();
+                    <FormButtons
+                      activeStep={activeStep}
+                      onCancel={() => this.props.history.push('/app/workloads')}
+                      onNext={() => {
+                        const newState = {activeStep: 4};
+                        if (!this.state.id && !this.state._id) {
+                          newState.maxBidCRC = 1.3 * this.getTotalCosts();
                         }
-                        this.setState(object);
+                        this.setState(newState);
                         this.props.goToTourStep(6);
-                      }}>Next</Button>
-                    </div>
+                      }}
+                      onPrevious={() => this.setState({activeStep: 2})}
+                    />
+
                   </section>}
 
                   {activeStep === 4 &&
                   <section>
-                    <div className={classes.section}>
-                      <h2>Pricing</h2>
-                      <h3>Step {activeStep + 1} of {stepsTotal}</h3>
-                    </div>
+                    <SectionHeader activeStep={activeStep} label='Pricing' isNew={isNew}/>
+
                     <FormControl className={classes.formControl}>
                       <h4 className='pt-3'>Set max bid price for per hour: <span className='text-blue'>{round(maxBidCRC)} CRC</span></h4>
-                      <div className='px-5 pb-4 pt-3 tour-max-bid-price'>
-                        <Slider
-                          min={1}
-                          max={1000}
-                          value={maxBidCRC}
-                          onChange={this.handleDataChange('maxBidCRC')}
-                        />
+                      <div className='row pb-4 pt-3 tour-max-bid-price'>
+                        <div className='col-lg-8 col-md-8 col-sm-8'>
+                          <Slider
+                            min={1}
+                            max={1000}
+                            value={maxBidCRC}
+                            onChange={this.handleDataChange('maxBidCRC')}
+                          />
+                        </div>
                       </div>
                       <p className='py-3'><i><u>Note:</u> The current price for vCPU per hour: <span className='text-green'>{round(this.getTotalCosts()).toLocaleString()} CRC</span></i></p>
                     </FormControl>
 
-                    <div className={classes.buttonBox}>
-                      <Button>Cancel</Button>
-                      <Button color="secondary" variant='raised' onClick={() => this.setState({activeStep: 3})}>Previous</Button>
-                      <Button color="secondary" variant='raised' onClick={() => {
+                    <FormButtons
+                      activeStep={activeStep}
+                      onCancel={() => this.props.history.push('/app/workloads')}
+                      onNext={() => {
                         this.setState({activeStep: 5});
                         this.props.goToTourStep(7);
-                      }}>Next</Button>
-                    </div>
+                      }}
+                      onPrevious={() => this.setState({activeStep: 3})}
+                    />
+
                   </section>}
 
                   {activeStep === 5 &&
                   <section>
-                    <div className={classes.section}>
-                      <h2>Installation Script</h2>
-                      <h3>Step {activeStep + 1} of {stepsTotal}</h3>
-                    </div>
+                    <SectionHeader activeStep={activeStep} label='Installation Script' isNew={isNew}/>
+
                     <FormControl className={classes.formControl}>
                       <h4>Container Type</h4>
                       <RadioGroup
@@ -709,22 +718,20 @@ class ConfigWizard extends React.Component {
                           {'Enter kubernetes config.'}</FormHelperText>
                       </FormControl>}
 
-                    <div className={classes.buttonBox}>
-                      <Button onClick={()=>{this.props.history.push('/app/workloads/list')}}>Cancel</Button>
-                      <Button color="secondary" variant='raised' onClick={() => this.setActiveStep(5,4)}>Previous</Button>
-                      <Button color="secondary" variant='raised' onClick={() => {
-                        this.setActiveStep(5,6);
+                    <FormButtons
+                      activeStep={activeStep}
+                      onCancel={() => this.props.history.push('/app/workloads')}
+                      onNext={() => {
+                        this.setActiveStep(5, 6);
                         this.props.goToTourStep(8);
-                      }}>Next</Button>
-                    </div>
+                      }}
+                      onPrevious={() => this.setActiveStep(5, 4)}
+                    />
                   </section>}
 
                   {activeStep === 6 &&
                   <section>
-                    <div className={classes.section}>
-                      <h2>Configuration Review</h2>
-                      <h3>Step {activeStep + 1} of {stepsTotal}</h3>
-                    </div>
+                    <SectionHeader activeStep={activeStep} label='Configuration Review' isNew={isNew}/>
                     <FormControl className={classes.formControl}>
                       <div className='row justify-content-around'>
                         <div className='col-lg-6 col-md-6'>
@@ -763,17 +770,18 @@ class ConfigWizard extends React.Component {
                         <h4 className='pt-3'>Max bid price for per hour: <span className='text-blue'>{round(maxBidCRC)} CRC</span></h4>
                       </FormControl>
                       <div className='p-5 text-center'>
-                          <Button color="secondary" variant="raised" className="jr-btn tour-workload-launch" onClick={this.saveWorkload}>
-                            <i className="zmdi zmdi-play animated infinite fadeInLeft zmdi-hc-fw"/>
-                            <span>{!this.state._id ? 'Launch' : 'Save'}</span>
-                          </Button>
+                        <Button color="secondary" variant="raised" className="jr-btn tour-workload-launch" onClick={this.saveWorkload}>
+                          <i className="zmdi zmdi-play animated infinite fadeInLeft zmdi-hc-fw"/>
+                          <span>{!this.state._id ? 'Launch' : 'Save'}</span>
+                        </Button>
                       </div>
 
                     </FormControl>
-                    <div className={classes.buttonBox}>
-                      <Button variant='raised'>Cancel</Button>
-                      <Button color="secondary" variant='raised' onClick={() => this.setActiveStep(6,5)}>Previous</Button>
-                    </div>
+                    <FormButtons
+                      activeStep={activeStep}
+                      onCancel={() => this.props.history.push('/app/workloads')}
+                      onPrevious={() => this.setActiveStep(6, 5)}
+                    />
                   </section>}
                 </div>
               </CardLayout>
@@ -817,3 +825,28 @@ const RadioLabel = ({classes, label, description}) => (
     <div className={classes.radioDescription}>{description}</div>
   </div>
 );
+
+const SectionHeader = withStyles(styles)(({classes, activeStep, label, isNew}) =>
+  <div className={classes.section}>
+    <h3><span>{isNew ? 'New Workload' : 'Edit Workload'} </span></h3>
+    <h2>{label}</h2>
+    <h4>Step {activeStep + 1} of 7</h4>
+  </div>
+);
+SectionHeader.propTypes = {activeStep: PropTypes.number, label: PropTypes.string};
+
+const FormButtons = withStyles(styles)(({classes, activeStep, onCancel, onPrevious, onNext}) => (
+  <div className={classes.btnBox}>
+    <Button className={classes.btnBack} onClick={onCancel}>Cancel</Button>
+    {activeStep !== 0 &&
+    <Button color="default" variant='raised' onClick={onPrevious}>Previous</Button>}
+    {activeStep !== 6 &&
+    <Button color="secondary" variant='raised' onClick={onNext}>Next</Button>}
+  </div>
+));
+FormButtons.propTypes = {
+  activeStep: PropTypes.number,
+  onPrevious: PropTypes.func,
+  onCancel: PropTypes.object,
+  onNext: PropTypes.func
+};

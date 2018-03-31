@@ -68,7 +68,7 @@ class WorkloadsTable extends React.Component {
                     <a href={n.publicHostname} target='_blank'>{n.publicHostname}</a>
                     </TblCell>
                   <TblCell>
-                    <Button className="jr-btn jr-btn-lg" onClick={()=>{this.props.history.push(`/app/workloads/wizard?id=${n._id}`)}} color="primary">
+                    <Button className="jr-btn jr-btn-lg" onClick={()=>{this.props.history.push(`/app/workloads/wizard/${n._id}`)}} color="primary">
                       <i className="zmdi zmdi-edit"/>
                     </Button>
                     <Button className="jr-btn jr-btn-lg" onClick={()=>{this.props.removeItem(n._id)}} color="primary">
