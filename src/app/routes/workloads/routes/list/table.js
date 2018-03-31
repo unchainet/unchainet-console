@@ -53,7 +53,7 @@ class WorkloadsTable extends React.Component {
           <TableBody>
             {data.map((n, i) => {
               return (
-                <TableRow key={n._id}>
+                <TableRow key={n._id}  >
                   <TblCell>{n.name}</TblCell>
                   <TblCell>{this.getRegionName(n.region)}</TblCell>
                   <TblCell>{`${n.numCPU || 0}/${n.numGPU || 0}/${n.memoryGB || 0}/${n.ssdGB || 0}`}</TblCell>
@@ -64,7 +64,7 @@ class WorkloadsTable extends React.Component {
                     {n.status}
                   </TblCell>
                   <TblCell>{n.publicIP}</TblCell>
-                  <TblCell>
+                  <TblCell className={n.status === 'requested' && 'tour-public-hostname'}>
                     <a href={n.publicHostname} target='_blank'>{n.publicHostname}</a>
                     </TblCell>
                   <TblCell>

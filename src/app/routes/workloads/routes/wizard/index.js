@@ -158,12 +158,99 @@ class ConfigWizard extends React.Component {
       numCPU: 1,
       numGPU: 0,
       ssdGB: 10,
-      containerType: 'Docker',
+      containerType: 'Kubernetes',
       datacenter: '',
       region: '',
       containerImageUrl: '',
       containerImageName: '',
-      kubernetesConfig: '',
+      kubernetesConfig: 'apiVersion: v1\n' +
+      'kind: PersistentVolume\n' +
+      'metadata:\n' +
+      '  name: pv0001\n' +
+      'spec:\n' +
+      '  accessModes:\n' +
+      '    - ReadWriteOnce\n' +
+      '  capacity:\n' +
+      '    storage: 1Gi\n' +
+      '  hostPath:\n' +
+      '    path: /data/pv0001/\n\n' +
+      '' +
+      'apiVersion: v1\n' +
+      'kind: Service\n' +
+      'metadata:\n' +
+      '  labels:\n' +
+      '    name: mongo\n' +
+      '  name: mongo\n' +
+      'spec:\n' +
+      '  ports:\n' +
+      '    - port: 27017\n' +
+      '      targetPort: 27017\n' +
+      '  selector:\n' +
+      '    name: mongo\n\n' +
+      '' +
+      'apiVersion: v1\n' +
+      'kind: ReplicationController\n' +
+      'metadata:\n' +
+      '  labels:\n' +
+      '    name: mongo\n' +
+      '  name: mongo-controller\n' +
+      'spec:\n' +
+      '  replicas: 1\n' +
+      '  template:\n' +
+      '    metadata:\n' +
+      '      labels:\n' +
+      '        name: mongo\n' +
+      '    spec:\n' +
+      '      containers:\n' +
+      '      - image: mongo\n' +
+      '        name: mongo\n' +
+      '        ports:\n' +
+      '        - name: mongo\n' +
+      '          containerPort: 27017\n' +
+      '          hostPort: 27017\n' +
+      '        volumeMounts:\n' +
+      '            - name: mongo-persistent-storage\n' +
+      '              mountPath: /data/db\n' +
+      '      volumes:\n' +
+      '        - name: mongo-persistent-storage\n' +
+      '          emptyDir: {}\n\n' +
+      '' +
+      'apiVersion: v1\n' +
+      'kind: Service\n' +
+      'metadata:\n' +
+      '  name: web\n' +
+      '  labels:\n' +
+      '    name: web\n' +
+      'spec:\n' +
+      '  type: LoadBalancer\n' +
+      '  ports:\n' +
+      '    - port: 80\n' +
+      '      targetPort: 3000\n' +
+      '      protocol: TCP\n' +
+      '  selector:\n' +
+      '    name: web\n\n' +
+      '' +
+      'apiVersion: v1\n' +
+      'kind: ReplicationController\n' +
+      'metadata:\n' +
+      '  labels:\n' +
+      '    name: web\n' +
+      '  name: web-controller\n' +
+      'spec:\n' +
+      '  replicas: 2\n' +
+      '  selector:\n' +
+      '    name: web\n' +
+      '  template:\n' +
+      '    metadata:\n' +
+      '      labels:\n' +
+      '        name: web\n' +
+      '    spec:\n' +
+      '      containers:\n' +
+      '      - image: unchainet-demo-website:0.1.0\n' +
+      '        name: web\n' +
+      '        ports:\n' +
+      '        - containerPort: 3000\n' +
+      '          name: http-server\n',
       status: 'requested',
       sameNetwork: false,
       maxBidCRC: 4,
@@ -176,6 +263,7 @@ class ConfigWizard extends React.Component {
   saveWorkload() {
     this.props.processWorkload(_.omit(this.state, ['activeStep', 'activeStepError', 'mapLocation']));
     this.props.history.push('/app/workloads');
+    this.props.goToTourStep(9);
   }
 
   componentDidMount() {

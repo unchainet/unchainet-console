@@ -126,6 +126,14 @@ class Tour extends React.PureComponent {
               selector: '.app-container .tour-workload-launch',
               position: 'top',
               isFixed: false,
+            }],
+          [{
+              title: 'Workload Launched',
+              text: 'After couple of seconds your workload will start. You can access it with public IP address or unchai.net hostname.',
+              textAlign: 'center',
+              selector: '.app-container .tour-public-hostname',
+              position: 'top',
+              isFixed: false,
             }]
         ];
 
