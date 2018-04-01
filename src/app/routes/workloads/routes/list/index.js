@@ -38,7 +38,7 @@ class Workloads extends React.Component {
             <div className="jr-card-header mb-3 d-flex align-items-center">
               <div className="mr-auto">
                 <h3 className="card-heading mb-0">
-                  <i className="zmdi zmdi-eye mr-2"/>
+                  <i className="zmdi zmdi-play mr-2"/>
                   RUNNING WORKLOADS
                 </h3>
               </div>

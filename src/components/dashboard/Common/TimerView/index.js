@@ -77,8 +77,6 @@ class TimerView extends React.Component {
                     </div>
                 </div>
 
-                <CardMenu menuState={menuState} anchorEl={anchorEl}
-                          handleRequestClose={this.handleRequestClose.bind(this)}/>
             </div>
         )
     }

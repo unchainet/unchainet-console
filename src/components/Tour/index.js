@@ -224,7 +224,8 @@ class Tour extends React.PureComponent {
             scrollToFirstStep: joyride.scrollToFirstStep || true,
             stepIndex: joyride.stepIndex || this.state.step,
             steps: joyride.steps || this.state.steps,
-            type: joyride.type || 'continuous'
+            type: joyride.type || 'continuous',
+            locale: {last: 'Close'}
         };
         if (this.state.disableTour){
           return null;

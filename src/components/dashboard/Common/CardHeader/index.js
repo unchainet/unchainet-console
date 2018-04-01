@@ -31,11 +31,9 @@ class CardHeader extends React.Component {
                     {subHeading && <p className="sub-heading">{subHeading}</p>}
                 </div>
 
-                <IconButton className="size-30" onClick={this.onOptionMenuSelect.bind(this)}>
+                {/*<IconButton className="size-30" onClick={this.onOptionMenuSelect.bind(this)}>
                     <i className="zmdi zmdi-chevron-down"/>
-                </IconButton>
-                <CardMenu menuState={menuState} anchorEl={anchorEl}
-                          handleRequestClose={this.handleRequestClose.bind(this)}/>
+                </IconButton>*/}
             </div>
         )
     }

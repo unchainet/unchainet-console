@@ -121,7 +121,7 @@ class Header extends React.Component {
                                     tag="span"
                                     data-toggle="dropdown">
                                     <IconButton className="icon-btn size-30">
-                                        <i className="zmdi zmdi-notifications-active icon-alert animated infinite wobble"/>
+                                        <i className="zmdi zmdi-notifications-active"/>
                                     </IconButton>
                                 </DropdownToggle>
 

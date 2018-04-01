@@ -51,8 +51,7 @@ class OrderTableCell extends React.Component {
                 <td className="text-right">
                     <IconButton className="size-30" onClick={this.onOptionMenuSelect.bind(this)}>
                         <i className="zmdi zmdi-more-vert"/></IconButton>
-                    <CardMenu menuState={menuState} anchorEl={anchorEl}
-                              handleRequestClose={this.handleRequestClose.bind(this)}/>
+
                 </td>
             </tr>
 

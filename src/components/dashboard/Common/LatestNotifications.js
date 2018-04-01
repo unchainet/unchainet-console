@@ -94,8 +94,6 @@ class LatestNotifications extends Component {
                     </TabContainer>
 
                 </SwipeableViews>
-                <CardMenu menuState={menuState} anchorEl={anchorEl}
-                          handleRequestClose={this.handleRequestClose.bind(this)}/>
             </CardLayout>
 
         );
