@@ -2,9 +2,10 @@ import React from 'react';
 import {Button} from 'material-ui';
 import './workloads.scss';
 import Table, {TableBody, TableCell, TableHead, TableRow} from 'material-ui/Table';
-import { connect } from 'react-redux';
+import {connect} from 'react-redux';
 import {withRouter} from 'react-router';
 import {withStyles} from 'material-ui/styles/index';
+import Tooltip from 'material-ui/Tooltip';
 
 import {
   REMOVE_WORKLOAD
@@ -12,21 +13,23 @@ import {
 
 const TblCell = withStyles(theme => ({
   typeBody: {
-    padding: '5px'
-  }
+    padding: '5px 8px',
+  },
+  typeHead: {
+    backgroundColor: '#eee',
+    color: '#000',
+  },
 }))(TableCell);
 
 class WorkloadsTable extends React.Component {
 
   constructor() {
     super();
-    this.state = {
-
-    }
+    this.state = {}
   }
 
   //todo review/change/remove after model(region prop) clarification
-  getRegionName(region){
+  getRegionName(region) {
     const id = region.hasOwnProperty('_id') ? region._id : region;
     const regions = this.props.region;
     const selectedRegion = regions.allRegions.find(el => el._id === id);
@@ -53,27 +56,37 @@ class WorkloadsTable extends React.Component {
           <TableBody>
             {data.map((n, i) => {
               return (
-                <TableRow key={n._id}  >
-                  <TblCell>{n.name}</TblCell>
+                <TableRow key={n._id}>
+                  <TblCell className='font-weight-bold'>{n.name}</TblCell>
                   <TblCell>{this.getRegionName(n.region)}</TblCell>
                   <TblCell>{`${n.numCPU || 0}/${n.numGPU || 0}/${n.memoryGB || 0}/${n.ssdGB || 0}`}</TblCell>
                   <TblCell>
                     {n.status === 'requested' && (
                       <i className="zmdi zmdi-settings zmdi-hc-spin" style={{marginRight: '3px'}}/>
                     )}
-                    {n.status}
+                    <span style={n.status === 'running' && {color: 'green'}}>
+                      {n.status}
+                    </span>
                   </TblCell>
                   <TblCell>{n.publicIP}</TblCell>
                   <TblCell className={n.status === 'requested' && 'tour-public-hostname'}>
                     <a href={n.publicHostname} target='_blank'>{n.publicHostname}</a>
-                    </TblCell>
+                  </TblCell>
                   <TblCell>
-                    <Button className="jr-btn jr-btn-lg" onClick={()=>{this.props.history.push(`/app/workloads/wizard/${n._id}`)}} color="primary">
-                      <i className="zmdi zmdi-edit"/>
-                    </Button>
-                    <Button className="jr-btn jr-btn-lg" onClick={()=>{this.props.removeItem(n._id)}} color="primary">
-                      <i className="zmdi zmdi-delete"/>
-                    </Button>
+                    <Tooltip title='Edit'>
+                      <Button className="jr-btn jr-btn-lg" onClick={() => {
+                        this.props.history.push(`/app/workloads/wizard/${n._id}`)
+                      }} color="primary">
+                        <i className="zmdi zmdi-edit"/>
+                      </Button>
+                    </Tooltip>
+                    <Tooltip title='Delete'>
+                      <Button className="jr-btn jr-btn-lg" onClick={() => {
+                        this.props.removeItem(n._id)
+                      }} color="primary">
+                        <i className="zmdi zmdi-delete"/>
+                      </Button>
+                    </Tooltip>
                   </TblCell>
                 </TableRow>
               );
@@ -84,6 +97,7 @@ class WorkloadsTable extends React.Component {
     );
   }
 }
+
 const mapStateToProps = ({region}) => {//todo review/change/remove after model(region prop) clarification
   return {
     region

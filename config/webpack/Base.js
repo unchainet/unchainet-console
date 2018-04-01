@@ -175,8 +175,13 @@ class WebpackBaseConfig {
                                 cacheDirectory: true
                             }
                         }
-                    },
-
+                    }, {
+                    test: /\.yaml?$/,
+                    exclude: /node_modules/,
+                    use: {
+                      loader: 'raw-loader'
+                    }
+                  },
                 ]
             },
             output: {

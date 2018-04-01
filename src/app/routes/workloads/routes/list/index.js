@@ -10,6 +10,7 @@ import WorkloadsTable from './table';
 import {fetchAllRegion} from 'actions/Region';
 import {fetchAllDatacenter} from 'actions/Datacenter';
 import {fetchAllWorkloads} from '../../../../../actions/Workload';
+import Tooltip from 'material-ui/Tooltip';
 
 class Workloads extends React.Component {
 
@@ -33,7 +34,7 @@ class Workloads extends React.Component {
     return (
       <div className="app-wrapper workloads">
         <div className="animated slideInUpTiny animation-duration-3">
-          <CardLayout styleName="col-lg-12">
+          <CardLayout styleName="col-lg-12 jr-card--page">
             <div className="jr-card-header mb-3 d-flex align-items-center">
               <div className="mr-auto">
                 <h3 className="card-heading mb-0">
@@ -41,9 +42,11 @@ class Workloads extends React.Component {
                   RUNNING WORKLOADS
                 </h3>
               </div>
+              <Tooltip title='Add new Workload'>
               <Button variant="fab" onClick={()=>{this.props.history.push('/app/workloads/wizard')}} className="jr-fab-btn text-white bg-secondary" aria-label="edit">
                 <i className="zmdi zmdi-plus zmdi-hc-fw zmdi-hc-lg"/>
               </Button>
+              </Tooltip>
               {/*<IconButton className="size-30" onClick={()=>{}}>
                 <i className="zmdi zmdi-more-vert"/>
               </IconButton>*/}

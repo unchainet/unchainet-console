@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
-const mapStyles = require('../../../mapStyles.json');
+//const mapStyles = require('../../../mapStyles.json');
+const mapStyles = require('components/Map/mapStyleNoLabels.json');
 
 import {GoogleMap, Marker, InfoWindow, withGoogleMap} from 'react-google-maps';
 import MarkerClusterer from 'react-google-maps/lib/components/addons/MarkerClusterer';

@@ -24,109 +24,8 @@ import {round} from 'util/Format';
 import {genWorkloadName} from 'util/Generator'
 import {goToTourStep} from 'actions/Tour';
 import PropTypes from 'prop-types';
-
 import _ from 'lodash';
-
-const styles = theme => ({
-  root: {
-    width: '100%',
-    margin: '1em',
-  },
-  formControl: {
-    margin: {
-      bottom: theme.spacing.unit * 2.5,
-      top: theme.spacing.unit * 2
-    },
-    display: 'block'
-  },
-  formInput: {
-    minWidth: '230px'
-  },
-  formInputText: {
-    minWidth: '230px'
-  },
-  form: {
-    padding: '20px 20px 10px 20px'
-  },
-  infoBox: {
-    backgroundColor: '#fff',
-    fontSize: '12px',
-    fontWeight: 'bold',
-    borderRadius: '2px',
-    width: 'auto',
-    minWidth: '150px',
-    padding: '25px 0 0 15px'
-  },
-  section: {
-    margin: '-38px -44px 27px',
-    padding: '1.6em 2.5em .7em',
-    backgroundColor: '#555',
-    position: 'relative',
-    color: '#fff',
-    '& h2': {
-      fontSize: '1.5em',
-      marginBottom: '4px'
-    },
-    '& h4': {
-      fontSize: '0.8em',
-      fontWeight: '200'
-    },
-    '& h3': {
-      fontSize: '22px',
-      position: 'absolute',
-      right: '30px',
-      top: '50%',
-      transform: 'translateY(-50%)',
-      marginBottom: 0,
-      color: theme.palette.secondary.light,
-    }
-  },
-  resources: {
-    '& div': {
-      lineHeight: '3.5em',
-      borderTop: '1px solid #ccc',
-      '&:first-child': {
-        borderTop: 'none'
-      },
-      '& h6': {
-        display: 'inline-block',
-      },
-      '& span': {
-        float: 'right',
-        textAlign: 'right',
-        display: 'inline-block',
-        paddingRight: 5
-      }
-    }
-  },
-  btnBox: {
-    backgroundColor: '#eee',
-    margin: '25px -44px -28px',
-    padding: '12px 12px 2px',
-    textAlign: 'right',
-    '& button': {
-      marginLeft: 10,
-      marginBottom: 10
-    },
-  },
-  btnBack: {
-    float: 'left'
-  },
-  radioDescription: {
-    fontSize: '12px',
-    fontStyle: 'Italic'
-  },
-  radioLabel: {
-    paddingLeft: '10px'
-  },
-  radioWithDesc: {
-    padding: '0 0 10px 0'
-  },
-  resourcesNote: {
-    fontSize: '12px',
-    paddingTop: '5px'
-  }
-});
+import styles from './styles';
 
 class ConfigWizard extends React.Component {
 
@@ -163,94 +62,7 @@ class ConfigWizard extends React.Component {
       region: '',
       containerImageUrl: '',
       containerImageName: '',
-      kubernetesConfig: 'apiVersion: v1\n' +
-      'kind: PersistentVolume\n' +
-      'metadata:\n' +
-      '  name: pv0001\n' +
-      'spec:\n' +
-      '  accessModes:\n' +
-      '    - ReadWriteOnce\n' +
-      '  capacity:\n' +
-      '    storage: 1Gi\n' +
-      '  hostPath:\n' +
-      '    path: /data/pv0001/\n\n' +
-      '' +
-      'apiVersion: v1\n' +
-      'kind: Service\n' +
-      'metadata:\n' +
-      '  labels:\n' +
-      '    name: mongo\n' +
-      '  name: mongo\n' +
-      'spec:\n' +
-      '  ports:\n' +
-      '    - port: 27017\n' +
-      '      targetPort: 27017\n' +
-      '  selector:\n' +
-      '    name: mongo\n\n' +
-      '' +
-      'apiVersion: v1\n' +
-      'kind: ReplicationController\n' +
-      'metadata:\n' +
-      '  labels:\n' +
-      '    name: mongo\n' +
-      '  name: mongo-controller\n' +
-      'spec:\n' +
-      '  replicas: 1\n' +
-      '  template:\n' +
-      '    metadata:\n' +
-      '      labels:\n' +
-      '        name: mongo\n' +
-      '    spec:\n' +
-      '      containers:\n' +
-      '      - image: mongo\n' +
-      '        name: mongo\n' +
-      '        ports:\n' +
-      '        - name: mongo\n' +
-      '          containerPort: 27017\n' +
-      '          hostPort: 27017\n' +
-      '        volumeMounts:\n' +
-      '            - name: mongo-persistent-storage\n' +
-      '              mountPath: /data/db\n' +
-      '      volumes:\n' +
-      '        - name: mongo-persistent-storage\n' +
-      '          emptyDir: {}\n\n' +
-      '' +
-      'apiVersion: v1\n' +
-      'kind: Service\n' +
-      'metadata:\n' +
-      '  name: web\n' +
-      '  labels:\n' +
-      '    name: web\n' +
-      'spec:\n' +
-      '  type: LoadBalancer\n' +
-      '  ports:\n' +
-      '    - port: 80\n' +
-      '      targetPort: 3000\n' +
-      '      protocol: TCP\n' +
-      '  selector:\n' +
-      '    name: web\n\n' +
-      '' +
-      'apiVersion: v1\n' +
-      'kind: ReplicationController\n' +
-      'metadata:\n' +
-      '  labels:\n' +
-      '    name: web\n' +
-      '  name: web-controller\n' +
-      'spec:\n' +
-      '  replicas: 2\n' +
-      '  selector:\n' +
-      '    name: web\n' +
-      '  template:\n' +
-      '    metadata:\n' +
-      '      labels:\n' +
-      '        name: web\n' +
-      '    spec:\n' +
-      '      containers:\n' +
-      '      - image: unchainet-demo-website:0.1.0\n' +
-      '        name: web\n' +
-      '        ports:\n' +
-      '        - containerPort: 3000\n' +
-      '          name: http-server\n',
+      kubernetesConfig: require('./kubernetesConfig.yaml'),
       status: 'requested',
       sameNetwork: false,
       maxBidCRC: 4,
@@ -431,8 +243,7 @@ class ConfigWizard extends React.Component {
   };
 
   render() {
-    const {classes} = this.props;
-    const {regions} = this.props;
+    const {classes, regions} = this.props;
     const {
       region,
       name,
@@ -457,7 +268,6 @@ class ConfigWizard extends React.Component {
       mode: 'text/x-yaml',
       lineWrapping: true
     };
-
 
     return (
       <div className="app-wrapper">
@@ -566,27 +376,30 @@ class ConfigWizard extends React.Component {
                   <section>
                     <SectionHeader activeStep={activeStep} label='Quality' isNew={isNew}/>
 
-                    <div className={`${classes.formControl} mb-0`}>
-                      <h4>Set minimal Quality Score: <span className='text-blue'>{state.minQualityScore}</span></h4>
-                      <div className='row pb-4 pt-3 tour-quality-score'>
-                        <div className='col-lg-8 col-md-8 col-sm-8'>
-                          <Slider min={0} value={minQualityScore} onChange={(v) => this.setState({minQualityScore: v})}
-                                  max={100}/>
-                        </div>
+
+                    <div className='row pb-4'>
+                      <div className='col-lg-6 col-md-6 tour-quality-score'>
+                        <SliderField
+                          label={<span>Set minimal Quality Score: <span className='text-blue'>{state.minQualityScore}</span></span>}
+                          min={0}
+                          max={100}
+                          value={minQualityScore}
+                          onChange={(v) => this.setState({minQualityScore: v})}
+                        />
                       </div>
-                      <div className='row'>
-                        <div className='col-lg-8 col-md-8 col-sm-8'>
-                          <div className='jr-card'>
-                            <div className='jr-card-header-color bg-primary d-flex'>
-                              Available resources
-                            </div>
-                            <div className='jr-card-body'>
-                              <div className={classes.resources}>
-                                <div><h6>vCPU (cores)</h6> <span className='text-red'>{this.getNumOfResources(selectedRegion.numCPU).toLocaleString()}</span></div>
-                                <div><h6>RAM (GB)</h6> <span className='text-amber'>{this.getNumOfResources(selectedRegion.memGB).toLocaleString()}</span></div>
-                                <div><h6>GPU (cores)</h6> <span className='text-blue'>{this.getNumOfResources(selectedRegion.numGPU).toLocaleString()}</span></div>
-                                <div><h6>Storage - SSD (GB)</h6> <span className='text-green'>{this.getNumOfResources(selectedRegion.storageGB).toLocaleString()}</span></div>
-                              </div>
+                    </div>
+                    <div className='row'>
+                      <div className='col-lg-6 col-md-6'>
+                        <div className='jr-card'>
+                          <div className='jr-card-header-color bg-primary d-flex'>
+                            Available resources
+                          </div>
+                          <div className='jr-card-body'>
+                            <div className={classes.resources}>
+                              <div><h6>vCPU (cores)</h6> <span className='text-red'>{this.getNumOfResources(selectedRegion.numCPU).toLocaleString()}</span></div>
+                              <div><h6>RAM (GB)</h6> <span className='text-amber'>{this.getNumOfResources(selectedRegion.memGB).toLocaleString()}</span></div>
+                              <div><h6>GPU (cores)</h6> <span className='text-blue'>{this.getNumOfResources(selectedRegion.numGPU).toLocaleString()}</span></div>
+                              <div><h6>Storage - SSD (GB)</h6> <span className='text-green'>{this.getNumOfResources(selectedRegion.storageGB).toLocaleString()}</span></div>
                             </div>
                           </div>
                         </div>
@@ -619,8 +432,8 @@ class ConfigWizard extends React.Component {
                   <section>
                     <SectionHeader activeStep={activeStep} label='Resources configuration' isNew={isNew}/>
 
-                    <div className='row justify-content-start tour-profile-resources'>
-                      <div className='col-lg-6 col-md-6'>
+                    <div className='row justify-content-start'>
+                      <div className='col-lg-6 col-md-6 tour-profile-resources'>
                         <FormControl className={classes.formControl}>
                           <h4>Compute Profile</h4>
                           <RadioGroup
@@ -654,6 +467,28 @@ class ConfigWizard extends React.Component {
                         </FormControl>
                       </div>
                       <div className='col-lg-6 col-md-6'>
+                        <SliderField
+                          label={<span>Number of vCPU cores: <span className='text-red'>{numCPU.toLocaleString()}</span></span>}
+                          min={1}
+                          max={this.getNumOfResources(selectedRegion.numCPU)}
+                          value={numCPU}
+                          onChange={this.handleDataChange('numCPU')}
+                        />
+                        <div className={classes.formControl}>
+                          <h4 className='pt-3'>Number of RAM (GB): <span className='text-amber'>{this.getMemGb()}</span></h4>
+                        </div>
+                        <SliderField
+                          label={<span>Temporary Storage - SSD (GB): <span className='text-purple'>{ssdGB.toLocaleString()}</span></span>}
+                          min={1}
+                          max={this.getNumOfResources(selectedRegion.storageGB)}
+                          value={ssdGB}
+                          onChange={this.handleDataChange('ssdGB')}
+                        />
+                      </div>
+                    </div>
+
+                    <div className='row justify-content-around'>
+                      <div className='col-lg-6 col-md-6'>
                         <div className='jr-card tour-price-estimate'>
                           <div className='jr-card-header-color bg-primary'>
                             Estimated costs per hour (CRC)
@@ -668,35 +503,6 @@ class ConfigWizard extends React.Component {
                               <i><u>Note:</u> The costs don't include data transfer {this.crcPerTbTransferred} CRC per 1 TB.</i>
                             </div>
                           </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div className={classes.formControl}>
-                      <h4 className='pt-3'>Number of vCPU cores: <span className='text-red'>{numCPU.toLocaleString()}</span></h4>
-                      <div className='row pt-3'>
-                        <div className='col-lg-8 col-md-8 col-sm-8'>
-                          <Slider
-                            min={1}
-                            max={this.getNumOfResources(selectedRegion.numCPU)}
-                            value={numCPU}
-                            onChange={this.handleDataChange('numCPU')}
-                          />
-                        </div>
-                      </div>
-                    </div>
-                    <div className={classes.formControl}>
-                      <h4 className='pt-3'>Number of RAM (GB): <span className='text-amber'>{this.getMemGb()}</span></h4>
-                    </div>
-                    <div className={classes.formControl}>
-                      <h4 className='pt-3'>Temporary Storage - SSD (GB): <span className='text-purple'>{ssdGB.toLocaleString()}</span></h4>
-                      <div className='row pb-4 pt-3'>
-                        <div className='col-lg-8 col-md-8 col-sm-8'>
-                          <Slider
-                            min={1}
-                            max={this.getNumOfResources(selectedRegion.storageGB)}
-                            value={ssdGB}
-                            onChange={this.handleDataChange('ssdGB')}
-                          />
                         </div>
                       </div>
                     </div>
@@ -721,20 +527,19 @@ class ConfigWizard extends React.Component {
                   <section>
                     <SectionHeader activeStep={activeStep} label='Pricing' isNew={isNew}/>
 
-                    <FormControl className={classes.formControl}>
-                      <h4 className='pt-3'>Set max bid price for per hour: <span className='text-blue'>{round(maxBidCRC)} CRC</span></h4>
-                      <div className='row pb-4 pt-3 tour-max-bid-price'>
-                        <div className='col-lg-8 col-md-8 col-sm-8'>
-                          <Slider
-                            min={1}
-                            max={1000}
-                            value={maxBidCRC}
-                            onChange={this.handleDataChange('maxBidCRC')}
-                          />
-                        </div>
+                    <div className='row'>
+                      <div className='col-lg-6 col-md-6 tour-max-bid-price'>
+                        <SliderField
+                          label={<span>Set max bid price for per hour: <span className='text-blue'>{round(maxBidCRC)} CRC</span></span>}
+                          min={1}
+                          max={1000}
+                          value={maxBidCRC}
+                          onChange={this.handleDataChange('maxBidCRC')}
+                        />
+
+                        <p className='py-3'><i><u>Note:</u> The current price for vCPU per hour: <span className='text-green'>{round(this.getTotalCosts()).toLocaleString()} CRC</span></i></p>
                       </div>
-                      <p className='py-3'><i><u>Note:</u> The current price for vCPU per hour: <span className='text-green'>{round(this.getTotalCosts()).toLocaleString()} CRC</span></i></p>
-                    </FormControl>
+                    </div>
 
                     <FormButtons
                       activeStep={activeStep}
@@ -935,6 +740,23 @@ const FormButtons = withStyles(styles)(({classes, activeStep, onCancel, onPrevio
 FormButtons.propTypes = {
   activeStep: PropTypes.number,
   onPrevious: PropTypes.func,
-  onCancel: PropTypes.object,
+  onCancel: PropTypes.func,
   onNext: PropTypes.func
+};
+
+const SliderField = withStyles(styles)(({classes, label, min, max, value, onChange}) => {
+  return (
+    <div className={`${classes.formControl} mb-0`}>
+      <h4 className='pb-0'>{label}</h4>
+      <div className='px-3'>
+        <Slider min={min} value={value} onChange={onChange} max={max}/>
+      </div>
+    </div>);
+});
+SliderField.propTypes = {
+  label: PropTypes.node,
+  min: PropTypes.number,
+  max: PropTypes.number,
+  value: PropTypes.number,
+  onChange: PropTypes.func,
 };

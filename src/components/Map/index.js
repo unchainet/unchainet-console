@@ -4,7 +4,7 @@ import {
   GoogleMap
 } from 'react-google-maps';
 
-const mapStyles = require('../../mapStyles.json');
+const mapStyles = require('./mapStyle.json');
 
 const Map = withGoogleMap(props =>
   <GoogleMap

@@ -97,15 +97,19 @@
 
   &.jr-card-unet {
     padding: 0;
-    .jr-card-header, .jr-card-body {
-      padding: 18px;
+    .jr-card-header {
+      padding: 16px 18px;
     }
+   .jr-card-body {
+     padding: 26px 27px 28px;
+   }
     .jr-card-min-height{
       min-height:536px;
     }
     .jr-card-header {
       margin-bottom: 0;
-      background: linear-gradient(100deg, #162faa, #0b54e8);
+      /*background: linear-gradient(100deg, #162faa, #0b54e8);*/
+      background-color: #555;
       min-height: 50px;
       .card-heading {
         display: none;
@@ -148,6 +152,10 @@
   @media screen and (max-width: 575px) {
     margin-bottom: 18px;
   }
+}
+
+.jr-card--page {
+  padding: 18px 35px 30px;
 }
 
 .jr-card-header {
