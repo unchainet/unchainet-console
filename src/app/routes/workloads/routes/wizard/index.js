@@ -112,7 +112,7 @@ class ConfigWizard extends React.Component {
     }
   };
 
-  crcPerTbTransferred = 0.001;
+  crcPerGbTransferred = 0.001;
 
   hasError(name) {
     const field = this.fields[name];
@@ -500,7 +500,7 @@ class ConfigWizard extends React.Component {
                               <div><h6><strong>Total</strong></h6> <span className='text-blue'>{this.getTotalCosts().toLocaleString()}</span></div>
                             </div>
                             <div className={classes.resourcesNote}>
-                              <i><u>Note:</u> The costs don't include data transfer {this.crcPerTbTransferred} CRC per 1 TB.</i>
+                              <i><u>Note:</u> The costs don't include data transfer {this.crcPerGbTransferred} CRC per 1 GB.</i>
                             </div>
                           </div>
                         </div>
@@ -653,7 +653,7 @@ class ConfigWizard extends React.Component {
                                 <div><h6><strong>Total</strong></h6> <span className='text-blue'>{this.getTotalCosts().toLocaleString()}</span></div>
                               </div>
                               <div className={classes.resourcesNote}>
-                                <i><u>Note:</u> The costs don't include data transfer {this.crcPerTbTransferred} CRC per 1 TB.</i>
+                                <i><u>Note:</u> The costs don't include data transfer {this.crcPerGbTransferred} CRC per 1 GB.</i>
                               </div>
                             </div>
                           </div>
