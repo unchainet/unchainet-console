@@ -44,7 +44,7 @@ class Tour extends React.PureComponent {
             }],
           [{
               title: 'Workload name',
-              text: 'Enter easy to remember name and click next.',
+              text: 'Enter the name of the workload and click next.',
               textAlign: 'center',
               selector: '.app-container .tour-workload-name',
               position: 'top',
@@ -193,7 +193,7 @@ class Tour extends React.PureComponent {
 
         if (result.type === 'error:target_not_found') {
             this.setState({
-                //step: result.action === 'back' ? result.index - 1 : result.index + 1,
+                step: result.action === 'back' ? result.index - 1 : result.index + 1,
                 autoStart: result.action !== 'close' && result.action !== 'esc',
             });
         }
@@ -225,7 +225,7 @@ class Tour extends React.PureComponent {
             stepIndex: joyride.stepIndex || this.state.step,
             steps: joyride.steps || this.state.steps,
             type: joyride.type || 'continuous',
-            locale: {last: 'Close'}
+            locale: {last: 'Close', close: 'Close', next: 'Next'}
         };
         if (this.state.disableTour){
           return null;
