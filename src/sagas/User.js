@@ -3,7 +3,7 @@ import {
   FETCH_USER,
   UPDATE_USER
 } from '../constants/ActionTypes';
-import {userFetchSuccess, userFetchError, userUpdateError} from '../actions/User';
+import {userFetchSuccess, userFetchError, userUpdateError, userUpdateSuccess} from '../actions/User';
 
 import {get, patch, errorMessageFormatter} from './Api';
 
@@ -21,7 +21,7 @@ function* fetchUserRequest() {
 function* updateUserRequest(user) {
   try {
     const {body, response} = yield patch('/api/users/me', JSON.stringify(user.payload));
-    yield put(userFetchSuccess(body));
+    yield put(userUpdateSuccess(body));
   } catch (error) {
     const {body, response} = error;
     yield put(userUpdateError(errorMessageFormatter(body)));

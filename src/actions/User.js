@@ -5,7 +5,7 @@ import {
     UPDATE_USER_SUCCESS,
     UPDATE_USER_ERROR,
     UPDATE_USER,
-    UPDATE_USER_ERROR_HIDE
+    UPDATE_USER_MESSAGE_HIDE
 } from '../constants/ActionTypes';
 
 export const userFetch = () => {
@@ -34,6 +34,13 @@ export const userUpdate = (user) => {
   };
 };
 
+export const userUpdateSuccess = (user) => {
+  return {
+    type: UPDATE_USER_SUCCESS,
+    payload: user
+  };
+};
+
 export const userUpdateError = (err) => {
   return {
     type: UPDATE_USER_ERROR,
@@ -41,8 +48,8 @@ export const userUpdateError = (err) => {
   };
 };
 
-export const userUpdateErrorHide = () => {
+export const userUpdateMessageHide = () => {
   return {
-    type: UPDATE_USER_ERROR_HIDE,
+    type: UPDATE_USER_MESSAGE_HIDE,
   };
 };
