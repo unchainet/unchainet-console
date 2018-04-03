@@ -6,4 +6,4 @@
 if (!window.process) window.process = {};
 if (!process.env) process.env = {};
 
-//process.env.API_BASE_URL = 'https://api.unchainet.com';
+process.env.API_BASE_URL = 'https://api.unchainet.com';

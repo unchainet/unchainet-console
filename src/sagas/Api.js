@@ -1,8 +1,8 @@
-import conf from '../conf';
-const host = conf.apiBaseUrl;
 import {all, call, fork, put, takeEvery} from 'redux-saga/effects';
 import {userSignOut} from '../actions/Auth';
 import {store} from '../MainApp';
+
+const host = window.process.env.API_BASE_URL;
 
 export function* get (relativePath){
   return yield doFetch(relativePath, getHeaders('GET'));

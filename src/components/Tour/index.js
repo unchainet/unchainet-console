@@ -116,7 +116,7 @@ class Tour extends React.PureComponent {
               'future we will add OpenStack and other interfaces for an effortless migration to the UNCHAINET platform.',
               textAlign: 'center',
               selector: '.app-container .tour-installation-script',
-              position: 'top',
+              position: 'left',
               isFixed: false,
             }],
           [{
