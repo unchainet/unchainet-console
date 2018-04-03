@@ -10,6 +10,7 @@ import Tooltip from 'material-ui/Tooltip';
 import {
   REMOVE_WORKLOAD
 } from '../../../../../constants/ActionTypes';
+import cx from 'classnames';
 
 const TblCell = withStyles(theme => ({
   typeBody: {
@@ -64,12 +65,12 @@ class WorkloadsTable extends React.Component {
                     {n.status === 'requested' && (
                       <i className="zmdi zmdi-settings zmdi-hc-spin" style={{marginRight: '3px'}}/>
                     )}
-                    <span style={n.status === 'running' && {color: 'green'}}>
+                    <span className={cx({'text-green':n.status === 'running'})}>
                       {n.status}
                     </span>
                   </TblCell>
                   <TblCell>{n.publicIP}</TblCell>
-                  <TblCell className={n.status === 'requested' && 'tour-public-hostname'}>
+                  <TblCell className={cx({'tour-public-hostname':n.status === 'requested'})}>
                     <a href={n.publicHostname} target='_blank'>{n.publicHostname}</a>
                   </TblCell>
                   <TblCell>
