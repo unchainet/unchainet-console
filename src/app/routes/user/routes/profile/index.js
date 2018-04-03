@@ -1,7 +1,7 @@
 import React from 'react';
 import {Button} from 'material-ui';
 import { connect } from 'react-redux';
-import {userFetch, userUpdate, userUpdateErrorHide} from '../../../../../actions/User'
+import {userFetch, userUpdate, userUpdateMessageHide} from '../../../../../actions/User'
 import TextField from 'material-ui/TextField';
 import {CircularProgress} from 'material-ui/Progress';
 import {NotificationContainer, NotificationManager} from 'react-notifications';
@@ -42,9 +42,9 @@ class Profile extends React.Component {
   }
 
   componentDidUpdate() {
-    if (this.props.user.error) {
+    if (this.props.user.showMessage) {
       setTimeout(() => {
-        this.props.userUpdateErrorHide();
+        this.props.userUpdateMessageHide();
       }, 100);
     }
   }
@@ -99,9 +99,26 @@ class Profile extends React.Component {
     this.props.userUpdate(user);
   }
 
+  getNotification() {
+    const {error, showMessage} = this.props.user;
+    let result = null;
+    if (showMessage) {
+      result = error ? NotificationManager.error(error) : NotificationManager.success('successful')
+    }
+    return result;
+  }
+
+  lowerCaseFirstLetter(string) {
+    if (!string) {
+      return '';
+    }
+    console.log(string.charAt(0).toLowerCase() + string.slice(1));
+    return string.charAt(0).toLowerCase() + string.slice(1);
+  }
+
   render() {
     let {user} = this.state;
-    const {loader, error} = this.props.user;
+    const {loader} = this.props.user;
     let requiredErrorText = 'Required field';
     return (
       <div className="app-wrapper user-profile">
@@ -262,7 +279,7 @@ class Profile extends React.Component {
                     <div className="col-sm-9">
                       <TextField
                         required={this.fields.website.required}
-                        value={user && user.website || ''}
+                        value={this.lowerCaseFirstLetter(user && user.website)}
                         fullWidth
                         inputProps={{
                           name: 'website'
@@ -284,7 +301,7 @@ class Profile extends React.Component {
             </form>
           </CardBox>
         </div>
-        {error && NotificationManager.error(error)}
+        {this.getNotification()}
         <NotificationContainer/>
       </div>
 
@@ -296,4 +313,4 @@ function stateToProps({user}) {
   return {user};
 }
 
-export default connect(stateToProps, {userFetch, userUpdate, userUpdateErrorHide})(Profile);
+export default connect(stateToProps, {userFetch, userUpdate, userUpdateMessageHide})(Profile);

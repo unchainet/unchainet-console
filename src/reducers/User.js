@@ -5,7 +5,7 @@ import {
   UPDATE_USER_SUCCESS,
   UPDATE_USER_ERROR,
   UPDATE_USER,
-  UPDATE_USER_ERROR_HIDE
+  UPDATE_USER_MESSAGE_HIDE
 } from '../constants/ActionTypes';
 
 const INIT_STATE = {
@@ -47,7 +47,18 @@ export default (state = INIT_STATE, action) => {
       return {
         ...state,
         loader: true,
-        error: null
+        error: null,
+        showMessage: false
+      }
+    }
+
+    case UPDATE_USER_SUCCESS: {
+      return {
+        ...state,
+        loader: false,
+        data: action.payload,
+        error: null,
+        showMessage: true
       }
     }
 
@@ -55,15 +66,15 @@ export default (state = INIT_STATE, action) => {
       return {
         ...state,
         loader: false,
-        error: action.payload
+        error: action.payload,
+        showMessage: true
       }
     }
 
-    case UPDATE_USER_ERROR_HIDE: {
+    case UPDATE_USER_MESSAGE_HIDE: {
       return {
         ...state,
-        loader: false,
-        error: null
+        showMessage: false
       }
     }
 
