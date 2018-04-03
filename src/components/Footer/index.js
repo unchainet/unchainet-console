@@ -1,22 +1,23 @@
-import React from 'react';
-import Button from 'material-ui/Button';
-import IntlMessages from 'util/IntlMessages';
+import React from "react";
+import { withStyles } from "material-ui/styles";
 
-const Footer = () => {
-        return (
-            <footer className="app-footer">
-                <div className="d-flex flex-row justify-content-between">
-                    <div>
-                        <span> Copyright Unchainet Pty Ltd &copy; 2018</span>
+const styles = theme => ({
+  copyright: { color: theme.typography.caption.color }
+});
 
-                    </div>
-                    <div>
-
-                    </div>
-                </div>
-            </footer>
-        );
-    }
-;
+const Footer = withStyles(styles)(({ classes }) => {
+  return (
+    <footer className="app-footer">
+      <div className="d-flex flex-row justify-content-between">
+        <div>
+          <span className={classes.copyright}>
+            Copyright Unchainet Pty Ltd &copy; 2018
+          </span>
+        </div>
+        <div />
+      </div>
+    </footer>
+  );
+});
 
 export default Footer;

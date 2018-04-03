@@ -6,14 +6,14 @@
   "env": {
     "browser": true,
     "node": true,
-    "es6": true,
+    "es6": true
   },
   "parser": "babel-eslint",
   "rules": {
     "no-undef":"error",
     "quotes": [
       2,
-      "single", {
+      "double", {
         "avoidEscape": true,
         "allowTemplateLiterals": true
       }

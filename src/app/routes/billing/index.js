@@ -1,57 +1,76 @@
-import React from 'react';
-import {connect} from 'react-redux'
-import {compose} from 'redux'
-import TextField from 'material-ui/TextField';
-import './billing.scss';
-import CardLayout from '../../../components/CardLayout/index';
-import CardBox from '../../../components/CardBox/index';
-import {IconButton} from 'material-ui';
-import Table, {TableBody, TableCell, TableHead, TableRow} from 'material-ui/Table';
-import {Bar, BarChart, CartesianGrid, Legend, ResponsiveContainer, Tooltip, XAxis, YAxis} from 'recharts';
-import ExpansionPanel, {ExpansionPanelDetails, ExpansionPanelSummary,} from 'material-ui/ExpansionPanel';
-import ExpandMoreIcon from 'material-ui-icons/ExpandMore';
-import Typography from 'material-ui/Typography';
-import {withStyles} from 'material-ui/styles';
-import {fetchBilling} from '../../../actions/Billing';
-import PropTypes from 'prop-types';
+import React from "react";
+import { connect } from "react-redux";
+import { compose } from "redux";
+import TextField from "material-ui/TextField";
+import "./billing.scss";
+import CardLayout from "../../../components/CardLayout/index";
+import CardBox from "../../../components/CardBox/index";
+import { IconButton } from "material-ui";
+import Table, {
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow
+} from "material-ui/Table";
+import {
+  Bar,
+  BarChart,
+  CartesianGrid,
+  Legend,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis
+} from "recharts";
+import ExpansionPanel, {
+  ExpansionPanelDetails,
+  ExpansionPanelSummary
+} from "material-ui/ExpansionPanel";
+import ExpandMoreIcon from "material-ui-icons/ExpandMore";
+import Typography from "material-ui/Typography";
+import { withStyles } from "material-ui/styles";
+import { fetchBilling } from "../../../actions/Billing";
+import PropTypes from "prop-types";
 
 const styles = theme => ({
   root: {
-    width: '100%',
+    width: "100%"
   },
   heading: {
     fontSize: theme.typography.pxToRem(13),
-    flexBasis: '15%',
-    flexShrink: 0,
+    flexBasis: "15%",
+    flexShrink: 0
   },
   secondaryHeading: {
     fontSize: theme.typography.pxToRem(13),
-    flexBasis: '15%',
+    flexBasis: "15%",
     flexShrink: 0,
-    color: theme.palette.text.secondary,
+    color: theme.palette.text.secondary
   },
+  currency: {
+    marginTop: 0
+  }
 });
 
 const currencies = [
   {
-    value: 'UNET',
-    label: 'UNET',
+    value: "UNET",
+    label: "UNET"
   },
   {
-    value: 'USD',
-    label: 'USD',
+    value: "USD",
+    label: "USD"
   },
   {
-    value: 'CRC',
-    label: 'CRC',
-  },
+    value: "CRC",
+    label: "CRC"
+  }
 ];
 
 class Billing extends React.Component {
-
   handleChange = name => event => {
     this.setState({
-        [name]: event.target.value,
+      [name]: event.target.value
     });
   };
 
@@ -62,8 +81,8 @@ class Billing extends React.Component {
   constructor() {
     super();
     this.state = {
-      currency: 'UNET',
-    }
+      currency: "UNET"
+    };
   }
 
   componentDidMount() {
@@ -71,24 +90,17 @@ class Billing extends React.Component {
   }
 
   render() {
-    const {classes, billingList} = this.props;
-    const {currency} = this.state;
+    const { classes, billingList } = this.props;
+    const { currency } = this.state;
     return (
       <div className="app-wrapper">
         <div className="animated slideInUpTiny animation-duration-3">
-
-          <CardLayout styleName="col-lg-12">
-
-            <div className="jr-card-header mb-3 d-flex align-items-center">
-                <div className="mr-auto">
-                    <h3 className="card-heading mb-0">
-                        <i className="zmdi zmdi-card mr-2"/>
-                        Billing
-                    </h3>
-                </div>
-                <IconButton className="size-30" onClick={()=>{}}>
-                    <i className="zmdi zmdi-more-vert"/>
-                </IconButton>
+          <CardLayout styleName="col-lg-12 jr-card--page">
+            <div className="jr-card-header d-flex align-items-center">
+              <h3>
+                <i className="zmdi zmdi-card" />
+                Billing
+              </h3>
             </div>
 
             <form className="row" noValidate autoComplete="off">
@@ -98,10 +110,11 @@ class Billing extends React.Component {
                   select
                   label="Currency"
                   value={currency}
-                  onChange={this.handleChange('currency')}
+                  onChange={this.handleChange("currency")}
                   SelectProps={{
-                    native: true,
+                    native: true
                   }}
+                  classes={{root: classes.currency}}
                   helperText="Please select your currency"
                   margin="normal"
                   fullWidth
@@ -116,8 +129,10 @@ class Billing extends React.Component {
             </form>
 
             <ResponsiveContainer width="100%" height={200} className="mb-4">
-              <BarChart data={billingList}
-                        margin={{top: 10, right: 0, left: -15, bottom: 0}}>
+              <BarChart
+                data={billingList}
+                margin={{ top: 10, right: 0, left: -15, bottom: 0 }}
+              >
                 <XAxis dataKey="name" />
                 <YAxis />
                 <CartesianGrid strokeDasharray="3 3" />
@@ -129,127 +144,145 @@ class Billing extends React.Component {
 
             <div className={classes.root}>
               <div className="billing-tbl">
-
-                <ExpansionPanel key={'head'}
-                                className="billing-panel panel-header"
-                                onClick={this.clickSummary}
-                                expanded={false}
+                <ExpansionPanel
+                  key={"head"}
+                  className="billing-panel panel-header"
+                  onClick={this.clickSummary}
+                  expanded={false}
                 >
                   <ExpansionPanelSummary
-                                         classes={{
-                                           expandIcon: 'expandIcon-left',
-                                           expandIconExpanded:'expandIcon-expanded',
-                                           root: 'summary-root',
-                                           content: 'header-summary-tbl',
-                                           expanded: 'summary-expanded',
-                                           contentExpanded: 'content-expanded',
-                                         }}
+                    classes={{
+                      expandIcon: "expandIcon-left",
+                      expandIconExpanded: "expandIcon-expanded",
+                      root: "summary-root",
+                      content: "header-summary-tbl",
+                      expanded: "summary-expanded",
+                      contentExpanded: "content-expanded"
+                    }}
                   >
                     <Table>
                       <TableHead>
                         <TableRow>
-                          <TableCell className="header-cell" style={{width: '14%'}}>Month</TableCell>
-                          <TableCell className="header-cell" style={{width: '14%'}}>Total({currency})</TableCell>
-                          <TableCell className="header-cell">Number of instances</TableCell>
+                          <TableCell
+                            className="header-cell"
+                            style={{ width: "14%" }}
+                          >
+                            Month
+                          </TableCell>
+                          <TableCell
+                            className="header-cell"
+                            style={{ width: "14%" }}
+                          >
+                            Total({currency})
+                          </TableCell>
+                          <TableCell className="header-cell">
+                            Number of instances
+                          </TableCell>
                         </TableRow>
                       </TableHead>
-                      <TableBody>
-                      </TableBody>
+                      <TableBody />
                     </Table>
                   </ExpansionPanelSummary>
                 </ExpansionPanel>
 
                 {billingList.map((n, i) => {
-                          const data = n.data;
-                          return (
-
-                            <ExpansionPanel key={i.toString()}
-                                            className="billing-panel"
-                                            classes={{
-                                              expanded: 'panel-expanded',
-                                            }}
-                            >
-                              <ExpansionPanelSummary expandIcon={<ExpandMoreIcon/>}
-                                                     classes={{
-                                                       expandIcon: 'expandIcon-left',
-                                                       expandIconExpanded:'expandIcon-expanded',
-                                                       root: 'summary-root',
-                                                       expanded: 'summary-expanded',
-                                                       contentExpanded: 'content-expanded'
-                                                     }}
-                                                     >
-                                <Typography className={classes.heading}>{n.lbl}</Typography>
-                                <Typography className={classes.secondaryHeading}>{n[currency]}</Typography>
-                                <Typography className={classes.secondaryHeading}>{n.instances}</Typography>
-                              </ExpansionPanelSummary>
-                              <ExpansionPanelDetails
-                              classes={{root: 'panel-details'}}>
-
-                                <div className="row">
-                                  <CardBox styleName="col-12" cardStyle="p-0">
-
-                                    <div className="table-responsive-material billing-tbl-month">
-                                      <Table>
-                                        <TableHead>
-                                          <TableRow>
-                                            <TableCell>Name</TableCell>
-                                            <TableCell>Provider</TableCell>
-                                            <TableCell>Region</TableCell>
-                                            <TableCell numeric>CPU cores</TableCell>
-                                            <TableCell numeric>Storage (Gb)</TableCell>
-                                            <TableCell numeric>GPU cores</TableCell>
-                                            <TableCell numeric>Price ({this.state.currency})</TableCell>
-                                          </TableRow>
-                                        </TableHead>
-                                        <TableBody>
-                                          {data.map((n, i) => {
-                                            return (
-                                              <TableRow key={n.id}>
-                                                <TableCell>{n.name}</TableCell>
-                                                <TableCell>{n.provider}</TableCell>
-                                                <TableCell>{n.region}</TableCell>
-                                                <TableCell numeric>{n.cpuCores}</TableCell>
-                                                <TableCell numeric>{n.storage}</TableCell>
-                                                <TableCell numeric>{n.gpuCores}</TableCell>
-                                                <TableCell numeric>{n.price[this.state.currency]}</TableCell>
-                                              </TableRow>
-                                            );
-                                          })}
-                                        </TableBody>
-                                      </Table>
-                                    </div>
-
-                                  </CardBox>
-                                </div>
-
-
-                              </ExpansionPanelDetails>
-                            </ExpansionPanel>
-
-                          );
-                        })}
-
+                  const data = n.data;
+                  return (
+                    <ExpansionPanel
+                      key={i.toString()}
+                      className="billing-panel"
+                      classes={{
+                        expanded: "panel-expanded"
+                      }}
+                    >
+                      <ExpansionPanelSummary
+                        expandIcon={<ExpandMoreIcon />}
+                        classes={{
+                          expandIcon: "expandIcon-left",
+                          expandIconExpanded: "expandIcon-expanded",
+                          root: "summary-root",
+                          expanded: "summary-expanded",
+                          contentExpanded: "content-expanded"
+                        }}
+                      >
+                        <Typography className={classes.heading}>
+                          {n.lbl}
+                        </Typography>
+                        <Typography className={classes.secondaryHeading}>
+                          {n[currency]}
+                        </Typography>
+                        <Typography className={classes.secondaryHeading}>
+                          {n.instances}
+                        </Typography>
+                      </ExpansionPanelSummary>
+                      <ExpansionPanelDetails
+                        classes={{ root: "panel-details" }}
+                      >
+                        <div className="row">
+                          <CardBox styleName="col-12" cardStyle="p-0">
+                            <div className="table-responsive-material billing-tbl-month">
+                              <Table>
+                                <TableHead>
+                                  <TableRow>
+                                    <TableCell>Name</TableCell>
+                                    <TableCell>Provider</TableCell>
+                                    <TableCell>Region</TableCell>
+                                    <TableCell numeric>CPU cores</TableCell>
+                                    <TableCell numeric>Storage (Gb)</TableCell>
+                                    <TableCell numeric>GPU cores</TableCell>
+                                    <TableCell numeric>
+                                      Price ({this.state.currency})
+                                    </TableCell>
+                                  </TableRow>
+                                </TableHead>
+                                <TableBody>
+                                  {data.map((n, i) => {
+                                    return (
+                                      <TableRow key={n.id}>
+                                        <TableCell>{n.name}</TableCell>
+                                        <TableCell>{n.provider}</TableCell>
+                                        <TableCell>{n.region}</TableCell>
+                                        <TableCell numeric>
+                                          {n.cpuCores}
+                                        </TableCell>
+                                        <TableCell numeric>
+                                          {n.storage}
+                                        </TableCell>
+                                        <TableCell numeric>
+                                          {n.gpuCores}
+                                        </TableCell>
+                                        <TableCell numeric>
+                                          {n.price[this.state.currency]}
+                                        </TableCell>
+                                      </TableRow>
+                                    );
+                                  })}
+                                </TableBody>
+                              </Table>
+                            </div>
+                          </CardBox>
+                        </div>
+                      </ExpansionPanelDetails>
+                    </ExpansionPanel>
+                  );
+                })}
               </div>
             </div>
-
           </CardLayout>
-
         </div>
       </div>
-
     );
   }
 }
 
-
-const mapStateToProps = ({billing, settings}) => {
-  const {width} = settings;
+const mapStateToProps = ({ billing, settings }) => {
+  const { width } = settings;
   const {
     loader,
     alertMessage,
     showMessage,
     noContentFoundMessage,
-    billingList,
+    billingList
   } = billing;
 
   return {
@@ -258,17 +291,17 @@ const mapStateToProps = ({billing, settings}) => {
     alertMessage,
     showMessage,
     noContentFoundMessage,
-    billingList,
-  }
+    billingList
+  };
 };
 
 Billing.propTypes = {
-  classes: PropTypes.object.isRequired,
+  classes: PropTypes.object.isRequired
 };
 
 export default compose(
   withStyles(styles, {
-    name: 'Billing',
+    name: "Billing"
   }),
-  connect(mapStateToProps, {fetchBilling}),
+  connect(mapStateToProps, { fetchBilling })
 )(Billing);

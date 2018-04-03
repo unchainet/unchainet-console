@@ -81,6 +81,8 @@ $theme-colors: (
         "dark": $dark
 );
 
+$dark-bg: #555;
+
 //Default shadow
 $shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.15);
 $shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.15);
@@ -105,7 +107,7 @@ $side-nav-width: 250px !default;
 $mini-drawer-width: 80px !default;
 
 //App Bar Height
-$app-bar-height: 70px !default;
+$app-bar-height: 60px !default;
 
 //Footer Height
 $footer-height: 50px !default;

@@ -1,9 +1,12 @@
+
+
 .unet-map-region-popup {
+  padding: 5px 0;
   color: #fff;
   .name {
     border-bottom: 1px solid #ffffff59;
     padding: 0 3px 5px 3px;
-    text-transform: uppercase;
+    font-size: 15px;
   }
   .table {
     margin-top: 3px;
@@ -11,14 +14,25 @@
     margin-bottom: 0;
     .table-row {
       display: table-row;
-      .table-cell {
+      .table-cell-value {
+        display: table-cell;
+        text-align: right;
+        padding: 3px 0 3px 10px;
+        font-weight: bold;
+      }
+      .table-cell-label {
         display: table-cell;
         padding: 3px 0;
+        text-align: left;
       }
     }
   }
 }
 
-.embed-responsive-500h {
-  height: 500px;
+.embed-responsive-360h {
+  height: 360px;
+}
+
+.gm-style-iw {
+  text-align: center;
 }

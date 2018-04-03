@@ -76,7 +76,15 @@
   }
 }
 
+.table-with-controls .jr-card-body {
+  padding-top: 33px !important;
+}
+
 .jr-card {
+  .table-with-controls {
+    padding-top: 33px;
+  }
+
   @extend %jr-card-style;
 
   & > .jr-card-body:first-child {
@@ -101,25 +109,30 @@
       padding: 16px 18px;
     }
    .jr-card-body {
-     padding: 26px 27px 28px;
+     padding: 25px 27px 28px;
    }
     .jr-card-min-height{
       min-height:536px;
     }
     .jr-card-header {
-      margin-bottom: 0;
+      padding: 0 25px;
+      margin: 0;
+      position: relative;
       /*background: linear-gradient(100deg, #162faa, #0b54e8);*/
       background-color: #555;
-      min-height: 50px;
       .card-heading {
         display: none;
       }
       .sub-heading {
         color: #fff;
         .head-unet {
-          position: relative;
+          line-height: 56px;
           .name {
-            text-transform: uppercase;
+            font-size: 17px;
+
+            i {
+              padding-right: 10px;
+            }
           }
           .middle {
             position: absolute;
@@ -138,10 +151,10 @@
           }
           .controls {
             position: absolute;
-            right: 0;
-            top: -5px;
+            right: 25px;
+            bottom: -25px;
             .jr-btn {
-              margin-right: 0;
+              margin-right: 15px;
             }
           }
         }
@@ -155,7 +168,31 @@
 }
 
 .jr-card--page {
-  padding: 18px 35px 30px;
+  padding: 18px 27px 30px;
+
+  .jr-card-header {
+    background-color: $dark-bg;
+    position: relative;
+    margin: -18px -27px 33px;
+    padding: 0 25px;
+    color: #fff;
+
+    h3 {
+      padding: 0;
+      margin: 0;
+      line-height: 56px;
+
+      i {
+        padding-right: 10px;
+      }
+    }
+
+    .btn-new {
+      position: absolute;
+      right: 25px;
+      bottom: -25px;
+    }
+  }
 }
 
 .jr-card-header {

@@ -36,7 +36,7 @@ class UserInfo extends React.Component {
     render() {
         return (
             <div className="user-profile d-flex flex-row align-items-center">
-                <i className="zmdi zmdi-account zmdi-hc-fw zmdi-hc-3x"/>
+                <i className="zmdi zmdi-account zmdi-hc-fw zmdi-hc-2x"/>
                 <div className="user-detail">
                     <h4 className="user-name" onClick={this.handleClick}>{this.getUserName()}  <i
                         className="zmdi zmdi-caret-down zmdi-hc-fw align-middle"/>
