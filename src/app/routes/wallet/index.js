@@ -1,17 +1,17 @@
 import React from "react";
-import PropTypes from "prop-types";
 import Slider from "rc-slider";
 import "rc-slider/assets/index.css";
 import CardLayout from "../../../components/CardLayout/index";
-import { IconButton } from "material-ui";
 import "./wallet.scss";
 import Tooltip from "material-ui/Tooltip";
 import Typography from "material-ui/Typography";
-import { compose } from "redux";
 import { connect } from "react-redux";
-import { withStyles } from "material-ui/styles";
 import { fetchWallet } from "actions/Wallet";
 import Button from "material-ui/Button";
+import styles from "./styles";
+import { compose } from "redux";
+import { withStyles } from "material-ui/styles";
+import cx from "classnames";
 
 class Wallet extends React.Component {
   constructor() {
@@ -66,14 +66,9 @@ class Wallet extends React.Component {
     }
   };
 
-  handleChange = name => event => {
-    this.setState({
-      [name]: event.target.value
-    });
-  };
-
   render() {
     const { UNET, CRC, valueUNET, valueCRC, valueUSD } = this.state;
+    const { classes } = this.props;
     return (
       <div className="app-wrapper">
         <div className="animated slideInUpTiny animation-duration-3">
@@ -122,12 +117,15 @@ class Wallet extends React.Component {
               >
                 <div className="item-box item-pd item-bg">
                   <span className="label-currency">
-                    UNET: <span className="font-weight-bold">{UNET}</span>
+                    UNET:{" "}
+                    <span className={classes.unet}>
+                      {UNET}
+                    </span>
                   </span>
                 </div>
                 <div className="item-box item-pd item-bg">
                   <span className="label-currency">
-                    CRC: <span className="font-weight-bold">{CRC}</span>
+                    CRC: <span className={classes.crc}>{CRC}</span>
                   </span>
                 </div>
               </div>
@@ -179,17 +177,17 @@ class Wallet extends React.Component {
               >
                 <div className="item-box-sm">
                   <span className="label-currency">
-                    UNET: <span className="font-weight-bold">{valueUNET}</span>
+                    UNET: <span className={classes.unet}>{valueUNET}</span>
                   </span>
                 </div>
                 <div className="item-box-sm">
                   <span className="label-currency">
-                    CRC: <span className="font-weight-bold">{valueCRC}</span>
+                    CRC: <span className={classes.crc}>{valueCRC}</span>
                   </span>
                 </div>
                 <div className="item-box-sm">
                   <span className="label-currency">
-                    USD: <span className="font-weight-bold">{valueUSD}</span>
+                    USD: <span className={classes.usd}>{valueUSD}</span>
                   </span>
                 </div>
               </div>
@@ -268,4 +266,7 @@ const mapStateToProps = ({ wallet }) => {
   };
 };
 
-export default connect(mapStateToProps, { fetchWallet })(Wallet);
+export default compose(
+  withStyles(styles),
+  connect(mapStateToProps, { fetchWallet })
+)(Wallet);

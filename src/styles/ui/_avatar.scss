@@ -10,9 +10,12 @@
 
 .user-detail {
   & .user-name {
-    margin-bottom: 2px;
-    font-weight: 400;
-    text-transform: capitalize;
+    margin: 0;
+    span {
+      padding-top: 2px;
+      font-weight: 400;
+      text-transform: capitalize;
+    }
   }
   & .user-description {
     font-size: 13px;

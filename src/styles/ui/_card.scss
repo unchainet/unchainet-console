@@ -129,12 +129,14 @@
           line-height: 56px;
           .name {
             font-size: 17px;
+            font-weight: 200;
 
             i {
               padding-right: 10px;
             }
           }
           .middle {
+            font-weight: 200;
             position: absolute;
             left: 50%;
             top: 0;
@@ -181,6 +183,7 @@
       padding: 0;
       margin: 0;
       line-height: 56px;
+      font-weight: 200;
 
       i {
         padding-right: 10px;

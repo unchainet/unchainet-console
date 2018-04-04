@@ -1,5 +1,7 @@
 import React from "react";
-import { Button } from "material-ui";
+import IconButton from "material-ui/IconButton";
+import EditIcon from "material-ui-icons/ModeEdit";
+import DeleteIcon from "material-ui-icons/Delete";
 import "./workloads.scss";
 import Table, {
   TableBody,
@@ -18,7 +20,7 @@ import { compose } from "redux";
 
 const TblCell = withStyles(theme => ({
   typeBody: {
-    padding: "5px 8px"
+    padding: "0 8px"
   },
   typeHead: {
     backgroundColor: "#eee",
@@ -52,6 +54,10 @@ class WorkloadsTable extends React.Component {
     const items = this.props.items || [];
     let data = items.slice().reverse();
     const { classes } = this.props;
+    const centered = {
+      typeHead: classes.cellCentered,
+      typeBody: classes.cellCentered
+    };
     return (
       <div className="table-responsive-material table-workloads">
         <Table>
@@ -59,28 +65,13 @@ class WorkloadsTable extends React.Component {
             <TableRow>
               <TblCell>Name</TblCell>
               <TblCell>Region</TblCell>
-              <TblCell
-                classes={{
-                  typeHead: classes.cellCentered
-                }}
-              >
+              <TblCell classes={centered}>
                 CPU/GPU/MEM (GB)/ Storage(GB)
               </TblCell>
-              <TblCell
-                classes={{
-                  typeHead: classes.cellCentered
-                }}
-              >
-                Status
-              </TblCell>
+              <TblCell classes={centered}>Status</TblCell>
               <TblCell>Public IP</TblCell>
               <TblCell>Public hostname</TblCell>
-              <TblCell
-                width="180px"
-                classes={{
-                  typeHead: classes.cellCentered
-                }}
-              >
+              <TblCell width="180px" classes={centered}>
                 Actions
               </TblCell>
             </TableRow>
@@ -91,17 +82,9 @@ class WorkloadsTable extends React.Component {
                 <TableRow key={n._id}>
                   <TblCell className="font-weight-bold">{n.name}</TblCell>
                   <TblCell>{this.getRegionName(n.region)}</TblCell>
-                  <TblCell
-                    classes={{
-                      typeBody: classes.cellCentered
-                    }}
-                  >{`${n.numCPU || 0}/${n.numGPU || 0}/${n.memoryGB ||
-                    0}/${n.ssdGB || 0}`}</TblCell>
-                  <TblCell
-                    classes={{
-                      typeBody: classes.cellCentered
-                    }}
-                  >
+                  <TblCell classes={centered}>{`${n.numCPU || 0}/${n.numGPU ||
+                    0}/${n.memoryGB || 0}/${n.ssdGB || 0}`}</TblCell>
+                  <TblCell classes={centered}>
                     {n.status === "requested" && (
                       <i
                         className="zmdi zmdi-settings zmdi-hc-spin"
@@ -120,14 +103,16 @@ class WorkloadsTable extends React.Component {
                       "tour-public-hostname": n.status === "requested"
                     })}
                   >
-                    <a href="http://workload1.aiml.syd.unchai.net/" target="_blank">
+                    <a
+                      href="http://workload1.aiml.syd.unchai.net/"
+                      target="_blank"
+                    >
                       {n.publicHostname}
                     </a>
                   </TblCell>
-                  <TblCell>
+                  <TblCell classes={centered}>
                     <Tooltip title="Edit">
-                      <Button
-                        className="jr-btn jr-btn-lg"
+                      <IconButton
                         onClick={() => {
                           this.props.history.push(
                             `/app/workloads/wizard/${n._id}`
@@ -135,19 +120,18 @@ class WorkloadsTable extends React.Component {
                         }}
                         color="primary"
                       >
-                        <i className="zmdi zmdi-edit" />
-                      </Button>
+                        <DeleteIcon />
+                      </IconButton>
                     </Tooltip>
                     <Tooltip title="Delete">
-                      <Button
-                        className="jr-btn jr-btn-lg"
+                      <IconButton
                         onClick={() => {
                           this.props.removeItem(n._id);
                         }}
                         color="primary"
                       >
-                        <i className="zmdi zmdi-delete" />
-                      </Button>
+                        <EditIcon />
+                      </IconButton>
                     </Tooltip>
                   </TblCell>
                 </TableRow>

@@ -101,6 +101,8 @@ class ConfigWizard extends React.Component {
 
     let isNew = !paramId;
 
+    debugger;
+
     if (paramId) {
       const { list } = this.props.workloads;
       let found = list && _.find(list, { _id: paramId });
