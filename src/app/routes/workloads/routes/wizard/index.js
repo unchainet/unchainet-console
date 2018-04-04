@@ -87,7 +87,12 @@ class ConfigWizard extends React.Component {
 
   saveWorkload() {
     this.props.processWorkload(
-      _.omit(this.state, ["activeStep", "activeStepError", "mapLocation", "isNew"])
+      _.omit(this.state, [
+        "activeStep",
+        "activeStepError",
+        "mapLocation",
+        "isNew"
+      ])
     );
     this.props.history.push("/app/workloads");
     this.props.goToTourStep(9);
@@ -97,28 +102,35 @@ class ConfigWizard extends React.Component {
     this.props.fetchAllRegion();
 
     let paramId = this.props.match.params.id;
-    const params = qs.parse(this.props.location.search);//todo change to query param later if possible, query params support seems to be missing in the react router 4
-
     let isNew = !paramId;
+    const params = qs.parse(this.props.location.search);
+    let workload, region, regionInfo;
 
     if (paramId) {
       const { list } = this.props.workloads;
-      let found = list && _.find(list, { _id: paramId });
-      if (found) {
-        this.setState({
-          ...this.state,
-          ...found,
-          region: found.region.hasOwnProperty("_id")
-            ? found.region._id
-            : found.region, //todo review after model clarification
-          isNew
-        });
+      workload = _.find(list, { _id: paramId });
+      if (workload) {
+        region = workload.region.hasOwnProperty("_id")
+          ? workload.region._id
+          : workload.region; //todo review after model clarification
       }
-    }else if(params.region){
+    } else if (params.region) {
+      region = params.region;
+    }
+    if (paramId || params.region) {
+      const { regions } = this.props;
+      regionInfo = regions && _.find(regions.allRegions, { _id: region });
       this.setState({
         ...this.state,
-        region: params.region,
-        isNew
+        ...workload,
+        region,
+        isNew,
+        mapLocation: regionInfo
+          ? {
+              lng: regionInfo.location.geo[0],
+              lat: regionInfo.location.geo[1]
+            }
+          : this.state.mapLocation
       });
     }
   }

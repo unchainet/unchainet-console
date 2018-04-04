@@ -61,8 +61,6 @@ class SidenavContent extends Component {
   }
 
   isNavActive = (match, location, e) => {
-    console.log(match);
-    console.log(e);
     if (!match) return false;
     if (location.pathname.startsWith(match.path)) {
       return true;
@@ -134,12 +132,6 @@ const NavLinkExt = props => (
   <NavLink
     {...props}
     isActive={(match, location) => {
-      console.log(
-        props.to,
-        match,
-        location,
-        !!location.pathname.startsWith(props.to)
-      );
       return !!location.pathname.startsWith(props.to);
     }}
   >
