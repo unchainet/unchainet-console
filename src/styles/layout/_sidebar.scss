@@ -88,6 +88,7 @@ ul.nav-menu li a {
   text-transform: capitalize;
   text-decoration: none;
   @include border-radius(0);
+  font-weight: 300;
 }
 
 ul.nav-menu {

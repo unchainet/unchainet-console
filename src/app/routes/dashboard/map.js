@@ -193,7 +193,7 @@ class MarkerClustererContainer extends Component {
                 color="secondary"
                 variant="raised"
                 size="small"
-                onClick={() => this.props.history.push("/app/workloads/wizard")}
+                onClick={() => this.props.history.push(`/app/workloads/wizard?region=${marker._id}`)}
               >
                 Add Workload
               </Button>
