@@ -7,7 +7,7 @@ const Components = ({match}) => {
   return(
     <div>
       <Route exact path={`${match.url}`} component={List}/>
-      <Route path={`${match.url}/wizard/:id?`} component={Wizard}/>
+      <Route path={`${match.url}/wizard/:id?/:region?`} component={Wizard}/>
     </div>
   )
 }

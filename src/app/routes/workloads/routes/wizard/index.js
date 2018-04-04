@@ -30,6 +30,7 @@ import { goToTourStep } from "actions/Tour";
 import PropTypes from "prop-types";
 import _ from "lodash";
 import styles from "./styles";
+import qs from "query-string";
 
 class ConfigWizard extends React.Component {
   constructor(props) {
@@ -96,6 +97,7 @@ class ConfigWizard extends React.Component {
     this.props.fetchAllRegion();
 
     let paramId = this.props.match.params.id;
+    const params = qs.parse(this.props.location.search);//todo change to query param later if possible, query params support seems to be missing in the react router 4
 
     let isNew = !paramId;
 
@@ -108,10 +110,16 @@ class ConfigWizard extends React.Component {
           ...found,
           region: found.region.hasOwnProperty("_id")
             ? found.region._id
-            : found.region, //todo change after model clarification
+            : found.region, //todo review after model clarification
           isNew
         });
       }
+    }else if(params.region){
+      this.setState({
+        ...this.state,
+        region: params.region,
+        isNew
+      });
     }
   }
 
