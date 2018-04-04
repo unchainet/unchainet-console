@@ -76,6 +76,11 @@ ul.nav-menu li.menu {
       display: block;
     }
   }
+
+  > a.active {
+    border-left: 2px solid orange;
+    background-color: $sidebar-bg-darken;
+  }
 }
 
 ul.nav-menu li a {
