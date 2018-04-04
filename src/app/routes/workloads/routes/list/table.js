@@ -120,7 +120,7 @@ class WorkloadsTable extends React.Component {
                         }}
                         color="primary"
                       >
-                        <DeleteIcon />
+                        <EditIcon />
                       </IconButton>
                     </Tooltip>
                     <Tooltip title="Delete">
@@ -130,7 +130,7 @@ class WorkloadsTable extends React.Component {
                         }}
                         color="primary"
                       >
-                        <EditIcon />
+                        <DeleteIcon />
                       </IconButton>
                     </Tooltip>
                   </TblCell>
