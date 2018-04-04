@@ -1,8 +1,8 @@
 import React, {Component} from 'react';
 import {NavLink, withRouter} from 'react-router-dom';
-import Button from 'material-ui/Button';
 import 'jquery-slimscroll/jquery.slimscroll.min';
 import IntlMessages from 'util/IntlMessages';
+import cx from "classnames";
 
 
 class SidenavContent extends Component {
@@ -51,40 +51,50 @@ class SidenavContent extends Component {
 
 
     render() {
+      const pathname = this.props.location.pathname;
         return (
             <ul className="nav-menu" ref={(c) => {
                 this.nav = c;
             }}>
-
-                <li className="menu no-arrow tour-dashboard">
+                <li className={cx("menu", "no-arrow", "tour-dashboard", {
+                  "open": pathname.startsWith("/app/dashboard")
+                })}  >
                     <NavLink to="/app/dashboard">
                         <i className="zmdi zmdi-view-dashboard zmdi-hc-fw"/>
                         <span className="nav-text"><IntlMessages id="sidebar.dashboard"/></span>
                     </NavLink>
                 </li>
 
-                <li className="menu no-arrow">
+                <li className={cx("menu", "no-arrow",  {
+                  "open": pathname.startsWith("/app/workloads")
+                })} >
                     <NavLink to="/app/workloads">
                         <i className="zmdi zmdi-play zmdi-hc-fw"/>
                         <span className="nav-text"><IntlMessages id="sidebar.workloads"/></span>
                     </NavLink>
                 </li>
 
-                <li className="menu no-arrow">
+                <li className={cx("menu", "no-arrow",  {
+                  "open": pathname.startsWith("/app/wallet")
+                })}>
                     <NavLink to="/app/wallet">
                         <i className="zmdi zmdi-balance-wallet zmdi-hc-fw"/>
                         <span className="nav-text"><IntlMessages id="sidebar.wallet"/></span>
                     </NavLink>
                 </li>
 
-                <li className="menu no-arrow">
+                <li className={cx("menu", "no-arrow",  {
+                  "open": pathname.startsWith("/app/billing")
+                })}>
                     <NavLink to="/app/billing">
                         <i className="zmdi zmdi-card zmdi-hc-fw"/>
                         <span className="nav-text"><IntlMessages id="sidebar.billing"/></span>
                     </NavLink>
                 </li>
 
-                <li className="menu no-arrow">
+                <li className={cx("menu", "no-arrow",  {
+                  "open": pathname.startsWith("/app/priceHistory")
+                })}>
                     <NavLink to="/app/priceHistory">
                         <i className="zmdi zmdi-trending-up zmdi-hc-fw"/>
                         <span className="nav-text"><IntlMessages id="sidebar.priceHistory"/></span>

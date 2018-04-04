@@ -87,7 +87,7 @@ class ConfigWizard extends React.Component {
 
   saveWorkload() {
     this.props.processWorkload(
-      _.omit(this.state, ["activeStep", "activeStepError", "mapLocation"])
+      _.omit(this.state, ["activeStep", "activeStepError", "mapLocation", "isNew"])
     );
     this.props.history.push("/app/workloads");
     this.props.goToTourStep(9);
