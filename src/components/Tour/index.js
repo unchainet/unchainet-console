@@ -70,7 +70,7 @@ class Tour extends React.PureComponent {
           [{
               title: 'Quality Score',
               text: 'Quality of providers is measured by their availability, internet speed, hardware type and other metrics.' +
-              'The higher the score, the better service, the higher price per resource.',
+              'The higher the score, the better the service and the higher the price per resource.',
               textAlign: 'center',
               selector: '.app-container .tour-quality-score',
               position: 'top',
